@@ -1844,7 +1844,7 @@ public class NEUConfig extends Config {
                 desc = "Hypixel api key"
         )
         @ConfigEditorText
-        public final String apiKey = "";
+        public String apiKey = "";
     }
 
     private static ArrayList<String> createDefaultQuickCommands() {
