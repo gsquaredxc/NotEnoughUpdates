@@ -23,7 +23,7 @@ public class HelpGUI extends GuiScreen {
     private int sizeY = 0;
 
     private int page = 0;
-    private ResourceLocation screenshotBorder = new ResourceLocation("notenoughupdates:ss_border.jpg");
+    private final ResourceLocation screenshotBorder = new ResourceLocation("notenoughupdates:ss_border.jpg");
     private ResourceLocation[] screenshots = null;
 
     int scaleFactor = 0;
@@ -88,7 +88,7 @@ public class HelpGUI extends GuiScreen {
     }
 
 
-    private static HashMap<Vector2f, List<String>>[] texts = new HashMap[18];
+    private static final HashMap<Vector2f, List<String>>[] texts = new HashMap[18];
     static {
         for(int i=0; i<18; i++) {
             texts[i] = new HashMap<>();

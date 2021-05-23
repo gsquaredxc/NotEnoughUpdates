@@ -27,10 +27,10 @@ import java.util.Set;
 
 public class BackgroundBlur {
 
-    private static HashMap<Float, Framebuffer> blurOutput = new HashMap<>();
-    private static HashMap<Float, Long> lastBlurUse = new HashMap<>();
+    private static final HashMap<Float, Framebuffer> blurOutput = new HashMap<>();
+    private static final HashMap<Float, Long> lastBlurUse = new HashMap<>();
     private static long lastBlur = 0;
-    private static HashSet<Float> requestedBlurs = new HashSet<>();
+    private static final HashSet<Float> requestedBlurs = new HashSet<>();
 
     private static int fogColour = 0;
     private static boolean registered = false;
@@ -128,7 +128,7 @@ public class BackgroundBlur {
         return projMatrix;
     }
 
-    private static double lastBgBlurFactor = -1;
+    private static final double lastBgBlurFactor = -1;
     private static void blurBackground(Framebuffer output, float blurFactor) {
         if(!OpenGlHelper.isFramebufferEnabled() || !OpenGlHelper.areShadersSupported()) return;
 

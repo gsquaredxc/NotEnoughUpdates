@@ -133,9 +133,7 @@ public class BetterContainers {
         if(stack != null && stack.getTagCompound() != null && stack.getTagCompound().hasKey("display", 10) &&
                 stack.getTagCompound().getCompoundTag("display").hasKey("Lore", 9)) {
             NBTTagList lore = stack.getTagCompound().getCompoundTag("display").getTagList("Lore", 8);
-            if(lore.tagCount() == 1 && lore.getStringTagAt(0).equalsIgnoreCase(EnumChatFormatting.GRAY+"click to disable!")) {
-                return true;
-            }
+            return lore.tagCount() == 1 && lore.getStringTagAt(0).equalsIgnoreCase(EnumChatFormatting.GRAY + "click to disable!");
         }
         return false;
     }
@@ -144,9 +142,7 @@ public class BetterContainers {
         if(stack != null && stack.getTagCompound() != null && stack.getTagCompound().hasKey("display", 10) &&
                 stack.getTagCompound().getCompoundTag("display").hasKey("Lore", 9)) {
             NBTTagList lore = stack.getTagCompound().getCompoundTag("display").getTagList("Lore", 8);
-            if(lore.tagCount() == 1 && lore.getStringTagAt(0).equalsIgnoreCase(EnumChatFormatting.GRAY+"click to enable!")) {
-                return true;
-            }
+            return lore.tagCount() == 1 && lore.getStringTagAt(0).equalsIgnoreCase(EnumChatFormatting.GRAY + "click to enable!");
         }
         return false;
     }

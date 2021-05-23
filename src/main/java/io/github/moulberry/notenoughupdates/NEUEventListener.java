@@ -1526,7 +1526,7 @@ public class NEUEventListener {
         }
     }
 
-    private static String[] rarityArrC = new String[] {
+    private static final String[] rarityArrC = new String[] {
             EnumChatFormatting.WHITE+EnumChatFormatting.BOLD.toString()+"COMMON",
             EnumChatFormatting.GREEN+EnumChatFormatting.BOLD.toString()+"UNCOMMON",
             EnumChatFormatting.BLUE+EnumChatFormatting.BOLD.toString()+"RARE",
@@ -1547,7 +1547,7 @@ public class NEUEventListener {
         rarityArrMap.put("MYTHIC", rarityArrC[5]);
     }
 
-    private HashSet<String> percentStats = new HashSet<>();
+    private final HashSet<String> percentStats = new HashSet<>();
     {
         percentStats.add("bonus_attack_speed");
         percentStats.add("crit_damage");
@@ -2284,11 +2284,7 @@ public class NEUEventListener {
                 }
             }
 
-            if(k || m || n) {
-                copied = true;
-            } else {
-                copied = false;
-            }
+            copied = k || m || n;
         }
     }
 }

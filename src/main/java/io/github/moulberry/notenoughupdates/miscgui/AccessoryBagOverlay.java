@@ -851,10 +851,10 @@ public class AccessoryBagOverlay {
         return stats;
     }
 
-    private static String[] rarityArr = new String[] {
+    private static final String[] rarityArr = new String[] {
             "COMMON", "UNCOMMON", "RARE", "EPIC", "LEGENDARY", "MYTHIC", "SPECIAL", "VERY SPECIAL",
     };
-    private static String[] rarityArrC = new String[] {
+    private static final String[] rarityArrC = new String[] {
             EnumChatFormatting.WHITE+EnumChatFormatting.BOLD.toString()+"COMMON",
             EnumChatFormatting.GREEN+EnumChatFormatting.BOLD.toString()+"UNCOMMON",
             EnumChatFormatting.BLUE+EnumChatFormatting.BOLD.toString()+"RARE",

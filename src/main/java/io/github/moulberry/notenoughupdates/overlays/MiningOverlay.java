@@ -2,12 +2,10 @@ package io.github.moulberry.notenoughupdates.overlays;
 
 import com.google.common.collect.ComparisonChain;
 import com.google.common.collect.Ordering;
-import com.google.gson.JsonObject;
 import io.github.moulberry.notenoughupdates.NotEnoughUpdates;
 import io.github.moulberry.notenoughupdates.core.config.Position;
 import io.github.moulberry.notenoughupdates.core.util.StringUtils;
 import io.github.moulberry.notenoughupdates.core.util.lerp.LerpUtils;
-import io.github.moulberry.notenoughupdates.cosmetics.CapeManager;
 import io.github.moulberry.notenoughupdates.miscfeatures.ItemCooldowns;
 import io.github.moulberry.notenoughupdates.util.SBInfo;
 import io.github.moulberry.notenoughupdates.util.Utils;
@@ -37,7 +35,7 @@ public class MiningOverlay extends TextOverlay {
     }
 
     private static final Pattern NUMBER_PATTERN = Pattern.compile("\\d+");
-    private static Map<String, Integer> commissionMaxes = new HashMap<>();
+    private static final Map<String, Integer> commissionMaxes = new HashMap<>();
     public static Map<String, Float> commissionProgress = new LinkedHashMap<>();
 
     @Override
@@ -227,7 +225,7 @@ public class MiningOverlay extends TextOverlay {
                 } else if(entry.getValue() >= 0.25) {
                     col = GOLD;
                 }
-                if(true && commissionMaxes.containsKey(entry.getKey())) {
+                if(commissionMaxes.containsKey(entry.getKey())) {
                     int max = commissionMaxes.get(entry.getKey());
                     commissionsStrings.add(DARK_AQUA+entry.getKey() + ": " + col+Math.round(entry.getValue()*max)+"/"+max);
                 } else {

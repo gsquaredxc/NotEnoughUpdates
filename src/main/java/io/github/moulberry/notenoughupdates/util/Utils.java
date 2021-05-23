@@ -59,11 +59,11 @@ public class Utils {
 
     private static boolean hasEffectOverride = false;
     public static boolean disableCustomDungColours = false;
-    private static LinkedList<Integer> guiScales = new LinkedList<>();
+    private static final LinkedList<Integer> guiScales = new LinkedList<>();
     private static ScaledResolution lastScale = new ScaledResolution(Minecraft.getMinecraft());
     //Labymod compatibility
-    private static FloatBuffer projectionMatrixOld = BufferUtils.createFloatBuffer(16);
-    private static FloatBuffer modelviewMatrixOld = BufferUtils.createFloatBuffer(16);
+    private static final FloatBuffer projectionMatrixOld = BufferUtils.createFloatBuffer(16);
+    private static final FloatBuffer modelviewMatrixOld = BufferUtils.createFloatBuffer(16);
 
     public static <T> ArrayList<T> createList(T... values) {
         ArrayList<T> list = new ArrayList<>();
@@ -217,7 +217,7 @@ public class Utils {
         return rainbowText.toString();
     }
 
-    private static char[] c = new char[]{'k', 'm', 'b', 't'};
+    private static final char[] c = new char[]{'k', 'm', 'b', 't'};
     public static String shortNumberFormat(double n, int iteration) {
         double d = ((long) n / 100) / 10.0;
         boolean isRound = (d * 10) %10 == 0;
@@ -388,7 +388,7 @@ public class Utils {
         return str.substring(0, 1).toUpperCase() + str.substring(1).toLowerCase();
     }
 
-    private static String[] rarityArr = new String[] {
+    private static final String[] rarityArr = new String[] {
             "COMMON", "UNCOMMON", "RARE", "EPIC", "LEGENDARY", "MYTHIC", "SPECIAL", "VERY SPECIAL",
     };
     public static int checkItemType(JsonArray lore, boolean contains, String... typeMatches) {
@@ -783,10 +783,10 @@ public class Utils {
         Tessellator tessellator = Tessellator.getInstance();
         WorldRenderer worldrenderer = tessellator.getWorldRenderer();
         worldrenderer.begin(7, DefaultVertexFormats.POSITION_COLOR);
-        worldrenderer.pos((double)right, (double)top, 0).color(f1, f2, f3, f).endVertex();
-        worldrenderer.pos((double)left, (double)top, 0).color(f1, f2, f3, f).endVertex();
-        worldrenderer.pos((double)left, (double)bottom, 0).color(f5, f6, f7, f4).endVertex();
-        worldrenderer.pos((double)right, (double)bottom, 0).color(f5, f6, f7, f4).endVertex();
+        worldrenderer.pos(right, top, 0).color(f1, f2, f3, f).endVertex();
+        worldrenderer.pos(left, top, 0).color(f1, f2, f3, f).endVertex();
+        worldrenderer.pos(left, bottom, 0).color(f5, f6, f7, f4).endVertex();
+        worldrenderer.pos(right, bottom, 0).color(f5, f6, f7, f4).endVertex();
         tessellator.draw();
         GlStateManager.shadeModel(7424);
         GlStateManager.disableBlend();
@@ -811,10 +811,10 @@ public class Utils {
         Tessellator tessellator = Tessellator.getInstance();
         WorldRenderer worldrenderer = tessellator.getWorldRenderer();
         worldrenderer.begin(7, DefaultVertexFormats.POSITION_COLOR);
-        worldrenderer.pos((double)right, (double)top, 0).color(f5, f6, f7, f4).endVertex();
-        worldrenderer.pos((double)left, (double)top, 0).color(f1, f2, f3, f).endVertex();
-        worldrenderer.pos((double)left, (double)bottom, 0).color(f1, f2, f3, f).endVertex();
-        worldrenderer.pos((double)right, (double)bottom, 0).color(f5, f6, f7, f4).endVertex();
+        worldrenderer.pos(right, top, 0).color(f5, f6, f7, f4).endVertex();
+        worldrenderer.pos(left, top, 0).color(f1, f2, f3, f).endVertex();
+        worldrenderer.pos(left, bottom, 0).color(f1, f2, f3, f).endVertex();
+        worldrenderer.pos(right, bottom, 0).color(f5, f6, f7, f4).endVertex();
         tessellator.draw();
         GlStateManager.shadeModel(7424);
         GlStateManager.disableBlend();
@@ -927,7 +927,7 @@ public class Utils {
         scrollY.resetTimer();
     }
 
-    private static LerpingFloat scrollY = new LerpingFloat(0, 100);
+    private static final LerpingFloat scrollY = new LerpingFloat(0, 100);
     public static void drawHoveringText(List<String> textLines, final int mouseX, final int mouseY, final int screenWidth, final int screenHeight, final int maxTextWidth, FontRenderer font, boolean coloured) {
         if (!textLines.isEmpty())
         {
@@ -1138,10 +1138,10 @@ public class Utils {
         GlStateManager.disableTexture2D();
         GlStateManager.color(f, f1, f2, f3);
         worldrenderer.begin(7, DefaultVertexFormats.POSITION);
-        worldrenderer.pos((double)left, (double)bottom, 0.0D).endVertex();
-        worldrenderer.pos((double)right, (double)bottom, 0.0D).endVertex();
-        worldrenderer.pos((double)right, (double)top, 0.0D).endVertex();
-        worldrenderer.pos((double)left, (double)top, 0.0D).endVertex();
+        worldrenderer.pos(left, bottom, 0.0D).endVertex();
+        worldrenderer.pos(right, bottom, 0.0D).endVertex();
+        worldrenderer.pos(right, top, 0.0D).endVertex();
+        worldrenderer.pos(left, top, 0.0D).endVertex();
         tessellator.draw();
         GlStateManager.enableTexture2D();
     }

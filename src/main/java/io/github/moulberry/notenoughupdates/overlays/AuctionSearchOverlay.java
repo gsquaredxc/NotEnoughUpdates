@@ -35,11 +35,11 @@ public class AuctionSearchOverlay {
     private static final ResourceLocation STAR = new ResourceLocation("notenoughupdates:auc_search/star.png");
     private static final ResourceLocation STAR_BOARD = new ResourceLocation("notenoughupdates:auc_search/star_board.png");
 
-    private static GuiElementTextField textField = new GuiElementTextField("", 200, 20, 0);
+    private static final GuiElementTextField textField = new GuiElementTextField("", 200, 20, 0);
     private static boolean searchFieldClicked = false;
     private static String searchString = "";
     private static String searchStringExtra = "";
-    private static Splitter SPACE_SPLITTER = Splitter.on(" ").omitEmptyStrings().trimResults();
+    private static final Splitter SPACE_SPLITTER = Splitter.on(" ").omitEmptyStrings().trimResults();
 
     private static int selectedStars = 0;
     private static boolean atLeast = true;
@@ -86,9 +86,7 @@ public class AuctionSearchOverlay {
         if(tes == null) return false;
         if(tes.getPos().getY() != 0) return false;
         if(!tes.signText[2].getUnformattedText().equals("^^^^^^^^^^^^^^^")) return false;
-        if(!tes.signText[3].getUnformattedText().equals("Enter query")) return false;
-
-        return true;
+        return tes.signText[3].getUnformattedText().equals("Enter query");
     }
 
     public static void render() {
@@ -270,8 +268,8 @@ public class AuctionSearchOverlay {
         }
     }
 
-    private static ExecutorService searchES = Executors.newSingleThreadExecutor();
-    private static AtomicInteger searchId = new AtomicInteger(0);
+    private static final ExecutorService searchES = Executors.newSingleThreadExecutor();
+    private static final AtomicInteger searchId = new AtomicInteger(0);
 
     public static void search() {
         final int thisSearchId = searchId.incrementAndGet();

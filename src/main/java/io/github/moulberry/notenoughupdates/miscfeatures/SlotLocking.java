@@ -59,7 +59,7 @@ public class SlotLocking {
         public HashMap<String, SlotLockProfile> profileData = new HashMap<>();
     }
 
-    private SlotLockingConfig config = new SlotLockingConfig();
+    private final SlotLockingConfig config = new SlotLockingConfig();
     private boolean lockKeyHeld = false;
     private Slot pairingSlot = null;
 

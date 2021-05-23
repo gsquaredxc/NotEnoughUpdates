@@ -9,8 +9,8 @@ import com.google.gson.JsonPrimitive;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.minecraft.MinecraftProfileTexture;
 import io.github.moulberry.notenoughupdates.NotEnoughUpdates;
-import io.github.moulberry.notenoughupdates.util.SBAIntegration;
 import io.github.moulberry.notenoughupdates.cosmetics.ShaderManager;
+import io.github.moulberry.notenoughupdates.util.SBAIntegration;
 import io.github.moulberry.notenoughupdates.itemeditor.GuiElementTextField;
 import io.github.moulberry.notenoughupdates.util.SBInfo;
 import io.github.moulberry.notenoughupdates.util.Constants;
@@ -120,7 +120,7 @@ public class GuiProfileViewer extends GuiScreen {
         }
     }
 
-    private GuiElementTextField playerNameTextField;
+    private final GuiElementTextField playerNameTextField;
 
     @Override
     public void drawScreen(int mouseX, int mouseY, float partialTicks) {
@@ -566,12 +566,10 @@ public class GuiProfileViewer extends GuiScreen {
                 if(petsPage > 0) {
                     petsPage--;
                 }
-                return;
             } else if(mouseX > guiLeft+100+15 && mouseX < guiLeft+100+20+12) {
                 if(sortedPets != null && petsPage < Math.ceil(sortedPets.size()/20f)-1) {
                     petsPage++;
                 }
-                return;
             }
         }
     }
@@ -645,10 +643,10 @@ public class GuiProfileViewer extends GuiScreen {
     private static final ItemStack DEADBUSH = new ItemStack(Item.getItemFromBlock(Blocks.deadbush));
     private static final ItemStack[] BOSS_HEADS = new ItemStack[7];
 
-    private HashMap<String, ProfileViewer.Level> levelObjCatas = new HashMap<>();
-    private HashMap<String, HashMap<String, ProfileViewer.Level>> levelObjClasseses = new HashMap<>();
+    private final HashMap<String, ProfileViewer.Level> levelObjCatas = new HashMap<>();
+    private final HashMap<String, HashMap<String, ProfileViewer.Level>> levelObjClasseses = new HashMap<>();
 
-    private GuiElementTextField dungeonLevelTextField = new GuiElementTextField("", GuiElementTextField.SCALE_TEXT);
+    private final GuiElementTextField dungeonLevelTextField = new GuiElementTextField("", GuiElementTextField.SCALE_TEXT);
 
     private static final String[] dungSkillsName = {"Healer", "Mage", "Berserk", "Archer", "Tank"};
     private static final ItemStack[] dungSkillsStack = { new ItemStack(Items.potionitem, 1, 16389),
@@ -1222,7 +1220,7 @@ public class GuiProfileViewer extends GuiScreen {
                             for(int j=0; j<newLore.tagCount(); j++) {
                                 String line = newLore.getStringTagAt(j);
 
-                                if(j == secondLastBlank.intValue()) {
+                                if(j == secondLastBlank) {
                                     newNewLore.appendTag(new NBTTagString(""));
                                     newNewLore.appendTag(new NBTTagString(EnumChatFormatting.GOLD+"Held Item: "+heldItemJson.get("displayname").getAsString()));
                                     int blanks = 0;
@@ -1394,7 +1392,7 @@ public class GuiProfileViewer extends GuiScreen {
         }
     }
 
-    private String[] romans = new String[]{"I","II","III","IV","V","VI","VII","VIII","IX","X","XI",
+    private final String[] romans = new String[]{"I","II","III","IV","V","VI","VII","VIII","IX","X","XI",
             "XII","XIII","XIV","XV","XVI","XVII","XIX","XX"};
 
     private final int COLLS_XCOUNT = 5;
@@ -1707,7 +1705,7 @@ public class GuiProfileViewer extends GuiScreen {
         return currentSlots;
     }
 
-    private ItemStack fillerStack = new ItemStack(Item.getItemFromBlock(Blocks.stained_glass_pane), 1, 15);
+    private final ItemStack fillerStack = new ItemStack(Item.getItemFromBlock(Blocks.stained_glass_pane), 1, 15);
     public ItemStack[][][] getItemsForInventory(JsonObject inventoryInfo, String invName) {
         if(inventoryItems.containsKey(invName)) return inventoryItems.get(invName);
 
@@ -1806,7 +1804,7 @@ public class GuiProfileViewer extends GuiScreen {
     private int arrowCount = -1;
     private int greenCandyCount = -1;
     private int purpleCandyCount = -1;
-    private GuiElementTextField inventoryTextField = new GuiElementTextField("", GuiElementTextField.SCALE_TEXT);
+    private final GuiElementTextField inventoryTextField = new GuiElementTextField("", GuiElementTextField.SCALE_TEXT);
     private ItemStack lastBackpack;
     private int lastBackpackX;
     private int lastBackpackY;
@@ -2068,7 +2066,7 @@ public class GuiProfileViewer extends GuiScreen {
     private ResourceLocation playerLocationCape = null;
     private String skinType = null;
 
-    private HashMap<String, ResourceLocation[]> panoramasMap = new HashMap<>();
+    private final HashMap<String, ResourceLocation[]> panoramasMap = new HashMap<>();
 
     public ResourceLocation[] getPanoramasForLocation(String location, String identifier) {
         if(panoramasMap.containsKey(location+identifier)) return panoramasMap.get(location+identifier);
@@ -2285,7 +2283,7 @@ public class GuiProfileViewer extends GuiScreen {
 
     private int backgroundClickedX = -1;
 
-    private static char[] c = new char[]{'k', 'm', 'b', 't'};
+    private static final char[] c = new char[]{'k', 'm', 'b', 't'};
 
     public static String shortNumberFormat(double n, int iteration) {
         if(n < 1000) {
@@ -2359,7 +2357,7 @@ public class GuiProfileViewer extends GuiScreen {
                 playerName = Utils.getElementAsString(profile.getHypixelProfile().get("prefix"), "") + " " + entityPlayer.getName();
             } else {
                 String rank = Utils.getElementAsString(profile.getHypixelProfile().get("rank"),
-                        Utils.getElementAsString(profile.getHypixelProfile().get("newPackageRank"), "NONE"));;
+                        Utils.getElementAsString(profile.getHypixelProfile().get("newPackageRank"), "NONE"));
                 String monthlyPackageRank = Utils.getElementAsString(profile.getHypixelProfile().get("monthlyPackageRank"), "NONE");
                 if(!rank.equals("YOUTUBER") && !monthlyPackageRank.equals("NONE")) {
                     rank = monthlyPackageRank;
@@ -2553,7 +2551,7 @@ public class GuiProfileViewer extends GuiScreen {
                         }
                     }
                 }, false);
-            } catch(Exception e){}
+            } catch(Exception ignored){}
         }
 
         GlStateManager.color(1, 1, 1, 1);
@@ -2718,24 +2716,24 @@ public class GuiProfileViewer extends GuiScreen {
         int displayNum = 0;//tl.x%5;
 
         GlStateManager.color(1, 1, 1, 1);
-        float width = 0;
+        float width;
 
-        if(completed < 0.5f && (displayNum == 1 || displayNum == 0)) {
+        if(completed < 0.5f) {
             width = (0.5f - completed) * xSize;
             Utils.drawTexturedRect(x+xSize*completed, y, width, 5, xSize*completed/256f, (xSize/2f)/256f, 74/256f, 79/256f, GL11.GL_NEAREST);
         }
-        if(completed < 1f && (displayNum == 2 || displayNum == 0)) {
+        if(completed < 1f) {
             width = Math.min(xSize*notcompleted, xSize/2f);
             Utils.drawTexturedRect(x+(xSize/2f)+Math.max(xSize*(completed-0.5f), 0), y, width, 5,
                     (182-(xSize/2f)+Math.max(xSize*(completed-0.5f), 0))/256f, 182/256f, 74/256f, 79/256f, GL11.GL_NEAREST);
         }
 
-        if(completed > 0f && (displayNum == 3 || displayNum == 0)) {
+        if(completed > 0f) {
             width = Math.min(xSize*completed, xSize/2f);
             Utils.drawTexturedRect(x, y, width, 5,
                     0/256f, width/256f, 79/256f, 84/256f, GL11.GL_NEAREST);
         }
-        if(completed > 0.5f && (displayNum == 4 || displayNum == 0)) {
+        if(completed > 0.5f) {
             width = Math.min(xSize*(completed-0.5f), xSize/2f);
             Utils.drawTexturedRect(x+(xSize/2f), y, width, 5,
                     (182-(xSize/2f))/256f, (182-(xSize/2f)+width)/256f, 79/256f, 84/256f, GL11.GL_NEAREST);
@@ -2758,9 +2756,9 @@ public class GuiProfileViewer extends GuiScreen {
         RenderHelper.enableStandardItemLighting();
         GlStateManager.rotate(-135.0F, 0.0F, 1.0F, 0.0F);
         GlStateManager.rotate(25, 1.0F, 0.0F, 0.0F);
-        ent.renderYawOffset = (float)Math.atan((double)(mouseX / 40.0F)) * 20.0F;
-        ent.rotationYaw = (float)Math.atan((double)(mouseX / 40.0F)) * 40.0F;
-        ent.rotationPitch = -((float)Math.atan((double)(mouseY / 40.0F))) * 20.0F;
+        ent.renderYawOffset = (float)Math.atan(mouseX / 40.0F) * 20.0F;
+        ent.rotationYaw = (float)Math.atan(mouseX / 40.0F) * 40.0F;
+        ent.rotationPitch = -((float)Math.atan(mouseY / 40.0F)) * 20.0F;
         ent.rotationYawHead = ent.rotationYaw;
         ent.prevRotationYawHead = ent.rotationYaw;
         RenderManager rendermanager = Minecraft.getMinecraft().getRenderManager();

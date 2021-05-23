@@ -62,7 +62,7 @@ public class SBAIntegration {
                 try { utils_setBackpackToPreview = utilsClass.getDeclaredMethod("setBackpackToPreview", backpackClass); } catch(Exception ignored){}
             }
             if(utils_setBackpackToPreview == null) {
-                utils_setBackpackToPreview = utilsClass.getDeclaredMethod("setContainerPreviewToRender", backpackClass);;
+                utils_setBackpackToPreview = utilsClass.getDeclaredMethod("setContainerPreviewToRender", backpackClass);
             }
         } catch(Exception e) {
             e.printStackTrace();

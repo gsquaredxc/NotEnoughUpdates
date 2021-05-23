@@ -9,7 +9,7 @@ import java.util.Map;
 
 public class MorusIntegration {
 
-    private static MorusIntegration INSTANCE = new MorusIntegration();
+    private static final MorusIntegration INSTANCE = new MorusIntegration();
 
     public static MorusIntegration getInstance() {
         return INSTANCE;

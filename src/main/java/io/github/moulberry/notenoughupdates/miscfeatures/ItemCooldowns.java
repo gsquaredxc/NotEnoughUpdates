@@ -17,7 +17,7 @@ import java.util.regex.Pattern;
 
 public class ItemCooldowns {
 
-    private static Map<ItemStack, Float> durabilityOverrideMap = new HashMap<>();
+    private static final Map<ItemStack, Float> durabilityOverrideMap = new HashMap<>();
     public static long pickaxeUseCooldownMillisRemaining = -1;
     private static long treecapitatorCooldownMillisRemaining = -1;
     private static long lastMillis = 0;
@@ -104,10 +104,10 @@ public class ItemCooldowns {
         }
     }
 
-    private static Pattern PICKAXE_ABILITY_REGEX = Pattern.compile("\\u00a7r\\u00a7aYou used your " +
+    private static final Pattern PICKAXE_ABILITY_REGEX = Pattern.compile("\\u00a7r\\u00a7aYou used your " +
             "\\u00a7r\\u00a7..+ \\u00a7r\\u00a7aPickaxe Ability!\\u00a7r");
 
-    private static Pattern PICKAXE_COOLDOWN_LORE_REGEX = Pattern.compile("\\u00a78Cooldown: \\u00a7a(\\d+)s");
+    private static final Pattern PICKAXE_COOLDOWN_LORE_REGEX = Pattern.compile("\\u00a78Cooldown: \\u00a7a(\\d+)s");
 
     private static void updatePickaxeCooldown() {
         if(pickaxeCooldown == -1) {

@@ -16,7 +16,7 @@ import java.util.regex.Pattern;
 
 public class XPInformation {
 
-    private static XPInformation INSTANCE = new XPInformation();
+    private static final XPInformation INSTANCE = new XPInformation();
 
     public static XPInformation getInstance() {
         return INSTANCE;
@@ -30,10 +30,10 @@ public class XPInformation {
         public boolean fromApi = false;
     }
 
-    private HashMap<String, SkillInfo> skillInfoMap = new HashMap<>();
+    private final HashMap<String, SkillInfo> skillInfoMap = new HashMap<>();
 
-    private static Splitter SPACE_SPLITTER = Splitter.on("  ").omitEmptyStrings().trimResults();
-    private static Pattern SKILL_PATTERN = Pattern.compile("\\+(\\d+(?:,\\d+)*(?:\\.\\d+)?) (.+) \\((\\d+(?:,\\d+)*(?:\\.\\d+)?)/(\\d+(?:,\\d+)*(?:\\.\\d+)?)\\)");
+    private static final Splitter SPACE_SPLITTER = Splitter.on("  ").omitEmptyStrings().trimResults();
+    private static final Pattern SKILL_PATTERN = Pattern.compile("\\+(\\d+(?:,\\d+)*(?:\\.\\d+)?) (.+) \\((\\d+(?:,\\d+)*(?:\\.\\d+)?)/(\\d+(?:,\\d+)*(?:\\.\\d+)?)\\)");
 
     public HashMap<String, SkillInfo> getSkillInfoMap() {
         return skillInfoMap;
@@ -56,7 +56,7 @@ public class XPInformation {
                 if(matcher.matches()) {
                     String skillS = matcher.group(2);
                     String currentXpS = matcher.group(3).replace(",","");
-                    String maxXpS = matcher.group(4).replace(",","");;
+                    String maxXpS = matcher.group(4).replace(",","");
 
                     float currentXp = Float.parseFloat(currentXpS);
                     float maxXp = Float.parseFloat(maxXpS);

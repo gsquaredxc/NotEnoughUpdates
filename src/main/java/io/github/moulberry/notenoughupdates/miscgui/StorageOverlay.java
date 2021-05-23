@@ -42,8 +42,8 @@ public class StorageOverlay extends GuiElement {
     private static final int CHEST_SLOT_SIZE = 18;
     private static final int CHEST_BOTTOM_OFFSET = 215;
 
-    public static final ResourceLocation STORAGE_PREVIEW_TEXTURES[] = new ResourceLocation[4];
-    private static final ResourceLocation STORAGE_TEXTURES[] = new ResourceLocation[4];
+    public static final ResourceLocation[] STORAGE_PREVIEW_TEXTURES = new ResourceLocation[4];
+    private static final ResourceLocation[] STORAGE_TEXTURES = new ResourceLocation[4];
     private static final ResourceLocation STORAGE_ICONS_TEXTURE = new ResourceLocation("notenoughupdates:storage_gui/storage_icons.png");
     private static final ResourceLocation[] LOAD_CIRCLE_SEQ = new ResourceLocation[11];
     static {
@@ -69,7 +69,7 @@ public class StorageOverlay extends GuiElement {
         return INSTANCE;
     }
 
-    private GuiElementTextField searchBar = new GuiElementTextField("", 88, 10,
+    private final GuiElementTextField searchBar = new GuiElementTextField("", 88, 10,
                     GuiElementTextField.SCALE_TEXT | GuiElementTextField.DISABLE_BG);
 
     private int guiLeft;
@@ -92,7 +92,7 @@ public class StorageOverlay extends GuiElement {
 
     private int scrollGrabOffset = -1;
 
-    private LerpingInteger scroll = new LerpingInteger(0, 200);
+    private final LerpingInteger scroll = new LerpingInteger(0, 200);
 
     private int getMaximumScroll() {
         synchronized(StorageManager.getInstance().storageConfig.displayToStorageIdMap) {

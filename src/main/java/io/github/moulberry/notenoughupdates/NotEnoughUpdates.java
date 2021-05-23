@@ -10,8 +10,6 @@ import io.github.moulberry.notenoughupdates.commands.SimpleCommand;
 import io.github.moulberry.notenoughupdates.core.BackgroundBlur;
 import io.github.moulberry.notenoughupdates.core.GuiScreenElementWrapper;
 import io.github.moulberry.notenoughupdates.core.util.MiscUtils;
-import io.github.moulberry.notenoughupdates.cosmetics.CapeManager;
-import io.github.moulberry.notenoughupdates.cosmetics.GuiCosmetics;
 import io.github.moulberry.notenoughupdates.dungeons.DungeonMap;
 import io.github.moulberry.notenoughupdates.dungeons.DungeonWin;
 import io.github.moulberry.notenoughupdates.dungeons.GuiDungeonMapEditor;
@@ -27,8 +25,8 @@ import io.github.moulberry.notenoughupdates.overlays.OverlayManager;
 import io.github.moulberry.notenoughupdates.profileviewer.GuiProfileViewer;
 import io.github.moulberry.notenoughupdates.profileviewer.PlayerStats;
 import io.github.moulberry.notenoughupdates.profileviewer.ProfileViewer;
-import io.github.moulberry.notenoughupdates.util.SBInfo;
 import io.github.moulberry.notenoughupdates.util.Constants;
+import io.github.moulberry.notenoughupdates.util.SBInfo;
 import io.github.moulberry.notenoughupdates.util.Utils;
 import io.github.moulberry.notenoughupdates.util.XPInformation;
 import net.minecraft.block.material.MapColor;
@@ -48,7 +46,10 @@ import net.minecraft.item.ItemMap;
 import net.minecraft.item.ItemStack;
 import net.minecraft.scoreboard.ScoreObjective;
 import net.minecraft.scoreboard.Scoreboard;
-import net.minecraft.util.*;
+import net.minecraft.util.BlockPos;
+import net.minecraft.util.ChatComponentText;
+import net.minecraft.util.EnumChatFormatting;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.storage.MapData;
 import net.minecraftforge.client.ClientCommandHandler;
 import net.minecraftforge.common.ForgeVersion;
@@ -71,8 +72,8 @@ import java.awt.datatransfer.StringSelection;
 import java.io.*;
 import java.lang.management.ManagementFactory;
 import java.nio.charset.StandardCharsets;
-import java.util.*;
 import java.util.List;
+import java.util.*;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -93,7 +94,6 @@ public class NotEnoughUpdates {
 
     private static final long CHAT_MSG_COOLDOWN = 200;
     private long lastChatMessage = 0;
-    private long secondLastChatMessage = 0;
     private String currChatMessage = null;
 
     //Stolen from Biscut and used for detecting whether in skyblock
@@ -104,20 +104,8 @@ public class NotEnoughUpdates {
 
     SimpleCommand collectionLogCommand = new SimpleCommand("neucl", new SimpleCommand.ProcessCommandRunnable() {
         public void processCommand(ICommandSender sender, String[] args) {
-            if(true) {
-                sender.addChatMessage(new ChatComponentText(EnumChatFormatting.RED +
-                        "This feature has been disabled temporarily."));
-                return;
-            }
-            if(!OpenGlHelper.isFramebufferEnabled()) {
-                sender.addChatMessage(new ChatComponentText(EnumChatFormatting.RED +
-                        "This feature requires FBOs to work. Try disabling Optifine's 'Fast Render'."));
-            } else {
-                if(!(Minecraft.getMinecraft().currentScreen instanceof GuiContainer)) {
-                    openGui = new GuiInventory(Minecraft.getMinecraft().thePlayer);
-                }
-                overlay.displayInformationPane(new CollectionLogInfoPane(overlay, manager));
-            }
+            sender.addChatMessage(new ChatComponentText(EnumChatFormatting.RED +
+                    "This feature has been disabled temporarily."));
         }
     });
 
@@ -137,8 +125,7 @@ public class NotEnoughUpdates {
                 NullzeeSphere.overlayVBO = null;
             } else {
                 try {
-                    float radius = Float.parseFloat(args[0]);
-                    NullzeeSphere.size = radius;
+                    NullzeeSphere.size = Float.parseFloat(args[0]);
                     NullzeeSphere.overlayVBO = null;
                 } catch(Exception e) {
                     sender.addChatMessage(new ChatComponentText(EnumChatFormatting.RED+"Can't parse radius: " + args[0]));
@@ -285,12 +272,12 @@ public class NotEnoughUpdates {
             if(configFile.exists()) {
                 try(BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(configFile), StandardCharsets.UTF_8))) {
                     config = gson.fromJson(reader, NEUConfig.class);
-                } catch(Exception e) { }
+                } catch(Exception ignored) { }
             }
         }
     });
 
-    private static HashMap<String, String> petRarityToColourMap = new HashMap<>();
+    private static final HashMap<String, String> petRarityToColourMap = new HashMap<>();
     static {
         petRarityToColourMap.put("UNKNOWN", EnumChatFormatting.RED.toString());
 
@@ -515,7 +502,7 @@ public class NotEnoughUpdates {
             Minecraft mc = Minecraft.getMinecraft();
             StringBuilder builder = new StringBuilder();
 
-            if (args.length > 0 && args[0].toLowerCase().equals("modlist")){
+            if (args.length > 0 && args[0].equalsIgnoreCase("modlist")){
                 builder.append("```md\n");
                 builder.append("# Mods Loaded").append("\n");
                 for (ModContainer modContainer : Loader.instance().getActiveModList()) {
@@ -601,7 +588,7 @@ public class NotEnoughUpdates {
                             break;
                         }
                     }
-                } catch(Exception e) {
+                } catch(Exception ignored) {
                 }
             }
             if (config.apiKey.apiKey == null || config.apiKey.apiKey.trim().isEmpty()) {
@@ -955,29 +942,6 @@ public class NotEnoughUpdates {
         }
     });
 
-    SimpleCommand cosmeticsCommand = new SimpleCommand("neucosmetics", new SimpleCommand.ProcessCommandRunnable() {
-        public void processCommand(ICommandSender sender, String[] args) {
-            if(Loader.isModLoaded("optifine") &&
-                    new File(Minecraft.getMinecraft().mcDataDir, "optionsof.txt").exists()) {
-                try(InputStream in = new FileInputStream(new File(Minecraft.getMinecraft().mcDataDir, "optionsof.txt"))) {
-                    BufferedReader reader = new BufferedReader(new InputStreamReader(in, StandardCharsets.UTF_8));
-
-                    String line;
-                    while((line = reader.readLine()) != null) {
-                        if(line.contains("ofFastRender:true")) {
-                            Minecraft.getMinecraft().thePlayer.addChatMessage(new ChatComponentText(EnumChatFormatting.RED +
-                                    "NEU cosmetics do not work with OF Fast Render. Go to Video > Performance to disable it."));
-                            return;
-                        }
-                    }
-                } catch(Exception e) {
-                }
-            }
-
-            openGui = new GuiCosmetics();
-        }
-    });
-
     SimpleCommand customizeCommand = new SimpleCommand("neucustomize", new SimpleCommand.ProcessCommandRunnable() {
         public void processCommand(ICommandSender sender, String[] args) {
             ItemStack held = Minecraft.getMinecraft().thePlayer.getHeldItem();
@@ -1039,7 +1003,7 @@ public class NotEnoughUpdates {
         }
     });
 
-    private Gson gson = new GsonBuilder().setPrettyPrinting().excludeFieldsWithoutExposeAnnotation().create();
+    private final Gson gson = new GsonBuilder().setPrettyPrinting().excludeFieldsWithoutExposeAnnotation().create();
     private File neuDir;
 
     /**
@@ -1063,7 +1027,7 @@ public class NotEnoughUpdates {
         if(configFile.exists()) {
             try(BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(configFile), StandardCharsets.UTF_8))) {
                 config = gson.fromJson(reader, NEUConfig.class);
-            } catch(Exception e) { }
+            } catch(Exception ignored) { }
         }
 
         ItemCustomizeManager.loadCustomization(new File(neuDir, "itemCustomization.json"));
@@ -1078,7 +1042,6 @@ public class NotEnoughUpdates {
 
         MinecraftForge.EVENT_BUS.register(this);
         MinecraftForge.EVENT_BUS.register(new NEUEventListener(this));
-        MinecraftForge.EVENT_BUS.register(CapeManager.getInstance());
         MinecraftForge.EVENT_BUS.register(new SBGamemodes());
         MinecraftForge.EVENT_BUS.register(new EnchantingSolvers());
         MinecraftForge.EVENT_BUS.register(new CalendarOverlay());
@@ -1108,7 +1071,6 @@ public class NotEnoughUpdates {
 
         ClientCommandHandler.instance.registerCommand(collectionLogCommand);
         ClientCommandHandler.instance.registerCommand(nullzeeSphereCommand);
-        ClientCommandHandler.instance.registerCommand(cosmeticsCommand);
         ClientCommandHandler.instance.registerCommand(linksCommand);
         ClientCommandHandler.instance.registerCommand(gamemodesCommand);
         ClientCommandHandler.instance.registerCommand(buttonsCommand);
@@ -1182,7 +1144,6 @@ public class NotEnoughUpdates {
      */
     public void sendChatMessage(String message) {
         if(System.currentTimeMillis() - lastChatMessage > CHAT_MSG_COOLDOWN)  {
-            secondLastChatMessage = lastChatMessage;
             lastChatMessage = System.currentTimeMillis();
             Minecraft.getMinecraft().thePlayer.sendChatMessage(message);
             currChatMessage = null;

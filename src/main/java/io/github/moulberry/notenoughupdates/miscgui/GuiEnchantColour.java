@@ -35,11 +35,11 @@ public class GuiEnchantColour extends GuiScreen {
 
     public static final Splitter splitter = Splitter.on(":").limit(5);
 
-    private HashMap<Integer, String> comparators = new HashMap<>();
-    private HashMap<Integer, String> modifiers = new HashMap<>();
-    private List<GuiElementTextField[]> guiElementTextFields = new ArrayList<>();
+    private final HashMap<Integer, String> comparators = new HashMap<>();
+    private final HashMap<Integer, String> modifiers = new HashMap<>();
+    private final List<GuiElementTextField[]> guiElementTextFields = new ArrayList<>();
 
-    private LerpingInteger scroll = new LerpingInteger(0, 100);
+    private final LerpingInteger scroll = new LerpingInteger(0, 100);
 
     public static int BOLD_MODIFIER = 0b1;
     public static int ITALIC_MODIFIER = 0b10;
