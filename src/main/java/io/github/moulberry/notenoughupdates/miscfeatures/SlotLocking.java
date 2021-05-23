@@ -1,12 +1,10 @@
 package io.github.moulberry.notenoughupdates.miscfeatures;
 
-import com.google.gson.JsonObject;
 import io.github.moulberry.notenoughupdates.NotEnoughUpdates;
 import io.github.moulberry.notenoughupdates.core.config.KeybindHelper;
 import io.github.moulberry.notenoughupdates.core.util.render.RenderUtils;
 import io.github.moulberry.notenoughupdates.util.SBInfo;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.GlStateManager;
@@ -24,7 +22,6 @@ import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.util.vector.Vector2f;
-import org.lwjgl.util.vector.Vector3f;
 
 import java.util.HashMap;
 import java.util.function.Consumer;
@@ -46,17 +43,17 @@ public class SlotLocking {
     }
 
     public static class SlotLockData {
-        public LockedSlot[] lockedSlots = new LockedSlot[40];
+        public final LockedSlot[] lockedSlots = new LockedSlot[40];
     }
 
     public static class SlotLockProfile {
         int currentProfile = 0;
 
-        public SlotLockData[] slotLockData = new SlotLockData[9];
+        public final SlotLockData[] slotLockData = new SlotLockData[9];
     }
 
     public static class SlotLockingConfig {
-        public HashMap<String, SlotLockProfile> profileData = new HashMap<>();
+        public final HashMap<String, SlotLockProfile> profileData = new HashMap<>();
     }
 
     private final SlotLockingConfig config = new SlotLockingConfig();
@@ -132,11 +129,10 @@ public class SlotLocking {
                         if(lockedSlots[slotNum] == null) {
                             lockedSlots[slotNum] = new LockedSlot();
                             lockedSlots[slotNum].locked = true;
-                            lockedSlots[slotNum].boundTo = -1;
                         } else {
                             lockedSlots[slotNum].locked = !lockedSlots[slotNum].locked;
-                            lockedSlots[slotNum].boundTo = -1;
                         }
+                        lockedSlots[slotNum].boundTo = -1;
                     }
                 }
             }
@@ -266,7 +262,6 @@ public class SlotLocking {
     public void onWindowClick(Slot slotIn, int slotId, int clickedButton, int clickType, Consumer<Triple<Integer, Integer, Integer>> consumer) {
         LockedSlot locked = getLockedSlot(slotIn);
         if(locked == null) {
-            return;
         } else if(isSlotLocked(slotIn) || (clickType == 2 && SlotLocking.getInstance().isSlotIndexLocked(clickedButton))) {
             consumer.accept(null);
         } else if(clickType == 1 && locked.boundTo >= 0 && locked.boundTo < 9) {

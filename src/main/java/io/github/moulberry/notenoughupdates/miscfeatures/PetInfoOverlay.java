@@ -31,7 +31,6 @@ import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import org.apache.commons.lang3.text.WordUtils;
-import org.lwjgl.input.Keyboard;
 import org.lwjgl.util.vector.Vector2f;
 
 import java.io.*;
@@ -65,10 +64,10 @@ public class PetInfoOverlay extends TextOverlay {
         LEGENDARY(20, 4, 5, EnumChatFormatting.GOLD),
         MYTHIC(20, 4, 5, EnumChatFormatting.LIGHT_PURPLE);
 
-        public int petOffset;
-        public EnumChatFormatting chatFormatting;
-        public int petId;
-        public int beastcreatMultiplyer;
+        public final int petOffset;
+        public final EnumChatFormatting chatFormatting;
+        public final int petId;
+        public final int beastcreatMultiplyer;
 
         Rarity(int petOffset, int petId, int beastcreatMultiplyer, EnumChatFormatting chatFormatting) {
             this.chatFormatting = chatFormatting;
@@ -94,10 +93,8 @@ public class PetInfoOverlay extends TextOverlay {
         public String petItem;
     }
 
-    private static long lastXpGain = 0;
-
     public static class PetConfig {
-        public HashMap<Integer, Pet> petMap = new HashMap<>();
+        public final HashMap<Integer, Pet> petMap = new HashMap<>();
 
         private int selectedPet = -1;
         private int selectedPet2 = -1;
@@ -207,12 +204,10 @@ public class PetInfoOverlay extends TextOverlay {
             return pets.iterator().next();
         }
 
-        String searchItem = petItem;
-
         Set<Pet> itemMatches = new HashSet<>();
         for(Pet pet : pets) {
-            if((searchItem == null && pet.petItem == null) ||
-                    (searchItem != null && searchItem.equals(pet.petItem))) {
+            if((petItem == null && pet.petItem == null) ||
+                    (petItem != null && petItem.equals(pet.petItem))) {
                 itemMatches.add(pet);
             }
         }
@@ -971,7 +966,6 @@ public class PetInfoOverlay extends TextOverlay {
                 if(skillXpLast <= 0) {
                     skillInfoMapLast.put(entry.getKey(), skillXp);
                 } else if(skillXp > skillXpLast) {
-                    lastXpGain = currentTime;
 
                     float deltaXp = skillXp - skillXpLast;
 
@@ -1042,15 +1036,14 @@ public class PetInfoOverlay extends TextOverlay {
     }
 
     private int lastLevelHovered = 0;
-    private String lastItemHovered = null;
 
     private static HashMap<String, String> itemMap = null;
 
     @SubscribeEvent(priority = EventPriority.HIGHEST, receiveCanceled = true)
     public void onTooltip(ItemTooltipEvent event) {
         for(String line : event.toolTip) {
+            String lastItemHovered = null;
             if(line.startsWith("\u00a7o\u00a77[Lvl ")) {
-                lastItemHovered = null;
 
                 String after = line.substring("\u00a7o\u00a77[Lvl ".length());
                 if(after.contains("]")) {

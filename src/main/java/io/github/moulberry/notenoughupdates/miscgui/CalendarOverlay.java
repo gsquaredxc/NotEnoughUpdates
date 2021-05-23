@@ -15,7 +15,6 @@ import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.gui.inventory.GuiChest;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.shader.Framebuffer;
 import net.minecraft.client.shader.Shader;
 import net.minecraft.init.Items;
@@ -66,12 +65,12 @@ public class CalendarOverlay {
     private int xSize = 168;
     private int ySize = 170;
 
-    private class SBEvent {
+    private static class SBEvent {
         String id;
-        String display;
-        ItemStack stack;
+        final String display;
+        final ItemStack stack;
         List<String> desc;
-        long lastsFor;
+        final long lastsFor;
 
         public SBEvent(String id, String display, ItemStack stack, List<String> desc) {
             this(id, display, stack, desc, -1);
@@ -205,11 +204,11 @@ public class CalendarOverlay {
 
                     if(daEvent > currentTime) {
                         eventMap.computeIfAbsent(daEvent, k->new HashSet<>()).add(new SBEvent("dark_auction",
-                                EnumChatFormatting.DARK_PURPLE+"Dark Auction", DA_STACK, null, MINUTE*5));
+                                EnumChatFormatting.DARK_PURPLE + "Dark Auction", DA_STACK, null, MINUTE * 5));
                     }
                     if(jfEvent > currentTime) {
                         SBEvent jf = new SBEvent("jacob_farming",
-                                EnumChatFormatting.YELLOW+"Jacob's Farming Contest", JF_STACK, null, MINUTE*20);
+                                EnumChatFormatting.YELLOW + "Jacob's Farming Contest", JF_STACK, null, MINUTE * 20);
                         if(farmingEventTypes != null && farmingEventTypes.has(""+jfEvent) &&
                                 farmingEventTypes.get(""+jfEvent).isJsonArray()) {
                             JsonArray arr =  farmingEventTypes.get(""+jfEvent).getAsJsonArray();
@@ -243,7 +242,7 @@ public class CalendarOverlay {
                 boolean winter = month.endsWith("Winter");
                 if(spring || summer || autumn || winter) {
                     if(spring) {
-                        skyblockDays += 1*31;
+                        skyblockDays += 31;
                     } else if(summer) {
                         skyblockDays += 4*31;
                     } else if(autumn) {
@@ -311,11 +310,11 @@ public class CalendarOverlay {
 
                     if(daEvent > currentTime) {
                         eventMap.computeIfAbsent(daEvent, k->new HashSet<>()).add(new SBEvent("dark_auction",
-                                EnumChatFormatting.DARK_PURPLE+"Dark Auction", DA_STACK, null, MINUTE*5));
+                                EnumChatFormatting.DARK_PURPLE + "Dark Auction", DA_STACK, null, MINUTE * 5));
                     }
                     if(jfEvent > currentTime) {
                         SBEvent jf = new SBEvent("jacob_farming",
-                                EnumChatFormatting.YELLOW+"Jacob's Farming Contest", JF_STACK, null, MINUTE*20);
+                                EnumChatFormatting.YELLOW + "Jacob's Farming Contest", JF_STACK, null, MINUTE * 20);
                         if(farmingEventTypes != null && farmingEventTypes.has(""+jfEvent) &&
                                 farmingEventTypes.get(""+jfEvent).isJsonArray()) {
                             JsonArray arr =  farmingEventTypes.get(""+jfEvent).getAsJsonArray();
@@ -347,11 +346,11 @@ public class CalendarOverlay {
 
             if(daEvent > currentTime) {
                 eventMap.computeIfAbsent(daEvent, k->new HashSet<>()).add(new SBEvent("dark_auction",
-                        EnumChatFormatting.DARK_PURPLE+"Dark Auction", DA_STACK, null, MINUTE*5));
+                        EnumChatFormatting.DARK_PURPLE + "Dark Auction", DA_STACK, null, MINUTE * 5));
             }
             if(jfEvent > currentTime) {
                 SBEvent jf = new SBEvent("jacob_farming",
-                        EnumChatFormatting.YELLOW+"Jacob's Farming Contest", JF_STACK, null, MINUTE*20);
+                        EnumChatFormatting.YELLOW + "Jacob's Farming Contest", JF_STACK, null, MINUTE * 20);
                 if(farmingEventTypes != null && farmingEventTypes.has(""+jfEvent) &&
                         farmingEventTypes.get(""+jfEvent).isJsonArray()) {
                     JsonArray arr =  farmingEventTypes.get(""+jfEvent).getAsJsonArray();
@@ -628,9 +627,7 @@ public class CalendarOverlay {
                         String[] split = id.split(":");
                         if(split.length > 1 && split[0].equals("jacob_farming")) {
                             jfFavouriteSelect = new ArrayList<>();
-                            for(int i=1; i<split.length; i++) {
-                                jfFavouriteSelect.add(split[i]);
-                            }
+                            jfFavouriteSelect.addAll(Arrays.asList(split).subList(1, split.length));
                             jfFavouriteSelectIndex = 0;
                             jfFavouriteSelectX = mouseX;
                             jfFavouriteSelectY = mouseY;
@@ -676,7 +673,6 @@ public class CalendarOverlay {
 
                         if(firstEvent == null) {
                             firstEvent = sbEvent;
-                            timeUntilFirst = timeUntilMillis;
                         }
 
                         String[] split = sbEvent.id.split(":");
@@ -1084,74 +1080,73 @@ public class CalendarOverlay {
 
         //Daily Events
         int index = 0;
-        out:
-        for(Map.Entry<Long, Set<SBEvent>> sbEvents : eventMap.entrySet()) {
-            for(SBEvent sbEvent : sbEvents.getValue()) {
+        for (Map.Entry<Long, Set<SBEvent>> sbEvents : eventMap.entrySet()) {
+            for (SBEvent sbEvent : sbEvents.getValue()) {
                 long timeUntilMillis = sbEvents.getKey() - currentTime;
 
-                int x = guiLeft+29+17*(index%3);
-                int y = guiTop+44+17*(index/3);
+                int x = guiLeft + 29 + 17 * (index % 3);
+                int y = guiTop + 44 + 17 * (index / 3);
 
-                if(sbEvent.id.equals("spooky_festival")) {
-                    if(sbEvents.getKey() > currentTime-HOUR && (sbEvents.getKey() < spookyStart || spookyStart == 0)) {
+                if (sbEvent.id.equals("spooky_festival")) {
+                    if (sbEvents.getKey() > currentTime - HOUR && (sbEvents.getKey() < spookyStart || spookyStart == 0)) {
                         spookyStart = sbEvents.getKey();
                     }
                 }
 
-                if(index >= 21) {
-                    if(nextEvent != null) break;
-                    if(eventFavourites.isEmpty()) {
+                if (index >= 21) {
+                    if (nextEvent != null) break;
+                    if (eventFavourites.isEmpty()) {
                         nextEvent = sbEvent;
                         timeUntilNext = timeUntilMillis;
-                    } else if(eventFavourites.contains(sbEvent.id)) {
+                    } else if (eventFavourites.contains(sbEvent.id)) {
                         nextEvent = sbEvent;
                         timeUntilNext = timeUntilMillis;
                     }
                     continue;
                 }
 
-                if(firstEvent == null) {
+                if (firstEvent == null) {
                     firstEvent = sbEvent;
                     timeUntilFirst = timeUntilMillis;
                 }
 
                 String[] split = sbEvent.id.split(":");
                 boolean containsId = false;
-                for(int i=1; i<split.length; i++) {
-                    if(eventFavourites.contains(split[0]+":"+split[i])) {
+                for (int i = 1; i < split.length; i++) {
+                    if (eventFavourites.contains(split[0] + ":" + split[i])) {
                         containsId = true;
                         break;
                     }
                 }
-                if(eventFavourites.isEmpty()) {
-                    if(nextEvent == null) {
+                if (eventFavourites.isEmpty()) {
+                    if (nextEvent == null) {
                         nextEvent = sbEvent;
                         timeUntilNext = timeUntilMillis;
                     }
-                } else if(eventFavourites.contains(split[0]) || containsId) {
-                    if(nextEvent == null) {
+                } else if (eventFavourites.contains(split[0]) || containsId) {
+                    if (nextEvent == null) {
                         nextEvent = sbEvent;
                         timeUntilNext = timeUntilMillis;
                     }
 
                     GlStateManager.depthMask(false);
                     GlStateManager.translate(0, 0, -2);
-                    Gui.drawRect(x, y, x+16, y+16, 0xcfffbf49);
+                    Gui.drawRect(x, y, x + 16, y + 16, 0xcfffbf49);
                     GlStateManager.translate(0, 0, 2);
                     GlStateManager.depthMask(true);
                 }
 
-                Utils.drawItemStackWithText(sbEvent.stack, x, y, ""+(index+1));
+                Utils.drawItemStackWithText(sbEvent.stack, x, y, "" + (index + 1));
 
-                if(mouseX >= x && mouseX <= x+16) {
-                    if(mouseY >= y && mouseY <= y+16) {
+                if (mouseX >= x && mouseX <= x + 16) {
+                    if (mouseY >= y && mouseY <= y + 16) {
                         tooltipToDisplay = Utils.createList(sbEvent.display,
-                                EnumChatFormatting.GRAY+"Starts in: "+EnumChatFormatting.YELLOW+prettyTime(timeUntilMillis, false));
-                        if(sbEvent.lastsFor >= 0) {
-                            tooltipToDisplay.add( EnumChatFormatting.GRAY+"Lasts for: "+EnumChatFormatting.YELLOW+
+                                EnumChatFormatting.GRAY + "Starts in: " + EnumChatFormatting.YELLOW + prettyTime(timeUntilMillis, false));
+                        if (sbEvent.lastsFor >= 0) {
+                            tooltipToDisplay.add(EnumChatFormatting.GRAY + "Lasts for: " + EnumChatFormatting.YELLOW +
                                     prettyTime(sbEvent.lastsFor, true));
                         }
-                        if(sbEvent.desc != null) {
+                        if (sbEvent.desc != null) {
                             tooltipToDisplay.add("");
                             tooltipToDisplay.addAll(sbEvent.desc);
                         }

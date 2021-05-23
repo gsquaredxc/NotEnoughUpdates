@@ -25,7 +25,7 @@ public class ShaderManager {
         return INSTANCE;
     }
 
-    public class Shader {
+    public static class Shader {
         public final int program;
 
         public Shader(int program) {
@@ -129,7 +129,7 @@ public class ShaderManager {
     }
 
     public String getShaderSource(String name, int type) {
-        String ext = "";
+        String ext;
         if(type == GL20.GL_VERTEX_SHADER) {
             ext = ".vert";
         } else if(type == GL20.GL_FRAGMENT_SHADER) {
@@ -150,7 +150,7 @@ public class ShaderManager {
                 source.append(line).append("\n");
             }
             return source.toString();
-        } catch(IOException e) {
+        } catch(IOException ignored) {
         }
         return "";
     }

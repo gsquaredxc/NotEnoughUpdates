@@ -11,14 +11,13 @@ import org.lwjgl.opengl.GL14;
 import org.lwjgl.util.vector.Vector2f;
 
 import java.awt.*;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
 
 public abstract class TextOverlay {
 
     private final Position position;
-    protected Supplier<TextOverlayStyle> styleSupplier;
+    protected final Supplier<TextOverlayStyle> styleSupplier;
     public int overlayWidth = -1;
     public int overlayHeight = -1;
     public List<String> overlayStrings = null;

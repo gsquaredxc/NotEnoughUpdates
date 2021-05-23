@@ -14,7 +14,7 @@ public class CustomItems {
      * It's sad that you don't know the difference.
      */
 
-    public static JsonObject NULLZEE = create(
+    public static final JsonObject NULLZEE = create(
             "NULLZEE",
             "dirt",
             "Nullzee242 Youtube Channel",
@@ -26,7 +26,7 @@ public class CustomItems {
             "It's OK, everyone makes mistakes",
             "Also follow -> twitch.tv/nullzeelive",
             "Also -> discord.gg/nullzee");
-    public static JsonObject DUCTTAPE = create(
+    public static final JsonObject DUCTTAPE = create(
             "DUCTTAPE",
             "iron_shovel",
             "You ever accidentally bury your duct tape?",
@@ -35,13 +35,13 @@ public class CustomItems {
             "your buried duct tape problems are a thing of the past,",
             "all for the low price of $7.99 or a subscription",
             "to the Ducttapedigger youtube channel!");
-    public static JsonObject SPINAXX = create(
+    public static final JsonObject SPINAXX = create(
             "SPINAXX",
             "emerald",
             "Spinaxx",
             "Famous streamer btw :)");
-    public static JsonObject RUNE = create("RUNE", "paper", "No.", "I hate runes.");
-    public static JsonObject TWOBEETWOTEE = create("2B2T", "bedrock", "Minecraft's oldest anarchy Minecraft server in Minecraft.",
+    public static final JsonObject RUNE = create("RUNE", "paper", "No.", "I hate runes.");
+    public static final JsonObject TWOBEETWOTEE = create("2B2T", "bedrock", "Minecraft's oldest anarchy Minecraft server in Minecraft.",
             "This Minecraft anarchy server is the oldest server,",
                 "being a server since 2010 when Minecraft was a game with a server.",
                 "It is complete anarchy in Minecraft which means that there is total anarchy.",
@@ -53,7 +53,7 @@ public class CustomItems {
                 "incursions on the server, some of which I, a player on this Minecraft",
                 "anarchy server in Minecraft, have participated in. One of this server's",
                 "most infamous Minecraft players on the oldest Minecraft");
-    public static JsonObject LEOCTHL = create("LEOCTHL", "dragon_egg", "--- Stats below may not be entirely accurate ---",
+    public static final JsonObject LEOCTHL = create("LEOCTHL", "dragon_egg", "--- Stats below may not be entirely accurate ---",
             "17 legendary dragon pets",
                   "24 epic dragon pets",
                   "18 epic golem pets",

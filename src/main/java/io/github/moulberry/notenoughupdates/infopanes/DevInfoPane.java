@@ -1,6 +1,5 @@
 package io.github.moulberry.notenoughupdates.infopanes;
 
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import io.github.moulberry.notenoughupdates.NEUManager;
 import io.github.moulberry.notenoughupdates.NEUOverlay;
@@ -40,7 +39,7 @@ public class DevInfoPane extends TextInfoPane {
     }
 
     private String getText() {
-        String text = "";
+        StringBuilder text = new StringBuilder();
 
         /*for(Map.Entry<String, JsonObject> item : manager.getItemInformation().entrySet()) {
             if(!item.getValue().has("infoType") || item.getValue().get("infoType").getAsString().isEmpty()) {
@@ -63,7 +62,7 @@ public class DevInfoPane extends TextInfoPane {
         for(String internalname : manager.auctionManager.getItemAuctionInfoKeySet()) {
             if(internalname.contains("-")) continue;
             if(!manager.getItemInformation().containsKey(internalname)) {
-                text += internalname + "\n";
+                text.append(internalname).append("\n");
             }
         }
 
@@ -79,13 +78,13 @@ public class DevInfoPane extends TextInfoPane {
                 text += entry.getKey() + "\n";
             }
         }*/
-        return text;
+        return text.toString();
     }
 
-    AtomicBoolean running = new AtomicBoolean(false);
+    final AtomicBoolean running = new AtomicBoolean(false);
     ScheduledExecutorService ses = Executors.newScheduledThreadPool(1);
 
-    String[] bukkitList = new String[] {
+    final String[] bukkitList = new String[] {
             "ACACIA_DOOR_ITEM",
             "ACACIA_FENCE",
             "ACACIA_FENCE_GATE",
@@ -662,7 +661,7 @@ public class DevInfoPane extends TextInfoPane {
             Minecraft.getMinecraft().thePlayer.addChatMessage(new ChatComponentText("Added: " + internalname));
             manager.writeJsonDefaultDir(json, internalname+".json");
             manager.loadItem(internalname);
-        } catch(IOException e) {}
+        } catch(IOException ignored) {}
     }
 
     @Override
@@ -889,7 +888,7 @@ public class DevInfoPane extends TextInfoPane {
                                 Minecraft.getMinecraft().thePlayer.addChatMessage(new ChatComponentText("Added: " + internalname));
                                 manager.writeJsonDefaultDir(json, internalname+".json");
                                 manager.loadItem(internalname);
-                            } catch(IOException e) {}
+                            } catch(IOException ignored) {}
                         } else {
                             System.out.println("writing with recipe:" + internalname);
                             for(Map.Entry<Integer, JsonObject> entry : recipeJsonForDamage.entrySet()) {
@@ -923,7 +922,7 @@ public class DevInfoPane extends TextInfoPane {
                                         manager.writeJsonDefaultDir(json, internalname+".json");
                                     }
                                     manager.loadItem(internalname);
-                                } catch(IOException e) {}
+                                } catch(IOException ignored) {}
                             }
                         }
                     }

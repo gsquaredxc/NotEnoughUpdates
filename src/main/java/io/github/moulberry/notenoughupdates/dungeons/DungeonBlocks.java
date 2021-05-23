@@ -25,7 +25,7 @@ public class DungeonBlocks {
     private static Framebuffer framebufferBlocksFrom = null;
 
     private static final HashMap<String, Framebuffer> framebuffersDynamicTo = new HashMap<>();
-    public static HashMap<String, Framebuffer> framebuffersDynamicFrom = new HashMap<>();
+    public static final HashMap<String, Framebuffer> framebuffersDynamicFrom = new HashMap<>();
     private static final HashSet<String> dynamicUpdated = new HashSet<>();
 
     private static final FloatBuffer projectionMatrixOld = BufferUtils.createFloatBuffer(16);

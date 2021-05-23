@@ -3,13 +3,11 @@ package io.github.moulberry.notenoughupdates.miscgui;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.google.gson.annotations.Expose;
 import io.github.moulberry.notenoughupdates.NotEnoughUpdates;
 import io.github.moulberry.notenoughupdates.core.GlScissorStack;
 import io.github.moulberry.notenoughupdates.core.GuiElementTextField;
 import io.github.moulberry.notenoughupdates.core.util.lerp.LerpingInteger;
 import io.github.moulberry.notenoughupdates.options.NEUConfig;
-import io.github.moulberry.notenoughupdates.util.TexLoc;
 import io.github.moulberry.notenoughupdates.util.Utils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
@@ -131,7 +129,7 @@ public class GuiInvButtonEditor extends GuiScreen {
                     extraIcons.put(entry.getKey(), "extra:"+entry.getValue().getAsString());
                 }
             }
-        } catch(Exception e) {
+        } catch(Exception ignored) {
         }
     }
 
@@ -154,7 +152,7 @@ public class GuiInvButtonEditor extends GuiScreen {
                     presets.put(entry.getKey(), buttons);
                 }
             }
-        } catch(Exception e) {
+        } catch(Exception ignored) {
         }
     }
 

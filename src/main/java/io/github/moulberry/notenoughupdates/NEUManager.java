@@ -3,8 +3,6 @@ package io.github.moulberry.notenoughupdates;
 import com.google.common.collect.Lists;
 import com.google.gson.*;
 import io.github.moulberry.notenoughupdates.auction.APIManager;
-import io.github.moulberry.notenoughupdates.miscfeatures.StorageManager;
-import io.github.moulberry.notenoughupdates.miscgui.GuiItemCustomize;
 import io.github.moulberry.notenoughupdates.miscgui.GuiItemRecipe;
 import io.github.moulberry.notenoughupdates.util.Constants;
 import io.github.moulberry.notenoughupdates.util.HypixelApi;
@@ -58,7 +56,6 @@ public class NEUManager {
     public String viewItemAttemptID = null;
     public long viewItemAttemptTime = 0;
 
-    private String currentProfile = "";
     private final String currentProfileBackup = "";
     public final HypixelApi hypixelApi = new HypixelApi();
 
@@ -72,8 +69,8 @@ public class NEUManager {
 
     public String latestRepoCommit = null;
 
-    public File configLocation;
-    public File repoLocation;
+    public final File configLocation;
+    public final File repoLocation;
     public File configFile;
 
     public NEUManager(NotEnoughUpdates neu, File configLocation) {
@@ -88,7 +85,6 @@ public class NEUManager {
     }
 
     public void setCurrentProfile(String currentProfile) {
-        this.currentProfile = currentProfile;
     }
 
     public String getCurrentProfile() {
@@ -100,14 +96,13 @@ public class NEUManager {
      */
     public JsonObject getJsonFromFile(File file) {
         try(BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(file), StandardCharsets.UTF_8))) {
-            JsonObject json = gson.fromJson(reader, JsonObject.class);
-            return json;
+            return gson.fromJson(reader, JsonObject.class);
         } catch(Exception e) { return null; }
     }
 
     public void resetRepo() {
-        try { Utils.recursiveDelete(new File(configLocation, "repo")); } catch(Exception e) {}
-        try { new File(configLocation, "currentCommit.json").delete(); } catch(Exception e) {}
+        try { Utils.recursiveDelete(new File(configLocation, "repo")); } catch(Exception ignored) {}
+        try { new File(configLocation, "currentCommit.json").delete(); } catch(Exception ignored) {}
     }
 
     /**
@@ -234,7 +229,7 @@ public class NEUManager {
                         newCurrentCommitJSON.addProperty("sha", latestRepoCommit);
                         try {
                             writeJson(newCurrentCommitJSON, new File(configLocation, "currentCommit.json"));
-                        } catch (IOException e) {
+                        } catch (IOException ignored) {
                         }
                     }
 
@@ -410,18 +405,18 @@ public class NEUManager {
             return searchString(stack.getDisplayName(), query);
         } else if(query.startsWith("desc:")) {
             query = query.substring(5);
-            String lore = "";
+            StringBuilder lore = new StringBuilder();
             NBTTagCompound tag = stack.getTagCompound();
             if(tag != null) {
                 NBTTagCompound display = tag.getCompoundTag("display");
                 if (display.hasKey("Lore", 9)) {
                     NBTTagList list = display.getTagList("Lore", 8);
                     for (int i = 0; i < list.tagCount(); i++) {
-                        lore += list.getStringTagAt(i) + " ";
+                        lore.append(list.getStringTagAt(i)).append(" ");
                     }
                 }
             }
-            return searchString(lore, query);
+            return searchString(lore.toString(), query);
         } else if(query.startsWith("id:")) {
             query = query.substring(3);
             String internalName = getInternalNameForItem(stack);
@@ -437,19 +432,19 @@ public class NEUManager {
             }
             result = result || searchString(stack.getDisplayName(), query);
 
-            String lore = "";
+            StringBuilder lore = new StringBuilder();
             NBTTagCompound tag = stack.getTagCompound();
             if(tag != null) {
                 NBTTagCompound display = tag.getCompoundTag("display");
                 if (display.hasKey("Lore", 9)) {
                     NBTTagList list = display.getTagList("Lore", 8);
                     for (int i = 0; i < list.tagCount(); i++) {
-                        lore += list.getStringTagAt(i) + " ";
+                        lore.append(list.getStringTagAt(i)).append(" ");
                     }
                 }
             }
 
-            result = result || searchString(lore, query);
+            result = result || searchString(lore.toString(), query);
 
             return result;
         }
@@ -555,10 +550,7 @@ public class NEUManager {
         if(!negate) {
             return results;
         } else {
-            Set<String> negatedResults = new HashSet<>();
-            for(String internalname : itemMap.keySet()) {
-                negatedResults.add(internalname);
-            }
+            Set<String> negatedResults = new HashSet<>(itemMap.keySet());
             negatedResults.removeAll(results);
             return negatedResults;
         }
@@ -876,7 +868,7 @@ public class NEUManager {
 
         try {
             writeJson(json, new File(new File(repoLocation, "items"), internalname+".json"));
-        } catch (IOException e) {}
+        } catch (IOException ignored) {}
 
         loadItem(internalname);
     }
@@ -908,7 +900,7 @@ public class NEUManager {
                     String itemS = recipe.get(name).getAsString();
                     int count = 1;
                     if(itemS != null && itemS.split(":").length == 2) {
-                        count = Integer.valueOf(itemS.split(":")[1]);
+                        count = Integer.parseInt(itemS.split(":")[1]);
                         itemS = itemS.split(":")[0];
                     }
                     JsonObject craft = getItemInformation().get(itemS);
@@ -947,7 +939,7 @@ public class NEUManager {
                 String itemS = recipe.get(name).getAsString();
                 int count = 1;
                 if(itemS != null && itemS.split(":").length == 2) {
-                    count = Integer.valueOf(itemS.split(":")[1]);
+                    count = Integer.parseInt(itemS.split(":")[1]);
                     itemS = itemS.split(":")[0];
                 }
                 JsonObject craft = getItemInformation().get(itemS);
@@ -1359,7 +1351,7 @@ public class NEUManager {
                 try {
                     NBTTagCompound tag = JsonToNBT.getTagFromJson(json.get("nbttag").getAsString());
                     stack.setTagCompound(tag);
-                } catch(NBTException e) {
+                } catch(NBTException ignored) {
                 }
             }
 

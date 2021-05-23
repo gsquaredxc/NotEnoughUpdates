@@ -5,7 +5,6 @@ import com.google.gson.JsonObject;
 import io.github.moulberry.notenoughupdates.NEUManager;
 import io.github.moulberry.notenoughupdates.NEUOverlay;
 import io.github.moulberry.notenoughupdates.util.NEUResourceManager;
-import io.github.moulberry.notenoughupdates.util.SpecialColour;
 import io.github.moulberry.notenoughupdates.util.Utils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ScaledResolution;
@@ -28,17 +27,9 @@ import static io.github.moulberry.notenoughupdates.util.GuiTextures.item_mask;
 
 public class CollectionLogInfoPane extends ScrollableInfoPane {
 
-    private final String mobRegex = ".*?((_MONSTER)|(_ANIMAL)|(_MINIBOSS)|(_BOSS)|(_SC))$";
-    private final String petRegex = ".*?;[0-4]$";
-
-    TreeSet<String> items = new TreeSet<>(getItemComparator());
+    final TreeSet<String> items = new TreeSet<>(getItemComparator());
 
     private int buttonHover = -1;
-
-    private int previousAcquiredCount = 0;
-    private int previousScroll = 0;
-    private int previousX = 0;
-    private int previousFilter = 0;
 
     private final long lastUpdate = 0;
 
@@ -78,9 +69,11 @@ public class CollectionLogInfoPane extends ScrollableInfoPane {
     private void refreshItems() {
         items.clear();
         for(String internalname : manager.getItemInformation().keySet()) {
+            String mobRegex = ".*?((_MONSTER)|(_ANIMAL)|(_MINIBOSS)|(_BOSS)|(_SC))$";
             if(!manager.auctionManager.isVanillaItem(internalname) && !internalname.matches(mobRegex)) {
                 JsonObject item = manager.getItemInformation().get(internalname);
                 JsonArray lore = manager.getItemInformation().get(internalname).get("lore").getAsJsonArray();
+                String petRegex = ".*?;[0-4]$";
                 switch(filterMode) {
                     case FILTER_WEAPON:
                         if(overlay.checkItemType(lore, "SWORD", "BOW", "WAND") < 0) continue;
@@ -273,10 +266,9 @@ public class CollectionLogInfoPane extends ScrollableInfoPane {
             renderItemsToImage(itemFramebuffer, fg, left+5, right, top+1, bottom);
             renderItemBGToImage(itemBGFramebuffer, fg, left+5, right, top+1, bottom);
         }*/
-        previousAcquiredCount = getCurrentAcquiredCount();
-        previousScroll = scrollHeight.getValue();
-        previousX = left;
-        previousFilter = filterMode;
+        int previousAcquiredCount = getCurrentAcquiredCount();
+        int previousScroll = scrollHeight.getValue();
+        int previousFilter = filterMode;
 
         Minecraft.getMinecraft().getFramebuffer().bindFramebuffer(true);
         renderFromImage(itemBGFramebuffer, width, height, left, right, top, bottom);
@@ -404,11 +396,8 @@ public class CollectionLogInfoPane extends ScrollableInfoPane {
                 if(id < items.length) {
                     String internalname = items[id];
 
-                    Color color = fgCustomOpacity;
-                    if(getAcquiredItems() != null &&
-                            getAcquiredItems().containsKey(manager.getCurrentProfile()) &&
-                            getAcquiredItems().get(manager.getCurrentProfile()).contains(internalname)) {
-                        color = fgGold;
+                    if (getAcquiredItems() != null && getAcquiredItems().containsKey(manager.getCurrentProfile())) {
+                        getAcquiredItems().get(manager.getCurrentProfile());
                     }
 
                     Minecraft.getMinecraft().getTextureManager().bindTexture(item_mask);
@@ -477,7 +466,7 @@ public class CollectionLogInfoPane extends ScrollableInfoPane {
         framebuffer.unbindFramebufferTexture();
     }
 
-    private abstract class ItemSlotConsumer {
+    private abstract static class ItemSlotConsumer {
         public abstract void consume(int x, int y, int id);
     }
 

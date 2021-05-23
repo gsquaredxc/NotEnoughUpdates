@@ -28,7 +28,7 @@ public class ItemRarityHalo {
 
     public static Framebuffer itemFramebuffer1 = null;
     public static Framebuffer itemFramebuffer2 = null;
-    public static HashMap<ItemStack, Integer> itemHaloTexMap = new HashMap<>();
+    public static final HashMap<ItemStack, Integer> itemHaloTexMap = new HashMap<>();
     public static Matrix4f projectionMatrix = null;
 
     public static Shader colourShader = null;

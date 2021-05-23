@@ -36,7 +36,7 @@ public class MiningOverlay extends TextOverlay {
 
     private static final Pattern NUMBER_PATTERN = Pattern.compile("\\d+");
     private static final Map<String, Integer> commissionMaxes = new HashMap<>();
-    public static Map<String, Float> commissionProgress = new LinkedHashMap<>();
+    public static final Map<String, Float> commissionProgress = new LinkedHashMap<>();
 
     @Override
     public void updateFrequent() {

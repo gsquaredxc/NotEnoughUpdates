@@ -18,7 +18,6 @@ import net.minecraft.network.play.server.S2DPacketOpenWindow;
 import net.minecraft.network.play.server.S2EPacketCloseWindow;
 import net.minecraft.network.play.server.S2FPacketSetSlot;
 import net.minecraft.network.play.server.S30PacketWindowItems;
-import org.lwjgl.input.Keyboard;
 
 import java.io.*;
 import java.lang.reflect.Type;
@@ -107,16 +106,16 @@ public class StorageManager {
             NBTTagIntArray listTag = (NBTTagIntArray) tag;
             int[] arr = listTag.getIntArray();
             JsonArray jsonArray = new JsonArray();
-            for(int i=0; i<arr.length; i++) {
-                jsonArray.add(new JsonPrimitive(arr[i]));
+            for (int j : arr) {
+                jsonArray.add(new JsonPrimitive(j));
             }
             return jsonArray;
         } else if (tag instanceof NBTTagByteArray) {
             NBTTagByteArray listTag = (NBTTagByteArray) tag;
             byte[] arr = listTag.getByteArray();
             JsonArray jsonArray = new JsonArray();
-            for(int i=0; i<arr.length; i++) {
-                jsonArray.add(new JsonPrimitive(arr[i]));
+            for (byte b : arr) {
+                jsonArray.add(new JsonPrimitive(b));
             }
             return jsonArray;
         }else if (tag instanceof NBTTagShort) {
@@ -145,7 +144,7 @@ public class StorageManager {
     private final AtomicInteger searchId = new AtomicInteger(0);
 
     public static class StoragePage {
-        public ItemStack[] items = new ItemStack[45];
+        public final ItemStack[] items = new ItemStack[45];
         public ItemStack backpackDisplayStack;
         public int rows = -1;
 
@@ -153,7 +152,7 @@ public class StorageManager {
         public transient int searchedId;
     }
 
-    public static int MAX_ENDER_CHEST_PAGES = 9;
+    public static final int MAX_ENDER_CHEST_PAGES = 9;
 
     public static final ItemStack LOCKED_ENDERCHEST_STACK = Utils.createItemStack(Item.getItemFromBlock(Blocks.stained_glass_pane),
             "\u00a7cLocked Page", 14,
@@ -162,7 +161,7 @@ public class StorageManager {
             "\u00a77shop!");
 
     public static class StorageConfig {
-        public HashMap<String, StoragePage[]> pages = new HashMap<>();
+        public final HashMap<String, StoragePage[]> pages = new HashMap<>();
         public final HashMap<Integer, Integer> displayToStorageIdMap = new HashMap<>();
     }
 

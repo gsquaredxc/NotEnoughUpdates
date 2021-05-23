@@ -1,6 +1,5 @@
 package io.github.moulberry.notenoughupdates.util;
 
-import io.github.moulberry.notenoughupdates.util.Utils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.ScaledResolution;
@@ -10,7 +9,6 @@ import net.minecraft.item.ItemStack;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.util.List;
 
 public class SBAIntegration {
 

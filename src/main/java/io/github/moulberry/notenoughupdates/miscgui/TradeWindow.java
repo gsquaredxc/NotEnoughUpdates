@@ -3,12 +3,9 @@ package io.github.moulberry.notenoughupdates.miscgui;
 import com.google.gson.JsonObject;
 import io.github.moulberry.notenoughupdates.NotEnoughUpdates;
 import io.github.moulberry.notenoughupdates.util.SBAIntegration;
-import io.github.moulberry.notenoughupdates.util.TexLoc;
 import io.github.moulberry.notenoughupdates.util.Utils;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.ScaledResolution;
-import net.minecraft.client.gui.inventory.GuiChest;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.inventory.ContainerChest;
@@ -155,9 +152,8 @@ public class TradeWindow {
             int pricePer = -1;
             if(info != null && !NotEnoughUpdates.INSTANCE.manager.auctionManager.isVanillaItem(internalname) &&
                      info.has("price") && info.has("count")) {
-                int auctionPricePer = (int)(info.get("price").getAsFloat() / info.get("count").getAsFloat());
 
-                pricePer = auctionPricePer;
+                pricePer = (int)(info.get("price").getAsFloat() / info.get("count").getAsFloat());
             } else {
                 JsonObject bazaarInfo = NotEnoughUpdates.INSTANCE.manager.auctionManager.getBazaarInfo(internalname);
                 if(bazaarInfo != null && bazaarInfo.has("avg_buy")) {
@@ -204,7 +200,7 @@ public class TradeWindow {
                                     priceInclBackpack += processTopItems(stack2, topItems, topItemsStack, topItemsCount);
                                 }
                             }
-                        } catch(Exception e) { }
+                        } catch(Exception ignored) { }
                     }
                 }
 
@@ -258,9 +254,8 @@ public class TradeWindow {
 
                                 int pricePer2 = -1;
                                 if(info2 != null && info2.has("price") && info2.has("count")) {
-                                    int auctionPricePer2 = (int)(info2.get("price").getAsFloat() / info2.get("count").getAsFloat());
 
-                                    pricePer2 = auctionPricePer2;
+                                    pricePer2 = (int)(info2.get("price").getAsFloat() / info2.get("count").getAsFloat());
                                 } else {
                                     JsonObject bazaarInfo2 = NotEnoughUpdates.INSTANCE.manager.auctionManager.getBazaarInfo(internalname2);
                                     if(bazaarInfo2 != null && bazaarInfo2.has("avg_buy")) {
@@ -274,7 +269,7 @@ public class TradeWindow {
                             }
                         }
                     }
-                } catch(Exception e) { }
+                } catch(Exception ignored) { }
             }
         }
         return price;
@@ -389,7 +384,7 @@ public class TradeWindow {
             if(stack == null) continue;
 
             NBTTagCompound tag = stack.getTagCompound();
-            String uuid = null;
+            String uuid;
             if(tag != null && tag.hasKey("ExtraAttributes", 10)) {
                 NBTTagCompound ea = tag.getCompoundTag("ExtraAttributes");
 
@@ -507,7 +502,7 @@ public class TradeWindow {
                 if(stack == null) continue;
 
                 NBTTagCompound tag = stack.getTagCompound();
-                String uuid = null;
+                String uuid;
                 if(tag != null && tag.hasKey("ExtraAttributes", 10)) {
                     NBTTagCompound ea = tag.getCompoundTag("ExtraAttributes");
 
@@ -1017,15 +1012,12 @@ public class TradeWindow {
                 if(mouseY >= guiTop+ySize-19 && mouseY <= guiTop+ySize-19+17) {
                     NotEnoughUpdates.INSTANCE.config.tradeMenu.enableCustomTrade =
                             !NotEnoughUpdates.INSTANCE.config.tradeMenu.enableCustomTrade;
-                    return;
                 } else if(mouseY >= guiTop+ySize-38 && mouseY <= guiTop+ySize-38+17) {
                     NotEnoughUpdates.INSTANCE.config.tradeMenu.customTradePrices =
                             !NotEnoughUpdates.INSTANCE.config.tradeMenu.customTradePrices;
-                    return;
                 } else if(mouseY >= guiTop+ySize-57 && mouseY <= guiTop+ySize-57+17) {
                     NotEnoughUpdates.INSTANCE.config.tradeMenu.customTradePriceStyle =
                             !NotEnoughUpdates.INSTANCE.config.tradeMenu.customTradePriceStyle;
-                    return;
                 }
             }
         }

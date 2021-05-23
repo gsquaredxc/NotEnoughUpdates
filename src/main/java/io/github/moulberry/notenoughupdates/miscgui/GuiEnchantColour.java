@@ -6,10 +6,8 @@ import io.github.moulberry.notenoughupdates.core.util.lerp.LerpingInteger;
 import io.github.moulberry.notenoughupdates.itemeditor.GuiElementTextField;
 import io.github.moulberry.notenoughupdates.util.Utils;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.ResourceLocation;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
@@ -41,11 +39,11 @@ public class GuiEnchantColour extends GuiScreen {
 
     private final LerpingInteger scroll = new LerpingInteger(0, 100);
 
-    public static int BOLD_MODIFIER = 0b1;
-    public static int ITALIC_MODIFIER = 0b10;
+    public static final int BOLD_MODIFIER = 0b1;
+    public static final int ITALIC_MODIFIER = 0b10;
     public static int OBFUSCATED_MODIFIER = 0b100;
-    public static int UNDERLINE_MODIFIER = 0b1000;
-    public static int STRIKETHROUGH_MODIFIER = 0b10000;
+    public static final int UNDERLINE_MODIFIER = 0b1000;
+    public static final int STRIKETHROUGH_MODIFIER = 0b10000;
 
     @Override
     public void drawScreen(int mouseX, int mouseY, float partialTicks) {
@@ -177,17 +175,15 @@ public class GuiEnchantColour extends GuiScreen {
     }
 
     public String getEnchantOpString(GuiElementTextField[] tfs, String comparator, String modifiers) {
-        StringBuilder enchantOp = new StringBuilder();
-        enchantOp.append(tfs[0].getText());
-        enchantOp.append(":");
-        enchantOp.append(comparator);
-        enchantOp.append(":");
-        enchantOp.append(tfs[1].getText());
-        enchantOp.append(":");
-        enchantOp.append(tfs[2].getText());
-        enchantOp.append(":");
-        enchantOp.append(modifiers);
-        return enchantOp.toString();
+        return tfs[0].getText() +
+                ":" +
+                comparator +
+                ":" +
+                tfs[1].getText() +
+                ":" +
+                tfs[2].getText() +
+                ":" +
+                modifiers;
     }
 
     @Override
@@ -240,7 +236,7 @@ public class GuiEnchantColour extends GuiScreen {
             if(mouseX >= guiLeft+180 && mouseX <= guiLeft+210 &&
                     mouseY >= guiTop+23+25*yIndex && mouseY <= guiTop+23+25*yIndex+20) {
                 int modifierI = getIntModifier(modifiers.get(yIndex));
-                int selectedModifier = -1;
+                int selectedModifier;
 
                 if(mouseX < guiLeft+195) {
                     if(mouseY < guiTop+23+25*yIndex+10) {

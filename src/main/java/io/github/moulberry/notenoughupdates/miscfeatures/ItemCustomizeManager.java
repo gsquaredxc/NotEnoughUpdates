@@ -44,7 +44,7 @@ public class ItemCustomizeManager {
     private static final HashMap<Integer, String> itemUuidCache = new HashMap<>();
 
     public static class ItemDataMap {
-        public HashMap<String, ItemData> itemData = new HashMap<>();
+        public final HashMap<String, ItemData> itemData = new HashMap<>();
     }
 
     public static class ItemData {

@@ -9,10 +9,10 @@ import java.util.LinkedList;
 public class GlScissorStack {
 
     private static class Bounds {
-        int left;
-        int top;
-        int right;
-        int bottom;
+        final int left;
+        final int top;
+        final int right;
+        final int bottom;
 
         public Bounds(int left, int top, int right, int bottom) {
             this.left = left;

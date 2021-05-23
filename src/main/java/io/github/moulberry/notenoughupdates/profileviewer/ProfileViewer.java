@@ -1,6 +1,5 @@
 package io.github.moulberry.notenoughupdates.profileviewer;
 
-import com.google.common.base.Splitter;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -9,7 +8,6 @@ import io.github.moulberry.notenoughupdates.NEUManager;
 import io.github.moulberry.notenoughupdates.NotEnoughUpdates;
 import io.github.moulberry.notenoughupdates.util.Constants;
 import io.github.moulberry.notenoughupdates.util.Utils;
-import net.minecraft.client.Minecraft;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
@@ -17,12 +15,10 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
-import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.EnumChatFormatting;
 
 import javax.annotation.Nullable;
 import java.io.ByteArrayInputStream;
-import java.io.File;
 import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -302,7 +298,6 @@ public class ProfileViewer {
         private String latestProfile = null;
 
         private JsonArray playerInformation = null;
-        private JsonObject basicInfo = null;
 
         private final HashMap<String, JsonObject> profileMap = new HashMap<>();
         private final HashMap<String, JsonObject> petsInfoMap = new HashMap<>();
@@ -530,9 +525,7 @@ public class ProfileViewer {
                             latestProfile = backup;
                             if (runnable != null) runnable.run();
                         }
-                    }, () -> {
-                        updatingPlayerInfoState.set(false);
-                    }
+                    }, () -> updatingPlayerInfoState.set(false)
             );
 
             return null;
@@ -603,7 +596,7 @@ public class ProfileViewer {
 
         public void resetCache() {
             playerInformation = null;
-            basicInfo = null;
+            JsonObject basicInfo = null;
             playerStatus = null;
             stats.clear();
             passiveStats.clear();
@@ -1069,7 +1062,6 @@ public class ProfileViewer {
             }
         });
 
-        return;
     }
 
     public Profile getProfileRaw(String uuid) {
@@ -1106,9 +1098,7 @@ public class ProfileViewer {
                     if(jsonObject != null && jsonObject.has("success") && jsonObject.get("success").getAsBoolean()) {
                         resourceCollection = jsonObject.get("collections").getAsJsonObject();
                     }
-                }, () -> {
-                    updatingResourceCollection.set(false);
-                }
+                }, () -> updatingResourceCollection.set(false)
         );
 
         return null;

@@ -7,7 +7,6 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 import com.mojang.authlib.GameProfile;
-import com.mojang.authlib.minecraft.MinecraftProfileTexture;
 import io.github.moulberry.notenoughupdates.NotEnoughUpdates;
 import io.github.moulberry.notenoughupdates.cosmetics.ShaderManager;
 import io.github.moulberry.notenoughupdates.util.SBAIntegration;
@@ -23,7 +22,6 @@ import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.*;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.resources.DefaultPlayerSkin;
-import net.minecraft.client.resources.SkinManager;
 import net.minecraft.client.shader.Framebuffer;
 import net.minecraft.client.shader.Shader;
 import net.minecraft.entity.EntityLivingBase;
@@ -320,7 +318,7 @@ public class GuiProfileViewer extends GuiScreen {
     }
 
     @Override
-    protected void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException {
+    protected void mouseClicked(int mouseX, int mouseY, int mouseButton) {
         if(currentPage != ProfileViewerPage.LOADING && currentPage != ProfileViewerPage.INVALID_NAME) {
             int ignoredTabs = 0;
             for(int i=0; i<ProfileViewerPage.values().length; i++) {
@@ -510,7 +508,7 @@ public class GuiProfileViewer extends GuiScreen {
         dungeonLevelTextField.keyTyped(typedChar, keyCode);
     }
 
-    protected void keyTypedInvs(char typedChar, int keyCode) throws IOException {
+    protected void keyTypedInvs(char typedChar, int keyCode) {
         switch(keyCode) {
             case Keyboard.KEY_1:
             case Keyboard.KEY_NUMPAD1:
@@ -534,7 +532,7 @@ public class GuiProfileViewer extends GuiScreen {
         Utils.playPressSound();
     }
 
-    protected void keyTypedCols(char typedChar, int keyCode) throws IOException {
+    protected void keyTypedCols(char typedChar, int keyCode) {
         ItemStack stack = null;
         Iterator<ItemStack> items = ProfileViewer.getCollectionCatToCollectionMap().keySet().iterator();
         switch(keyCode) {
@@ -586,7 +584,7 @@ public class GuiProfileViewer extends GuiScreen {
 
                 if(mouseX >= x && mouseX <= x+16) {
                     if(mouseY >= y && mouseY <= y+16) {
-                        if(selectedInventory != entry.getKey()) Utils.playPressSound();
+                        if(!selectedInventory.equals(entry.getKey())) Utils.playPressSound();
                         selectedInventory = entry.getKey();
                         return;
                     }
@@ -1090,7 +1088,7 @@ public class GuiProfileViewer extends GuiScreen {
     private int petsPage = 0;
     private List<JsonObject> sortedPets = null;
     private List<ItemStack> sortedPetsStack = null;
-    public static HashMap<String, String> MINION_RARITY_TO_NUM = new HashMap<>();
+    public static final HashMap<String, String> MINION_RARITY_TO_NUM = new HashMap<>();
     static {
         MINION_RARITY_TO_NUM.put("COMMON", "0");
         MINION_RARITY_TO_NUM.put("UNCOMMON", "1");
@@ -1315,13 +1313,11 @@ public class GuiProfileViewer extends GuiScreen {
                 Minecraft.getMinecraft().getTextureManager().bindTexture(pv_elements);
                 if(i == selectedPet) {
                     GlStateManager.color(1, 185/255f, 0, 1);
-                    Utils.drawTexturedRect(guiLeft+x, guiTop+y, 20, 20,
-                            0, 20/256f, 0, 20/256f, GL11.GL_NEAREST);
                 } else {
                     GlStateManager.color(1, 1, 1, 1);
-                    Utils.drawTexturedRect(guiLeft+x, guiTop+y, 20, 20,
-                            0, 20/256f, 0, 20/256f, GL11.GL_NEAREST);
                 }
+                Utils.drawTexturedRect(guiLeft+x, guiTop+y, 20, 20,
+                        0, 20/256f, 0, 20/256f, GL11.GL_NEAREST);
 
                 Utils.drawItemStack(stack, guiLeft+(int)x+2, guiTop+(int)y+2);
 
@@ -1648,9 +1644,8 @@ public class GuiProfileViewer extends GuiScreen {
     }
 
     private int getRowsForInventory(String invName) {
-        switch(invName) {
-            case "wardrobe_contents":
-                return 4;
+        if ("wardrobe_contents".equals(invName)) {
+            return 4;
         }
         return 6;
     }
@@ -2044,17 +2039,15 @@ public class GuiProfileViewer extends GuiScreen {
     private String niceUuid(String uuidStr) {
         if(uuidStr.length()!=32) return uuidStr;
 
-        StringBuilder niceAucId = new StringBuilder();
-        niceAucId.append(uuidStr, 0, 8);
-        niceAucId.append("-");
-        niceAucId.append(uuidStr, 8, 12);
-        niceAucId.append("-");
-        niceAucId.append(uuidStr, 12, 16);
-        niceAucId.append("-");
-        niceAucId.append(uuidStr, 16, 20);
-        niceAucId.append("-");
-        niceAucId.append(uuidStr, 20, 32);
-        return niceAucId.toString();
+        return uuidStr.substring(0, 8) +
+                "-" +
+                uuidStr.substring(8, 12) +
+                "-" +
+                uuidStr.substring(12, 16) +
+                "-" +
+                uuidStr.substring(16, 20) +
+                "-" +
+                uuidStr.substring(20, 32);
     }
 
     public EntityOtherPlayerMP getEntityPlayer() {
@@ -2390,16 +2383,14 @@ public class GuiProfileViewer extends GuiScreen {
 
                         playerName = EnumChatFormatting.GRAY.toString() + name;
                         if(rankName != null) {
-                            StringBuilder sb = new StringBuilder();
-                            sb.append("\u00A7"+rankColor);
-                            sb.append("[");
-                            sb.append(rankName);
-                            sb.append(rankPlusColor);
-                            sb.append(rankPlus);
-                            sb.append("\u00A7"+rankColor);
-                            sb.append("] ");
-                            sb.append(name);
-                            playerName = sb.toString();
+                            playerName = "\u00A7" + rankColor +
+                                    "[" +
+                                    rankName +
+                                    rankPlusColor +
+                                    rankPlus +
+                                    "\u00A7" + rankColor +
+                                    "] " +
+                                    name;
                         }
                     }
                 }
@@ -2444,7 +2435,7 @@ public class GuiProfileViewer extends GuiScreen {
 
                     }
                 }
-            } catch(Exception e){}
+            } catch(Exception ignored){}
         }
 
         if(status != null) {
@@ -2534,21 +2525,19 @@ public class GuiProfileViewer extends GuiScreen {
 
         if(entityPlayer != null && playerLocationSkin == null) {
             try {
-                Minecraft.getMinecraft().getSkinManager().loadProfileTextures(entityPlayer.getGameProfile(), new SkinManager.SkinAvailableCallback() {
-                    public void skinAvailable(MinecraftProfileTexture.Type type, ResourceLocation location, MinecraftProfileTexture profileTexture) {
-                        switch (type) {
-                            case SKIN:
-                                playerLocationSkin = location;
-                                skinType = profileTexture.getMetadata("model");
+                Minecraft.getMinecraft().getSkinManager().loadProfileTextures(entityPlayer.getGameProfile(), (type, location1, profileTexture) -> {
+                    switch (type) {
+                        case SKIN:
+                            playerLocationSkin = location1;
+                            skinType = profileTexture.getMetadata("model");
 
-                                if(skinType == null) {
-                                    skinType = "default";
-                                }
+                            if(skinType == null) {
+                                skinType = "default";
+                            }
 
-                                break;
-                            case CAPE:
-                                playerLocationCape = location;
-                        }
+                            break;
+                        case CAPE:
+                            playerLocationCape = location1;
                     }
                 }, false);
             } catch(Exception ignored){}
@@ -2897,7 +2886,7 @@ public class GuiProfileViewer extends GuiScreen {
                         Minecraft.getMinecraft().getFramebuffer(), blurOutputHorz);
                 blurShaderHorz.getShaderManager().getShaderUniform("BlurDir").set(1, 0);
                 blurShaderHorz.setProjectionMatrix(createProjectionMatrix(width, height));
-            } catch(Exception e) { }
+            } catch(Exception ignored) { }
         }
         if(blurShaderVert == null) {
             try {
@@ -2905,7 +2894,7 @@ public class GuiProfileViewer extends GuiScreen {
                         blurOutputHorz, blurOutputVert);
                 blurShaderVert.getShaderManager().getShaderUniform("BlurDir").set(0, 1);
                 blurShaderVert.setProjectionMatrix(createProjectionMatrix(width, height));
-            } catch(Exception e) { }
+            } catch(Exception ignored) { }
         }
         if(blurShaderHorz != null && blurShaderVert != null) {
             if(15 != lastBgBlurFactor) {

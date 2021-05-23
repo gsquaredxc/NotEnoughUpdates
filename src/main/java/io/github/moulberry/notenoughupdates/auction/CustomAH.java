@@ -57,7 +57,6 @@ public class CustomAH extends Gui {
     private boolean scrollClicked = false;
 
     private long lastUpdateSearch;
-    private long lastSearchFieldUpdate;
     private boolean shouldUpdateSearch = false;
     private boolean shouldSortItems = false;
 
@@ -86,7 +85,6 @@ public class CustomAH extends Gui {
     public String latestBid;
     public long latestBidMillis;
 
-    private final int ySplit = 35;
     private final int ySplitSize = 18;
 
     private float scrollAmount;
@@ -217,11 +215,11 @@ public class CustomAH extends Gui {
         }
     }
 
-    public class Category {
-        public String categoryMatch;
-        public Category[] subcategories;
-        public String displayName;
-        public ItemStack displayItem;
+    public static class Category {
+        public final String categoryMatch;
+        public final Category[] subcategories;
+        public final String displayName;
+        public final ItemStack displayItem;
 
         public Category(String categoryMatch, String displayName, String displayItem, Category... subcategories) {
             this.categoryMatch = categoryMatch;
@@ -770,13 +768,14 @@ public class CustomAH extends Gui {
         //Main GUI
         Minecraft.getMinecraft().getTextureManager().bindTexture(creativeTabSearch);
         GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+        int ySplit = 35;
         this.drawTexturedModalRect(guiLeft, guiTop, 0, 0, getXSize(), ySplit);
-        int y = guiTop+ySplit;
+        int y = guiTop+ ySplit;
         for(int i=0; i<splits; i++) {
-            this.drawTexturedModalRect(guiLeft, y, 0, ySplit, getXSize(), ySplit+ySplitSize);
+            this.drawTexturedModalRect(guiLeft, y, 0, ySplit, getXSize(), ySplit +ySplitSize);
             y += ySplitSize;
         }
-        this.drawTexturedModalRect(guiLeft, y, 0, ySplit, getXSize(), 136-ySplit);
+        this.drawTexturedModalRect(guiLeft, y, 0, ySplit, getXSize(), 136- ySplit);
 
         //GUI Name
         Utils.drawStringCenteredScaledMaxWidth("Auction House", Minecraft.getMinecraft().fontRendererObj, guiLeft+42,
@@ -852,7 +851,7 @@ public class CustomAH extends Gui {
                                 tooltipToRender = getTooltipForAucId(aucid);
                             }
                         }
-                    } catch(Exception e) {
+                    } catch(Exception ignored) {
                     }
                 }
             }
@@ -953,7 +952,9 @@ public class CustomAH extends Gui {
                 lore.add(EnumChatFormatting.AQUA + "Right-Click to go backwards!");
                 lore.add(EnumChatFormatting.YELLOW + "Click to switch filter!");
                 return lore;
-            case 3: break;
+            case 3:
+            case 5:
+                break;
             case 4:
                 lore.add("");
                 String off = EnumChatFormatting.RED + "OFF";
@@ -962,7 +963,6 @@ public class CustomAH extends Gui {
                 lore.add("");
                 lore.add(EnumChatFormatting.YELLOW + "Click to toggle!");
                 return lore;
-            case 5: break;
             case 6:
                 lore.add("");
                 String[] linesBin = {"Show All","BIN Only","Auctions Only"};
@@ -1060,17 +1060,15 @@ public class CustomAH extends Gui {
     public String niceAucId(String aucId) {
         if(aucId.length()!=32) return aucId;
 
-        StringBuilder niceAucId = new StringBuilder();
-        niceAucId.append(aucId, 0, 8);
-        niceAucId.append("-");
-        niceAucId.append(aucId, 8, 12);
-        niceAucId.append("-");
-        niceAucId.append(aucId, 12, 16);
-        niceAucId.append("-");
-        niceAucId.append(aucId, 16, 20);
-        niceAucId.append("-");
-        niceAucId.append(aucId, 20, 32);
-        return niceAucId.toString();
+        return aucId.substring(0, 8) +
+                "-" +
+                aucId.substring(8, 12) +
+                "-" +
+                aucId.substring(12, 16) +
+                "-" +
+                aucId.substring(16, 20) +
+                "-" +
+                aucId.substring(20, 32);
     }
 
     public Category getCurrentCategory() {
@@ -1132,7 +1130,6 @@ public class CustomAH extends Gui {
 
     private HashSet<String> search(String query, Set<String> dontMatch) {
         query = query.trim();
-        HashSet<String> matches = new HashSet<>();
 
         Set<String> itemMatches = manager.search(query);
         for(String internalname : itemMatches) {
@@ -1178,9 +1175,8 @@ public class CustomAH extends Gui {
             extrasMatchesCurrent.clear();
             first = false;
         }
-        matches.addAll(extrasMatches.keySet());
 
-        return matches;
+        return new HashSet<>(extrasMatches.keySet());
     }
 
     private final ExecutorService es = Executors.newSingleThreadExecutor();
@@ -1204,7 +1200,6 @@ public class CustomAH extends Gui {
             scrollAmount = 0;
             try {
                 HashSet<String> auctionIdsNew = new HashSet<>();
-                auctionIdsNew.clear();
                 if(filterMyAuctions) {
                     for(String aucid : manager.auctionManager.getPlayerBids()) {
                         APIManager.Auction auc = manager.auctionManager.getAuctionItems().get(aucid);
@@ -1298,9 +1293,8 @@ public class CustomAH extends Gui {
         }
 
         try {
-            List<String> sortedAuctionIdsNew = new ArrayList<>();
 
-            sortedAuctionIdsNew.addAll(auctionIds);
+            List<String> sortedAuctionIdsNew = new ArrayList<>(auctionIds);
             sortedAuctionIdsNew.sort((o1, o2) -> {
                 APIManager.Auction auc1 = manager.auctionManager.getAuctionItems().get(o1);
                 APIManager.Auction auc2 = manager.auctionManager.getAuctionItems().get(o2);
@@ -1371,7 +1365,7 @@ public class CustomAH extends Gui {
 
         if(!isEditingPrice()) {
             if(this.searchField.textboxKeyTyped(typedChar, keyCode)) {
-                lastSearchFieldUpdate = System.currentTimeMillis();
+                long lastSearchFieldUpdate = System.currentTimeMillis();
                 this.updateSearch();
                 return true;
             }
@@ -1482,11 +1476,12 @@ public class CustomAH extends Gui {
                             if(rarityFilter >= rarities.length) rarityFilter = -1;
                         }
                         break;
-                    case 3: break;
+                    case 3:
+                    case 5:
+                        break;
                     case 4:
                         filterMyAuctions = !filterMyAuctions;
                         break;
-                    case 5: break;
                     case 6:
                         if(rightClicked) {
                             binFilter--;
@@ -1591,22 +1586,20 @@ public class CustomAH extends Gui {
                     if(mouseX < auctionViewLeft+16+32) {
                         //top left
                         increasePriceByFactor(2);
-                        Utils.playPressSound();
                     } else {
                         //top right
                         increasePriceByFactor(1.5f);
-                        Utils.playPressSound();
                     }
+                    Utils.playPressSound();
                 } else if(mouseY > guiTop+50 && mouseY < guiTop+50+16) {
                     if(mouseX < auctionViewLeft+16+32) {
                         //mid left
                         increasePriceByFactor(1.25f);
-                        Utils.playPressSound();
                     } else {
                         //mid right
                         increasePriceByFactor(1.1f);
-                        Utils.playPressSound();
                     }
+                    Utils.playPressSound();
                 } else if(mouseY > guiTop+68 && mouseY < guiTop+68+16) {
                     //bottom
                     Utils.playPressSound();

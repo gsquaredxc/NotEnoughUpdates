@@ -14,9 +14,7 @@ import net.minecraftforge.client.event.ClientChatReceivedEvent;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL14;
 
-import java.awt.*;
 import java.util.*;
-import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -30,7 +28,7 @@ public class DungeonWin {
         private float y;
         private float xLast;
         private float yLast;
-        private int life = 0;
+        private int life;
         private float xVel;
         private float yVel;
         private final int id;
@@ -46,13 +44,13 @@ public class DungeonWin {
             this.life = 20+rand.nextInt(10);
         }
     }
-    public static ResourceLocation CONFETTI = new ResourceLocation("notenoughupdates:dungeon_win/confetti.png");
-    public static ResourceLocation SPLUS = new ResourceLocation("notenoughupdates:dungeon_win/splus.png");
-    public static ResourceLocation S = new ResourceLocation("notenoughupdates:dungeon_win/s.png");
-    public static ResourceLocation A = new ResourceLocation("notenoughupdates:dungeon_win/a.png");
-    public static ResourceLocation B = new ResourceLocation("notenoughupdates:dungeon_win/b.png");
-    public static ResourceLocation C = new ResourceLocation("notenoughupdates:dungeon_win/c.png");
-    public static ResourceLocation D = new ResourceLocation("notenoughupdates:dungeon_win/d.png");
+    public static final ResourceLocation CONFETTI = new ResourceLocation("notenoughupdates:dungeon_win/confetti.png");
+    public static final ResourceLocation SPLUS = new ResourceLocation("notenoughupdates:dungeon_win/splus.png");
+    public static final ResourceLocation S = new ResourceLocation("notenoughupdates:dungeon_win/s.png");
+    public static final ResourceLocation A = new ResourceLocation("notenoughupdates:dungeon_win/a.png");
+    public static final ResourceLocation B = new ResourceLocation("notenoughupdates:dungeon_win/b.png");
+    public static final ResourceLocation C = new ResourceLocation("notenoughupdates:dungeon_win/c.png");
+    public static final ResourceLocation D = new ResourceLocation("notenoughupdates:dungeon_win/d.png");
     public static ResourceLocation TEAM_SCORE = SPLUS;
 
     private static final int SCALE_FACTOR = 3;
@@ -65,9 +63,9 @@ public class DungeonWin {
 
     private static final ScheduledExecutorService SES = Executors.newScheduledThreadPool(1);
 
-    public static Random rand = new Random();
-    public static List<Confetti> confetti = new ArrayList<>();
-    public static List<String> text = new ArrayList<>();
+    public static final Random rand = new Random();
+    public static final List<Confetti> confetti = new ArrayList<>();
+    public static final List<String> text = new ArrayList<>();
     public static long startTime = 0;
 
     static {
@@ -167,9 +165,7 @@ public class DungeonWin {
                             TEAM_SCORE = D; break;
                     }
 
-                    SES.schedule(()-> {
-                        NotEnoughUpdates.INSTANCE.sendChatMessage("/showextrastats");
-                    }, 100L, TimeUnit.MILLISECONDS);
+                    SES.schedule(()-> NotEnoughUpdates.INSTANCE.sendChatMessage("/showextrastats"), 100L, TimeUnit.MILLISECONDS);
                 }
             }
         }

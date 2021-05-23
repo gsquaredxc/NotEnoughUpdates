@@ -78,7 +78,6 @@ public class NEUConfig extends Config {
                 return;
             case 7:
                 NotEnoughUpdates.INSTANCE.openGui = new GuiInvButtonEditor();
-                return;
 
         }
     }
@@ -88,7 +87,7 @@ public class NEUConfig extends Config {
             name = "Misc",
             desc = "Miscellaneous options which don't fit into any other category"
     )
-    public Misc misc = new Misc();
+    public final Misc misc = new Misc();
 
     @Expose
     @Category(
@@ -102,21 +101,21 @@ public class NEUConfig extends Config {
             name = "Item List",
             desc = "Item List"
     )
-    public Itemlist itemlist = new Itemlist();
+    public final Itemlist itemlist = new Itemlist();
 
     @Expose
     @Category(
             name = "Toolbar",
             desc = "Toolbar"
     )
-    public Toolbar toolbar = new Toolbar();
+    public final Toolbar toolbar = new Toolbar();
 
     @Expose
     @Category(
             name = "Inventory Buttons",
             desc = "Inventory Buttons"
     )
-    public InventoryButtons inventoryButtons = new InventoryButtons();
+    public final InventoryButtons inventoryButtons = new InventoryButtons();
 
 
     @Expose
@@ -131,42 +130,42 @@ public class NEUConfig extends Config {
             name = "Tooltip Tweaks",
             desc = "Tooltip Tweaks"
     )
-    public TooltipTweaks tooltipTweaks = new TooltipTweaks();
+    public final TooltipTweaks tooltipTweaks = new TooltipTweaks();
 
     @Expose
     @Category(
             name = "Item Overlays",
             desc = "Item Overlays"
     )
-    public ItemOverlays itemOverlays = new ItemOverlays();
+    public final ItemOverlays itemOverlays = new ItemOverlays();
 
     @Expose
     @Category(
             name = "Skill Overlays",
             desc = "Skill Overlays"
     )
-    public SkillOverlays skillOverlays = new SkillOverlays();
+    public final SkillOverlays skillOverlays = new SkillOverlays();
 
     @Expose
     @Category(
             name = "Misc Overlays",
             desc = "Misc Overlays"
     )
-    public MiscOverlays miscOverlays = new MiscOverlays();
+    public final MiscOverlays miscOverlays = new MiscOverlays();
 
     @Expose
     @Category(
             name = "Storage GUI",
             desc = "Storage GUI"
     )
-    public StorageGUI storageGUI = new StorageGUI();
+    public final StorageGUI storageGUI = new StorageGUI();
 
     @Expose
     @Category(
             name = "Dungeons",
             desc = "Dungeons"
     )
-    public Dungeons dungeons = new Dungeons();
+    public final Dungeons dungeons = new Dungeons();
 
 
     @Expose
@@ -174,56 +173,56 @@ public class NEUConfig extends Config {
             name = "Enchanting Solvers",
             desc = "Enchanting Solvers"
     )
-    public EnchSolvers enchantingSolvers = new EnchSolvers();
+    public final EnchSolvers enchantingSolvers = new EnchSolvers();
 
     @Expose
     @Category(
             name = "Mining",
             desc = "Mining"
     )
-    public Mining mining = new Mining();
+    public final Mining mining = new Mining();
 
     @Expose
     @Category(
             name = "NEU Auction House",
             desc = "NEU Auction House"
     )
-    public NeuAuctionHouse neuAuctionHouse = new NeuAuctionHouse();
+    public final NeuAuctionHouse neuAuctionHouse = new NeuAuctionHouse();
 
     @Expose
     @Category(
             name = "Improved SB Menus",
             desc = "Improved SB Menus"
     )
-    public ImprovedSBMenu improvedSBMenu = new ImprovedSBMenu();
+    public final ImprovedSBMenu improvedSBMenu = new ImprovedSBMenu();
 
     @Expose
     @Category(
             name = "Calendar",
             desc = "Calendar"
     )
-    public Calendar calendar = new Calendar();
+    public final Calendar calendar = new Calendar();
 
     @Expose
     @Category(
             name = "Trade Menu",
             desc = "Trade Menu"
     )
-    public TradeMenu tradeMenu = new TradeMenu();
+    public final TradeMenu tradeMenu = new TradeMenu();
 
     @Expose
     @Category(
             name = "Pet Overlay",
             desc = "Pet Overlay"
     )
-    public PetOverlay petOverlay = new PetOverlay();
+    public final PetOverlay petOverlay = new PetOverlay();
 
     @Expose
     @Category(
             name = "AH Search GUI",
             desc = "AH Search GUI"
     )
-    public AuctionHouseSearch auctionHouseSearch = new AuctionHouseSearch();
+    public final AuctionHouseSearch auctionHouseSearch = new AuctionHouseSearch();
 
     @Expose
     @Category(
@@ -237,13 +236,13 @@ public class NEUConfig extends Config {
             name = "Api Key",
             desc = "Api Key"
     )
-    public ApiKey apiKey = new ApiKey();
+    public final ApiKey apiKey = new ApiKey();
 
     @Expose
-    public Hidden hidden = new Hidden();
+    public final Hidden hidden = new Hidden();
 
     @Expose
-    public DungeonMap dungeonMap = new DungeonMap();
+    public final DungeonMap dungeonMap = new DungeonMap();
 
     public static class Misc {
         @Expose
@@ -252,7 +251,7 @@ public class NEUConfig extends Config {
                 desc = "The item list and some other GUI elements will only show on skyblock"
         )
         @ConfigEditorBoolean
-        public boolean onlyShowOnSkyblock = true;
+        public final boolean onlyShowOnSkyblock = true;
 
         @Expose
         @ConfigOption(
@@ -260,7 +259,7 @@ public class NEUConfig extends Config {
                 desc = "Hide the potion effects inside your inventory while on skyblock"
         )
         @ConfigEditorBoolean
-        public boolean hidePotionEffect = true;
+        public final boolean hidePotionEffect = true;
 
         @Expose
         @ConfigOption(
@@ -268,7 +267,7 @@ public class NEUConfig extends Config {
                 desc = "Randomize lobby names in the scoreboard and chat messages to help prevent stream sniping"
         )
         @ConfigEditorBoolean
-        public boolean streamerMode = false;
+        public final boolean streamerMode = false;
 
         @Expose
         @ConfigOption(
@@ -276,7 +275,7 @@ public class NEUConfig extends Config {
                 desc = "Play click sounds in various NEU-related GUIs when pressing buttons"
         )
         @ConfigEditorBoolean
-        public boolean guiButtonClicks = true;
+        public final boolean guiButtonClicks = true;
 
         @Expose
         @ConfigOption(
@@ -286,7 +285,7 @@ public class NEUConfig extends Config {
         @ConfigEditorDropdown(
                 values = {"Off", "Commas", "Shortened"}
         )
-        public int damageIndicatorStyle = 1;
+        public final int damageIndicatorStyle = 1;
     }
 
     public static class Notifications {
@@ -323,7 +322,7 @@ public class NEUConfig extends Config {
                 desc = "Vanilla items are included in the item list"
         )
         @ConfigEditorBoolean
-        public boolean showVanillaItems = true;
+        public final boolean showVanillaItems = true;
 
         @Expose
         @ConfigOption(
@@ -331,7 +330,7 @@ public class NEUConfig extends Config {
                 desc = "Creates an arrow on the right-side to open the item list when hovered"
         )
         @ConfigEditorBoolean
-        public boolean tabOpen = true;
+        public final boolean tabOpen = true;
 
         @Expose
         @ConfigOption(
@@ -339,7 +338,7 @@ public class NEUConfig extends Config {
                 desc = "Keeps the Itemlist open after the inventory is closed"
         )
         @ConfigEditorBoolean
-        public boolean keepopen = false;
+        public final boolean keepopen = false;
 
         @Expose
         @ConfigOption(
@@ -349,7 +348,7 @@ public class NEUConfig extends Config {
         @ConfigEditorDropdown(
                 values = {"Round", "Square"}
         )
-        public int itemStyle = 0;
+        public final int itemStyle = 0;
 
         @Expose
         @ConfigOption(
@@ -359,7 +358,7 @@ public class NEUConfig extends Config {
         @ConfigEditorDropdown(
                 values = {"Default", "Small", "Medium", "Large", "Auto"}
         )
-        public int paneGuiScale = 0;
+        public final int paneGuiScale = 0;
 
         @Expose
         @ConfigOption(
@@ -371,7 +370,7 @@ public class NEUConfig extends Config {
                 maxValue = 20,
                 minStep = 1
         )
-        public int bgBlurFactor = 5;
+        public final int bgBlurFactor = 5;
 
         @Expose
         @ConfigOption(
@@ -383,7 +382,7 @@ public class NEUConfig extends Config {
                 maxValue = 1.5f,
                 minStep = 0.1f
         )
-        public float paneWidthMult = 1.0f;
+        public final float paneWidthMult = 1.0f;
 
         @Expose
         @ConfigOption(
@@ -395,7 +394,7 @@ public class NEUConfig extends Config {
                 maxValue = 20f,
                 minStep = 1f
         )
-        public int panePadding = 10;
+        public final int panePadding = 10;
 
         @Expose
         @ConfigOption(
@@ -403,7 +402,7 @@ public class NEUConfig extends Config {
                 desc = "Change the colour of foreground elements in the Itemlist"
         )
         @ConfigEditorColour
-        public String foregroundColour = "00:255:100:100:100";
+        public final String foregroundColour = "00:255:100:100:100";
 
         @Expose
         @ConfigOption(
@@ -411,7 +410,7 @@ public class NEUConfig extends Config {
                 desc = "Change the colour of favourited elements in the Itemlist"
         )
         @ConfigEditorColour
-        public String favouriteColour = "00:255:200:150:50";
+        public final String favouriteColour = "00:255:200:150:50";
 
         @Expose
         @ConfigOption(
@@ -419,7 +418,7 @@ public class NEUConfig extends Config {
                 desc = "Change the colour of the Itemlist background"
         )
         @ConfigEditorColour
-        public String backgroundColour = "15:6:0:0:255";
+        public final String backgroundColour = "15:6:0:0:255";
     }
 
     public static class Toolbar {
@@ -437,7 +436,7 @@ public class NEUConfig extends Config {
                 desc = "Show QuickCommands\u2122 in the NEU toolbar"
         )
         @ConfigEditorBoolean
-        public boolean quickCommands = true;
+        public final boolean quickCommands = true;
 
         @Expose
         @ConfigOption(
@@ -445,7 +444,7 @@ public class NEUConfig extends Config {
                 desc = "Show Itemlist search bar in the NEU toolbar"
         )
         @ConfigEditorBoolean
-        public boolean searchBar = true;
+        public final boolean searchBar = true;
 
         @Expose
         @ConfigOption(
@@ -457,7 +456,7 @@ public class NEUConfig extends Config {
                 maxValue = 300f,
                 minStep = 10f
         )
-        public int searchBarWidth = 200;
+        public final int searchBarWidth = 200;
 
         @Expose
         @ConfigOption(
@@ -469,7 +468,7 @@ public class NEUConfig extends Config {
                 maxValue = 50f,
                 minStep = 1f
         )
-        public int searchBarHeight = 40;
+        public final int searchBarHeight = 40;
 
         @Expose
         @ConfigOption(
@@ -479,7 +478,7 @@ public class NEUConfig extends Config {
         @ConfigEditorDropdown(
                 values = {"Mouse Up", "Mouse Down"}
         )
-        public int quickCommandsClickType = 0;
+        public final int quickCommandsClickType = 0;
     }
 
     public static class InventoryButtons {
@@ -497,7 +496,7 @@ public class NEUConfig extends Config {
                 desc = "Hide crafting text in inventory, even when no button is there"
         )
         @ConfigEditorBoolean
-        public boolean hideCrafting = false;
+        public final boolean hideCrafting = false;
 
         @Expose
         @ConfigOption(
@@ -549,7 +548,7 @@ public class NEUConfig extends Config {
                         "\u00a7eDungeon Costs"}
         )
         @ConfigAccordionId(id = 0)
-        public List<Integer> priceInfoAuc = new ArrayList<>(Arrays.asList(0, 1, 2, 3, 5));
+        public final List<Integer> priceInfoAuc = new ArrayList<>(Arrays.asList(0, 1, 2, 3, 5));
 
         @Expose
         @ConfigOption(
@@ -561,7 +560,7 @@ public class NEUConfig extends Config {
                 exampleText = {"\u00a7eBuy", "\u00a7eSell", "\u00a7eBuy (Insta)", "\u00a7eSell (Insta)", "\u00a7eRaw Craft Cost"}
         )
         @ConfigAccordionId(id = 0)
-        public List<Integer> priceInfoBaz = new ArrayList<>(Arrays.asList(0, 1, 2, 3, 4));
+        public final List<Integer> priceInfoBaz = new ArrayList<>(Arrays.asList(0, 1, 2, 3, 4));
 
         @Expose
         @ConfigOption(
@@ -569,7 +568,7 @@ public class NEUConfig extends Config {
                 desc = "Show price information for items in your inventory"
         )
         @ConfigEditorBoolean
-        public boolean showPriceInfoInvItem = true;
+        public final boolean showPriceInfoInvItem = true;
 
         @Expose
         @ConfigOption(
@@ -577,7 +576,7 @@ public class NEUConfig extends Config {
                 desc = "Show price information for auctioned items"
         )
         @ConfigEditorBoolean
-        public boolean showPriceInfoAucItem = true;
+        public final boolean showPriceInfoAucItem = true;
 
         @Expose
         @ConfigOption(
@@ -593,7 +592,7 @@ public class NEUConfig extends Config {
                 desc = "Make the borders of tooltips match the rarity of the item (NEU Tooltips Only)"
         )
         @ConfigEditorBoolean
-        public boolean tooltipBorderColours = true;
+        public final boolean tooltipBorderColours = true;
 
         @Expose
         @ConfigOption(
@@ -605,7 +604,7 @@ public class NEUConfig extends Config {
                 maxValue = 255f,
                 minStep = 1f
         )
-        public int tooltipBorderOpacity = 200;
+        public final int tooltipBorderOpacity = 200;
     }
 
     public static class ItemOverlays {
@@ -623,7 +622,7 @@ public class NEUConfig extends Config {
         )
         @ConfigEditorBoolean
         @ConfigAccordionId(id = 0)
-        public boolean enableTreecapOverlay = true;
+        public final boolean enableTreecapOverlay = true;
 
         @Expose
         @ConfigOption(
@@ -632,7 +631,7 @@ public class NEUConfig extends Config {
         )
         @ConfigEditorColour
         @ConfigAccordionId(id = 0)
-        public String treecapOverlayColour = "00:50:64:224:208";
+        public final String treecapOverlayColour = "00:50:64:224:208";
 
         @Expose
         @ConfigOption(
@@ -641,7 +640,7 @@ public class NEUConfig extends Config {
         )
         @ConfigEditorBoolean
         @ConfigAccordionId(id = 0)
-        public boolean enableMonkeyCheck = true;
+        public final boolean enableMonkeyCheck = true;
 
         @ConfigOption(
                 name = "Builder's Wand Overlay",
@@ -657,7 +656,7 @@ public class NEUConfig extends Config {
         )
         @ConfigEditorBoolean
         @ConfigAccordionId(id = 1)
-        public boolean enableWandOverlay = true;
+        public final boolean enableWandOverlay = true;
 
         @Expose
         @ConfigOption(
@@ -666,7 +665,7 @@ public class NEUConfig extends Config {
         )
         @ConfigEditorBoolean
         @ConfigAccordionId(id = 1)
-        public boolean wandBlockCount = true;
+        public final boolean wandBlockCount = true;
 
         @Expose
         @ConfigOption(
@@ -675,7 +674,7 @@ public class NEUConfig extends Config {
         )
         @ConfigEditorColour
         @ConfigAccordionId(id = 1)
-        public String wandOverlayColour = "00:50:64:224:208";
+        public final String wandOverlayColour = "00:50:64:224:208";
 
         @ConfigOption(
                 name = "Block Zapper Overlay",
@@ -691,7 +690,7 @@ public class NEUConfig extends Config {
         )
         @ConfigEditorBoolean
         @ConfigAccordionId(id = 5)
-        public boolean enableZapperOverlay = true;
+        public final boolean enableZapperOverlay = true;
 
         @Expose
         @ConfigOption(
@@ -700,7 +699,7 @@ public class NEUConfig extends Config {
         )
         @ConfigEditorColour
         @ConfigAccordionId(id = 5)
-        public String zapperOverlayColour = "0:102:171:5:0";
+        public final String zapperOverlayColour = "0:102:171:5:0";
 
         @ConfigOption(
                 name = "Smooth AOTE",
@@ -716,7 +715,7 @@ public class NEUConfig extends Config {
         )
         @ConfigEditorBoolean
         @ConfigAccordionId(id = 2)
-        public boolean enableSmoothAOTE = true;
+        public final boolean enableSmoothAOTE = true;
 
         @Expose
         @ConfigOption(
@@ -725,7 +724,7 @@ public class NEUConfig extends Config {
         )
         @ConfigEditorBoolean
         @ConfigAccordionId(id = 2)
-        public boolean enableSmoothHyperion = true;
+        public final boolean enableSmoothHyperion = true;
 
         @Expose
         @ConfigOption(
@@ -738,7 +737,7 @@ public class NEUConfig extends Config {
                 minStep = 25
         )
         @ConfigAccordionId(id = 2)
-        public int smoothTpMillis = 175;
+        public final int smoothTpMillis = 175;
 
         @Expose
         @ConfigOption(
@@ -747,7 +746,7 @@ public class NEUConfig extends Config {
         )
         @ConfigEditorBoolean
         @ConfigAccordionId(id = 2)
-        public boolean disableHyperionParticles = true;
+        public final boolean disableHyperionParticles = true;
 
         @ConfigOption(
                 name = "Bonemerang Overlay",
@@ -763,7 +762,7 @@ public class NEUConfig extends Config {
         )
         @ConfigEditorBoolean
         @ConfigAccordionId(id = 3)
-        public boolean highlightTargeted = true;
+        public final boolean highlightTargeted = true;
 
         @Expose
         @ConfigOption(
@@ -772,7 +771,7 @@ public class NEUConfig extends Config {
         )
         @ConfigEditorBoolean
         @ConfigAccordionId(id = 3)
-        public boolean showBreak = true;
+        public final boolean showBreak = true;
 
         @ConfigOption(
                 name = "Custom Rod Colours",
@@ -789,7 +788,7 @@ public class NEUConfig extends Config {
         )
         @ConfigEditorBoolean
         @ConfigAccordionId(id = 4)
-        public boolean enableRodColours = true;
+        public final boolean enableRodColours = true;
 
         @Expose
         @ConfigOption(
@@ -798,7 +797,7 @@ public class NEUConfig extends Config {
         )
         @ConfigEditorColour
         @ConfigAccordionId(id = 4)
-        public String ownRodColour = "0:255:0:0:0";
+        public final String ownRodColour = "0:255:0:0:0";
 
         @Expose
         @ConfigOption(
@@ -807,7 +806,7 @@ public class NEUConfig extends Config {
         )
         @ConfigEditorColour
         @ConfigAccordionId(id = 4)
-        public String otherRodColour = "0:255:0:0:0";
+        public final String otherRodColour = "0:255:0:0:0";
 
         @ConfigOption(
                 name = "Minion Crystal Radius Overlay",
@@ -823,7 +822,7 @@ public class NEUConfig extends Config {
         )
         @ConfigEditorBoolean
         @ConfigAccordionId(id = 5)
-        public boolean enableCrystalOverlay = true;
+        public final boolean enableCrystalOverlay = true;
 
         @Expose
         @ConfigOption(
@@ -832,7 +831,7 @@ public class NEUConfig extends Config {
         )
         @ConfigEditorBoolean
         @ConfigAccordionId(id = 5)
-        public boolean alwaysShowCrystal = false;
+        public final boolean alwaysShowCrystal = false;
     }
 
     public static class SkillOverlays {
@@ -842,7 +841,7 @@ public class NEUConfig extends Config {
                 desc = "Show an overlay while farming with useful information"
         )
         @ConfigEditorBoolean
-        public boolean farmingOverlay = true;
+        public final boolean farmingOverlay = true;
 
         @Expose
         @ConfigOption(
@@ -860,7 +859,7 @@ public class NEUConfig extends Config {
                         "\u00a7bYaw: \u00a7e68.25\u00a7l\u1D52",
                         "\u00a7bETA: 13h12m"}
         )
-        public List<Integer> farmingText = new ArrayList<>(Arrays.asList(0, 1, 2, 3, 4, 5, 7, 6));
+        public final List<Integer> farmingText = new ArrayList<>(Arrays.asList(0, 1, 2, 3, 4, 5, 7, 6));
 
         @Expose
         @ConfigOption(
@@ -871,7 +870,7 @@ public class NEUConfig extends Config {
                 runnableId = 3,
                 buttonText = "Edit"
         )
-        public Position farmingPosition = new Position(10, 200);
+        public final Position farmingPosition = new Position(10, 200);
 
         @Expose
         @ConfigOption(
@@ -881,7 +880,7 @@ public class NEUConfig extends Config {
         @ConfigEditorDropdown(
                 values = {"Background", "No Shadow", "Shadow", "Full Shadow"}
         )
-        public int farmingStyle = 0;
+        public final int farmingStyle = 0;
     }
 
     public static class Dungeons {
@@ -912,7 +911,7 @@ public class NEUConfig extends Config {
         )
         @ConfigEditorBoolean
         @ConfigAccordionId(id = 0)
-        public boolean showOwnHeadAsMarker = false;
+        public final boolean showOwnHeadAsMarker = false;
 
         @ConfigOption(
                 name = "Dungeon Profit",
@@ -961,7 +960,7 @@ public class NEUConfig extends Config {
         )
         @ConfigEditorBoolean
         @ConfigAccordionId(id = 3)
-        public boolean enableDungeonWin = true;
+        public final boolean enableDungeonWin = true;
 
         @Expose
         @ConfigOption(
@@ -974,7 +973,7 @@ public class NEUConfig extends Config {
                 minStep = 500
         )
         @ConfigAccordionId(id = 3)
-        public int dungeonWinMillis = 8000;
+        public final int dungeonWinMillis = 8000;
 
         @ConfigOption(
                 name = "Dungeon Block Overlay",
@@ -990,7 +989,7 @@ public class NEUConfig extends Config {
         )
         @ConfigEditorBoolean
         @ConfigAccordionId(id = 2)
-        public boolean enableDungBlockOverlay = true;
+        public final boolean enableDungBlockOverlay = true;
 
         @Expose
         @ConfigOption(
@@ -999,7 +998,7 @@ public class NEUConfig extends Config {
         )
         @ConfigEditorBoolean
         @ConfigAccordionId(id = 2)
-        public boolean dungeonBlocksEverywhere = false;
+        public final boolean dungeonBlocksEverywhere = false;
 
         @Expose
         @ConfigOption(
@@ -1019,7 +1018,7 @@ public class NEUConfig extends Config {
         )
         @ConfigEditorColour
         @ConfigAccordionId(id = 2)
-        public String dungCrackedColour = "0:255:7:255:217";
+        public final String dungCrackedColour = "0:255:7:255:217";
 
         @Expose
         @ConfigOption(
@@ -1028,7 +1027,7 @@ public class NEUConfig extends Config {
         )
         @ConfigEditorColour
         @ConfigAccordionId(id = 2)
-        public String dungDispenserColour = "0:255:255:76:0";
+        public final String dungDispenserColour = "0:255:255:76:0";
 
         @Expose
         @ConfigOption(
@@ -1037,7 +1036,7 @@ public class NEUConfig extends Config {
         )
         @ConfigEditorColour
         @ConfigAccordionId(id = 2)
-        public String dungLeverColour = "0:252:24:249:255";
+        public final String dungLeverColour = "0:252:24:249:255";
 
         @Expose
         @ConfigOption(
@@ -1046,7 +1045,7 @@ public class NEUConfig extends Config {
         )
         @ConfigEditorColour
         @ConfigAccordionId(id = 2)
-        public String dungTripWireColour = "0:255:255:0:0";
+        public final String dungTripWireColour = "0:255:255:0:0";
 
         @Expose
         @ConfigOption(
@@ -1055,7 +1054,7 @@ public class NEUConfig extends Config {
         )
         @ConfigEditorColour
         @ConfigAccordionId(id = 2)
-        public String dungChestColour = "0:255:0:163:36";
+        public final String dungChestColour = "0:255:0:163:36";
 
         @Expose
         @ConfigOption(
@@ -1064,7 +1063,7 @@ public class NEUConfig extends Config {
         )
         @ConfigEditorColour
         @ConfigAccordionId(id = 2)
-        public String dungTrappedChestColour = "0:255:0:163:36";
+        public final String dungTrappedChestColour = "0:255:0:163:36";
 
         @Expose
         @ConfigOption(
@@ -1073,7 +1072,7 @@ public class NEUConfig extends Config {
         )
         @ConfigEditorColour
         @ConfigAccordionId(id = 2)
-        public String dungBatColour = "0:255:12:255:0";
+        public final String dungBatColour = "0:255:12:255:0";
     }
 
     public static class MiscOverlays {
@@ -1091,7 +1090,7 @@ public class NEUConfig extends Config {
         )
         @ConfigEditorBoolean
         @ConfigAccordionId(id = 0)
-        public boolean todoOverlay = false;
+        public final boolean todoOverlay = false;
 
         @Expose
         @ConfigOption(
@@ -1117,7 +1116,7 @@ public class NEUConfig extends Config {
                         "\u00a73Experiments: \u00a7e3h38m"}
         )
         @ConfigAccordionId(id = 0)
-        public List<Integer> todoText = new ArrayList<>(Arrays.asList(0, 1, 2, 3, 4, 5, 6));
+        public final List<Integer> todoText = new ArrayList<>(Arrays.asList(0, 1, 2, 3, 4, 5, 6));
 
         @Expose
         @ConfigOption(
@@ -1129,7 +1128,7 @@ public class NEUConfig extends Config {
                 buttonText = "Edit"
         )
         @ConfigAccordionId(id = 0)
-        public Position todoPosition = new Position(100, 0);
+        public final Position todoPosition = new Position(100, 0);
 
 
         @Expose
@@ -1141,7 +1140,7 @@ public class NEUConfig extends Config {
                 values = {"Background", "No Shadow", "Shadow", "Full Shadow"}
         )
         @ConfigAccordionId(id = 0)
-        public int todoStyle = 0;
+        public final int todoStyle = 0;
 
         @Expose
         @ConfigOption(
@@ -1150,7 +1149,7 @@ public class NEUConfig extends Config {
         )
         @ConfigEditorBoolean
         @ConfigAccordionId(id = 0)
-        public boolean todoIcons = true;
+        public final boolean todoIcons = true;
     }
 
     public static class StorageGUI {
@@ -1227,7 +1226,7 @@ public class NEUConfig extends Config {
         )
         @ConfigEditorBoolean
         @ConfigAccordionId(id = 0)
-        public boolean showInvBackpack = true;
+        public final boolean showInvBackpack = true;
 
         @Expose
         @ConfigOption(
@@ -1238,7 +1237,7 @@ public class NEUConfig extends Config {
                 values = {"Left", "Right"}
         )
         @ConfigAccordionId(id = 0)
-        public int backpackHotbarSide = 0;
+        public final int backpackHotbarSide = 0;
 
         @Expose
         @ConfigOption(
@@ -1247,7 +1246,7 @@ public class NEUConfig extends Config {
         )
         @ConfigEditorBoolean
         @ConfigAccordionId(id = 0)
-        public boolean showInvBackpackPreview = true;
+        public final boolean showInvBackpackPreview = true;
 
         @Expose
         @ConfigOption(
@@ -1260,7 +1259,7 @@ public class NEUConfig extends Config {
                 minStep = 5
         )
         @ConfigAccordionId(id = 0)
-        public int backpackOpacity = 50;
+        public final int backpackOpacity = 50;
 
         @Expose
         @ConfigOption(
@@ -1269,7 +1268,7 @@ public class NEUConfig extends Config {
         )
         @ConfigEditorKeybind(defaultKey = Keyboard.KEY_LSHIFT)
         @ConfigAccordionId(id = 0)
-        public int backpackScrollKey = Keyboard.KEY_LSHIFT;
+        public final int backpackScrollKey = Keyboard.KEY_LSHIFT;
 
         @Expose
         @ConfigOption(
@@ -1295,7 +1294,7 @@ public class NEUConfig extends Config {
         )
         @ConfigEditorKeybind(defaultKey = Keyboard.KEY_LEFT)
         @ConfigAccordionId(id = 2)
-        public int arrowLeftKey = Keyboard.KEY_LEFT;
+        public final int arrowLeftKey = Keyboard.KEY_LEFT;
 
         @Expose
         @ConfigOption(
@@ -1304,7 +1303,7 @@ public class NEUConfig extends Config {
         )
         @ConfigEditorKeybind(defaultKey = Keyboard.KEY_RIGHT)
         @ConfigAccordionId(id = 2)
-        public int arrowRightKey = Keyboard.KEY_RIGHT;
+        public final int arrowRightKey = Keyboard.KEY_RIGHT;
 
         @Expose
         @ConfigOption(
@@ -1313,7 +1312,7 @@ public class NEUConfig extends Config {
         )
         @ConfigEditorKeybind(defaultKey = Keyboard.KEY_DOWN)
         @ConfigAccordionId(id = 2)
-        public int arrowDownKey = Keyboard.KEY_DOWN;
+        public final int arrowDownKey = Keyboard.KEY_DOWN;
     }
 
     public static class EnchSolvers {
@@ -1323,7 +1322,7 @@ public class NEUConfig extends Config {
                 desc = "Turn on solvers for the experimentation table"
         )
         @ConfigEditorBoolean
-        public boolean enableEnchantingSolvers = true;
+        public final boolean enableEnchantingSolvers = true;
 
         /*@Expose
         @ConfigOption(
@@ -1339,7 +1338,7 @@ public class NEUConfig extends Config {
                 desc = "Hide the tooltip of items in the Chronomatron and Ultrasequencer experiments"
         )
         @ConfigEditorBoolean
-        public boolean hideTooltips = true;
+        public final boolean hideTooltips = true;
 
         @Expose
         @ConfigOption(
@@ -1347,7 +1346,7 @@ public class NEUConfig extends Config {
                 desc = "Replace the items in the supersequencer with only numbers"
         )
         @ConfigEditorBoolean
-        public boolean seqNumbers = false;
+        public final boolean seqNumbers = false;
 
         @Expose
         @ConfigOption(
@@ -1358,7 +1357,7 @@ public class NEUConfig extends Config {
                 values = {"None", "White", "Orange", "Light Purple", "Light Blue", "Yellow", "Light Green", "Pink",
                         "Gray", "Light Gray", "Cyan", "Dark Purple", "Dark Blue", "Brown", "Dark Green", "Red", "Black"}
         )
-        public int seqNext = 6;
+        public final int seqNext = 6;
 
         @Expose
         @ConfigOption(
@@ -1369,7 +1368,7 @@ public class NEUConfig extends Config {
                 values = {"None", "White", "Orange", "Light Purple", "Light Blue", "Yellow", "Light Green", "Pink",
                         "Gray", "Light Gray", "Cyan", "Dark Purple", "Dark Blue", "Brown", "Dark Green", "Red", "Black"}
         )
-        public int seqUpcoming = 5;
+        public final int seqUpcoming = 5;
 
         @Expose
         @ConfigOption(
@@ -1380,7 +1379,7 @@ public class NEUConfig extends Config {
                 values = {"None", "White", "Orange", "Light Purple", "Light Blue", "Yellow", "Light Green", "Pink",
                         "Gray", "Light Gray", "Cyan", "Dark Purple", "Dark Blue", "Brown", "Dark Green", "Red", "Black"}
         )
-        public int supMatched = 6;
+        public final int supMatched = 6;
 
         @Expose
         @ConfigOption(
@@ -1391,7 +1390,7 @@ public class NEUConfig extends Config {
                 values = {"None", "White", "Orange", "Light Purple", "Light Blue", "Yellow", "Light Green", "Pink",
                         "Gray", "Light Gray", "Cyan", "Dark Purple", "Dark Blue", "Brown", "Dark Green", "Red", "Black"}
         )
-        public int supPossible = 2;
+        public final int supPossible = 2;
 
         @Expose
         @ConfigOption(
@@ -1402,7 +1401,7 @@ public class NEUConfig extends Config {
                 values = {"None", "White", "Orange", "Light Purple", "Light Blue", "Yellow", "Light Green", "Pink",
                         "Gray", "Light Gray", "Cyan", "Dark Purple", "Dark Blue", "Brown", "Dark Green", "Red", "Black"}
         )
-        public int supUnmatched = 5;
+        public final int supUnmatched = 5;
 
         @Expose
         @ConfigOption(
@@ -1413,7 +1412,7 @@ public class NEUConfig extends Config {
                 values = {"None", "White", "Orange", "Light Purple", "Light Blue", "Yellow", "Light Green", "Pink",
                         "Gray", "Light Gray", "Cyan", "Dark Purple", "Dark Blue", "Brown", "Dark Green", "Red", "Black"}
         )
-        public int supPower = 11;
+        public final int supPower = 11;
     }
 
     public static class Mining {
@@ -1435,7 +1434,7 @@ public class NEUConfig extends Config {
                 initialIndex = 1
         )
         @ConfigAccordionId(id = 0)
-        public int locWaypoints = 1;
+        public final int locWaypoints = 1;
 
         @Expose
         @ConfigOption(
@@ -1448,7 +1447,7 @@ public class NEUConfig extends Config {
                 initialIndex = 1
         )
         @ConfigAccordionId(id = 0)
-        public int emissaryWaypoints = 1;
+        public final int emissaryWaypoints = 1;
 
         @ConfigOption(
                 name = "Drill Fuel Bar",
@@ -1464,7 +1463,7 @@ public class NEUConfig extends Config {
         )
         @ConfigEditorBoolean
         @ConfigAccordionId(id = 1)
-        public boolean drillFuelBar = true;
+        public final boolean drillFuelBar = true;
 
         @Expose
         @ConfigOption(
@@ -1477,7 +1476,7 @@ public class NEUConfig extends Config {
                 minStep = 10
         )
         @ConfigAccordionId(id = 1)
-        public int drillFuelBarWidth = 200;
+        public final int drillFuelBarWidth = 200;
 
         @Expose
         @ConfigOption(
@@ -1489,7 +1488,7 @@ public class NEUConfig extends Config {
                 buttonText = "Edit"
         )
         @ConfigAccordionId(id = 1)
-        public Position drillFuelBarPosition = new Position(0, -100, true, false);
+        public final Position drillFuelBarPosition = new Position(0, -100, true, false);
 
         @ConfigOption(
                 name = "Dwarven Overlay",
@@ -1505,7 +1504,7 @@ public class NEUConfig extends Config {
         )
         @ConfigEditorBoolean
         @ConfigAccordionId(id = 2)
-        public boolean dwarvenOverlay = true;
+        public final boolean dwarvenOverlay = true;
 
         @Expose
         @ConfigOption(
@@ -1521,7 +1520,7 @@ public class NEUConfig extends Config {
                         "\u00a73Pickaxe CD: \u00a7a78s"}
         )
         @ConfigAccordionId(id = 2)
-        public List<Integer> dwarvenText = new ArrayList<>(Arrays.asList(0, 1, 4, 2, 3));
+        public final List<Integer> dwarvenText = new ArrayList<>(Arrays.asList(0, 1, 4, 2, 3));
 
         @Expose
         @ConfigOption(
@@ -1533,7 +1532,7 @@ public class NEUConfig extends Config {
                 buttonText = "Edit"
         )
         @ConfigAccordionId(id = 2)
-        public Position overlayPosition = new Position(10, 100);
+        public final Position overlayPosition = new Position(10, 100);
 
         @Expose
         @ConfigOption(
@@ -1544,7 +1543,7 @@ public class NEUConfig extends Config {
                 values = {"Background", "No Shadow", "Shadow", "Full Shadow"}
         )
         @ConfigAccordionId(id = 2)
-        public int overlayStyle = 0;
+        public final int overlayStyle = 0;
 
         @Expose
         @ConfigOption(
@@ -1552,7 +1551,7 @@ public class NEUConfig extends Config {
                 desc = "Show the correct block to mine for the puzzler puzzle in Dwarven Mines"
         )
         @ConfigEditorBoolean
-        public boolean puzzlerSolver = true;
+        public final boolean puzzlerSolver = true;
 
         @Expose
         @ConfigOption(
@@ -1560,7 +1559,7 @@ public class NEUConfig extends Config {
                 desc = "Show an alert whenever titanium appears nearby"
         )
         @ConfigEditorBoolean
-        public boolean titaniumAlert = true;
+        public final boolean titaniumAlert = true;
 
 
         @Expose
@@ -1569,7 +1568,7 @@ public class NEUConfig extends Config {
                 desc = "Allows texture packs to retexture blocks in the Dwarven Mines. If you don't have a texturepack that does this, you should leave this off"
         )
         @ConfigEditorBoolean
-        public boolean dwarvenTextures = false;
+        public final boolean dwarvenTextures = false;
 
         /*@Expose
         @ConfigOption(
@@ -1595,7 +1594,7 @@ public class NEUConfig extends Config {
                 desc = "Turn on the NEU Auction House. \u00A7cWARNING: May negatively impact performance on low-end machines"
         )
         @ConfigEditorBoolean
-        public boolean enableNeuAuctionHouse = false;
+        public final boolean enableNeuAuctionHouse = false;
 
         @Expose
         @ConfigOption(
@@ -1604,7 +1603,7 @@ public class NEUConfig extends Config {
                         "This should be used if you want to be able to scroll through tooltips"
         )
         @ConfigEditorBoolean
-        public boolean disableAhScroll = false;
+        public final boolean disableAhScroll = false;
 
         @Expose
         @ConfigOption(
@@ -1616,7 +1615,7 @@ public class NEUConfig extends Config {
                 maxValue = 10f,
                 minStep = 1f
         )
-        public int ahNotification = 5;
+        public final int ahNotification = 5;
     }
 
     public static class ImprovedSBMenu {
@@ -1626,7 +1625,7 @@ public class NEUConfig extends Config {
                 desc = "Change the way that skyblock menus (eg. /sbmenu) look"
         )
         @ConfigEditorBoolean
-        public boolean enableSbMenus = true;
+        public final boolean enableSbMenus = true;
 
         @Expose
         @ConfigOption(
@@ -1637,7 +1636,7 @@ public class NEUConfig extends Config {
                 values = {"Dark 1", "Dark 2", "Transparent", "Light 1", "Light 2", "Light 3",
                           "Unused 1", "Unused 2", "Unused 3", "Unused 4"}
         )
-        public int backgroundStyle = 0;
+        public final int backgroundStyle = 0;
 
         @Expose
         @ConfigOption(
@@ -1648,7 +1647,7 @@ public class NEUConfig extends Config {
                 values = {"Dark 1", "Dark 2", "Transparent", "Light 1", "Light 2", "Light 3",
                           "Unused 1", "Unused 2", "Unused 3", "Unused 4"}
         )
-        public int buttonStyle = 0;
+        public final int buttonStyle = 0;
 
         @Expose
         @ConfigOption(
@@ -1656,7 +1655,7 @@ public class NEUConfig extends Config {
                 desc = "Hide the tooltips of glass panes with no text"
         )
         @ConfigEditorBoolean
-        public boolean hideEmptyPanes = true;
+        public final boolean hideEmptyPanes = true;
     }
 
     public static class Calendar {
@@ -1666,7 +1665,7 @@ public class NEUConfig extends Config {
                 desc = "Display notifications for skyblock calendar events"
         )
         @ConfigEditorBoolean
-        public boolean eventNotifications = true;
+        public final boolean eventNotifications = true;
 
         @Expose
         @ConfigOption(
@@ -1679,7 +1678,7 @@ public class NEUConfig extends Config {
                 maxValue = 600f,
                 minStep = 30f
         )
-        public int startingSoonTime = 300;
+        public final int startingSoonTime = 300;
 
         @Expose
         @ConfigOption(
@@ -1687,7 +1686,7 @@ public class NEUConfig extends Config {
                 desc = "Displays the time until the next event at the top of your screen when in inventories"
         )
         @ConfigEditorBoolean
-        public boolean showEventTimerInInventory = true;
+        public final boolean showEventTimerInInventory = true;
 
         @Expose
         @ConfigOption(
@@ -1695,7 +1694,7 @@ public class NEUConfig extends Config {
                 desc = "Play a sound whenever events start"
         )
         @ConfigEditorBoolean
-        public boolean eventNotificationSounds = true;
+        public final boolean eventNotificationSounds = true;
 
         @Expose
         @ConfigOption(
@@ -1703,7 +1702,7 @@ public class NEUConfig extends Config {
                 desc = "Send a notification during spooky event when the time reaches 7pm"
         )
         @ConfigEditorBoolean
-        public boolean spookyNightNotification = true;
+        public final boolean spookyNightNotification = true;
     }
 
     public static class TradeMenu {
@@ -1735,7 +1734,7 @@ public class NEUConfig extends Config {
                 desc = "Shows current active pet and pet exp on screen."
         )
         @ConfigEditorBoolean
-        public boolean enablePetInfo = false;
+        public final boolean enablePetInfo = false;
 
         @Expose
         @ConfigOption(
@@ -1746,7 +1745,7 @@ public class NEUConfig extends Config {
                 runnableId = 4,
                 buttonText = "Edit"
         )
-        public Position petInfoPosition = new Position(-1, -1);
+        public final Position petInfoPosition = new Position(-1, -1);
 
         @Expose
         @ConfigOption(
@@ -1764,7 +1763,7 @@ public class NEUConfig extends Config {
                         "\u00a7bUntil L38: \u00a7e5m13s",
                         "\u00a7bUntil L100: \u00a7e2d13h"}
         )
-        public List<Integer> petOverlayText = new ArrayList<>(Arrays.asList(0, 2, 3, 6, 4));
+        public final List<Integer> petOverlayText = new ArrayList<>(Arrays.asList(0, 2, 3, 6, 4));
 
         @Expose
         @ConfigOption(
@@ -1772,7 +1771,7 @@ public class NEUConfig extends Config {
                 desc = "Show the icon of the pet you have equiped in the overlay"
         )
         @ConfigEditorBoolean
-        public boolean petOverlayIcon = true;
+        public final boolean petOverlayIcon = true;
 
         @Expose
         @ConfigOption(
@@ -1782,7 +1781,7 @@ public class NEUConfig extends Config {
         @ConfigEditorDropdown(
                 values = {"Background", "No Shadow", "Shadow Only", "Full Shadow"}
         )
-        public int petInfoOverlayStyle = 0;
+        public final int petInfoOverlayStyle = 0;
 
         @Expose
         @ConfigOption(
@@ -1790,7 +1789,7 @@ public class NEUConfig extends Config {
                 desc = "Show 2 pets on the overlay\nUseful if training two pets at once with autopet"
         )
         @ConfigEditorBoolean
-        public boolean dualPets = false;
+        public final boolean dualPets = false;
     }
 
     public static class AuctionHouseSearch {
@@ -1800,7 +1799,7 @@ public class NEUConfig extends Config {
                 desc = "Use the advanced search GUI with autocomplete and history instead of the normal sign GUI\n\u00a7eStar Selection Texture: Johnny#4567"
         )
         @ConfigEditorBoolean
-        public boolean enableSearchOverlay = true;
+        public final boolean enableSearchOverlay = true;
 
         @Expose
         @ConfigOption(
@@ -1808,7 +1807,7 @@ public class NEUConfig extends Config {
                 desc = "Don't clear the search bar after closing the GUI"
         )
         @ConfigEditorBoolean
-        public boolean keepPreviousSearch = false;
+        public final boolean keepPreviousSearch = false;
 
         @Expose
         @ConfigOption(
@@ -1816,7 +1815,7 @@ public class NEUConfig extends Config {
                 desc = "Show past searches below the autocomplete box"
         )
         @ConfigEditorBoolean
-        public boolean showPastSearches = true;
+        public final boolean showPastSearches = true;
 
         @Expose
         @ConfigOption(
@@ -1825,7 +1824,7 @@ public class NEUConfig extends Config {
                         "ENTER can still be used to search"
         )
         @ConfigEditorBoolean
-        public boolean escFullClose = true;
+        public final boolean escFullClose = true;
     }
 
     public static class AccessoryBag {
@@ -1845,7 +1844,7 @@ public class NEUConfig extends Config {
                 desc = "Hypixel api key"
         )
         @ConfigEditorText
-        public String apiKey = "";
+        public final String apiKey = "";
     }
 
     private static ArrayList<String> createDefaultQuickCommands() {
@@ -1882,12 +1881,12 @@ public class NEUConfig extends Config {
     }
 
     public static class Hidden {
-        @Expose public HashMap<String, HiddenProfileSpecific> profileSpecific = new HashMap<>();
+        @Expose public final HashMap<String, HiddenProfileSpecific> profileSpecific = new HashMap<>();
         @Expose public List<InventoryButton> inventoryButtons = createDefaultInventoryButtons();
 
-        @Expose public boolean enableItemEditing = false;
-        @Expose public boolean cacheRenderedItempane = true;
-        @Expose public boolean autoupdate = true;
+        @Expose public final boolean enableItemEditing = false;
+        @Expose public final boolean cacheRenderedItempane = true;
+        @Expose public final boolean autoupdate = true;
         @Expose public String overlaySearchBar = "";
         @Expose public String overlayQuickCommand = "";
         @Expose public boolean dev = false;
@@ -1895,12 +1894,12 @@ public class NEUConfig extends Config {
         @Expose public String selectedCape = null;
         @Expose public int compareMode = 0;
         @Expose public int sortMode = 0;
-        @Expose public ArrayList<Boolean> compareAscending = Lists.newArrayList(true, true, true);
-        @Expose public ArrayList<String> favourites = new ArrayList<>();
-        @Expose public ArrayList<String> previousAuctionSearches = new ArrayList<>();
-        @Expose public ArrayList<String> eventFavourites = new ArrayList<>();
-        @Expose public ArrayList<String> quickCommands = createDefaultQuickCommands();
-        @Expose public ArrayList<String> enchantColours = Lists.newArrayList(
+        @Expose public final ArrayList<Boolean> compareAscending = Lists.newArrayList(true, true, true);
+        @Expose public final ArrayList<String> favourites = new ArrayList<>();
+        @Expose public final ArrayList<String> previousAuctionSearches = new ArrayList<>();
+        @Expose public final ArrayList<String> eventFavourites = new ArrayList<>();
+        @Expose public final ArrayList<String> quickCommands = createDefaultQuickCommands();
+        @Expose public final ArrayList<String> enchantColours = Lists.newArrayList(
                       "[a-zA-Z\\- ]+:\u003e:9:6:0",
                                 "[a-zA-Z\\- ]+:\u003e:6:c:0",
                                 "[a-zA-Z\\- ]+:\u003e:5:5:0",
@@ -1972,12 +1971,12 @@ public class NEUConfig extends Config {
     }
 
     public static class InventoryButton {
-        @Expose public int x;
-        @Expose public int y;
-        @Expose public boolean playerInvOnly;
+        @Expose public final int x;
+        @Expose public final int y;
+        @Expose public final boolean playerInvOnly;
 
-        @Expose public boolean anchorRight;
-        @Expose public boolean anchorBottom;
+        @Expose public final boolean anchorRight;
+        @Expose public final boolean anchorBottom;
 
         @Expose public int backgroundIndex;
         @Expose public String command;
@@ -2034,7 +2033,7 @@ public class NEUConfig extends Config {
                 maxValue = 3f,
                 minStep = 0.25f
         )
-        public float dmIconScale = 1.0f;
+        public final float dmIconScale = 1.0f;
 
         @Expose
         @ConfigOption(
@@ -2132,7 +2131,7 @@ public class NEUConfig extends Config {
                 name = "Position",
                 desc = "The position of the map"
         )
-        public Position dmPosition = new Position(10, 10);
+        public final Position dmPosition = new Position(10, 10);
     }
 
 }

@@ -24,7 +24,7 @@ public class ItemCooldowns {
 
     public static long pickaxeCooldown = -1;
 
-    public static TreeMap<Long, BlockPos> blocksClicked = new TreeMap<>();
+    public static final TreeMap<Long, BlockPos> blocksClicked = new TreeMap<>();
 
     private static int tickCounter = 0;
 

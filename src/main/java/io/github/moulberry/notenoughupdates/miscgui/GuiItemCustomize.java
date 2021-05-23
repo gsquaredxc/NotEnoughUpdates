@@ -18,9 +18,7 @@ import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
 
-import java.awt.*;
 import java.io.*;
-import java.net.URL;
 
 public class GuiItemCustomize extends GuiScreen {
 

@@ -15,7 +15,6 @@ import io.github.moulberry.notenoughupdates.dungeons.DungeonWin;
 import io.github.moulberry.notenoughupdates.dungeons.GuiDungeonMapEditor;
 import io.github.moulberry.notenoughupdates.gamemodes.GuiGamemodes;
 import io.github.moulberry.notenoughupdates.gamemodes.SBGamemodes;
-import io.github.moulberry.notenoughupdates.infopanes.CollectionLogInfoPane;
 import io.github.moulberry.notenoughupdates.miscfeatures.*;
 import io.github.moulberry.notenoughupdates.miscgui.*;
 import io.github.moulberry.notenoughupdates.options.NEUConfig;
@@ -34,8 +33,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.client.gui.inventory.GuiContainer;
-import net.minecraft.client.gui.inventory.GuiInventory;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.resources.IReloadableResourceManager;
 import net.minecraft.client.settings.KeyBinding;
@@ -102,14 +99,14 @@ public class NotEnoughUpdates {
     public GuiScreen openGui = null;
     public long lastOpenedGui = 0;
 
-    SimpleCommand collectionLogCommand = new SimpleCommand("neucl", new SimpleCommand.ProcessCommandRunnable() {
+    final SimpleCommand collectionLogCommand = new SimpleCommand("neucl", new SimpleCommand.ProcessCommandRunnable() {
         public void processCommand(ICommandSender sender, String[] args) {
             sender.addChatMessage(new ChatComponentText(EnumChatFormatting.RED +
                     "This feature has been disabled temporarily."));
         }
     });
 
-    SimpleCommand nullzeeSphereCommand = new SimpleCommand("neuzeesphere", new SimpleCommand.ProcessCommandRunnable() {
+    final SimpleCommand nullzeeSphereCommand = new SimpleCommand("neuzeesphere", new SimpleCommand.ProcessCommandRunnable() {
         public void processCommand(ICommandSender sender, String[] args) {
             if(args.length != 1) {
                 sender.addChatMessage(new ChatComponentText(EnumChatFormatting.RED+"Usage: /neuzeesphere [on/off] or /neuzeesphere (radius) or /neuzeesphere setCenter"));
@@ -219,32 +216,32 @@ public class NotEnoughUpdates {
         }
     });*/
 
-    SimpleCommand gamemodesCommand = new SimpleCommand("neugamemodes", new SimpleCommand.ProcessCommandRunnable() {
+    final SimpleCommand gamemodesCommand = new SimpleCommand("neugamemodes", new SimpleCommand.ProcessCommandRunnable() {
         public void processCommand(ICommandSender sender, String[] args) {
             boolean upgradeOverride = args.length == 1 && args[0].equals("upgradeOverride");
             openGui = new GuiGamemodes(upgradeOverride);
         }
     });
 
-    SimpleCommand buttonsCommand = new SimpleCommand("neubuttons", new SimpleCommand.ProcessCommandRunnable() {
+    final SimpleCommand buttonsCommand = new SimpleCommand("neubuttons", new SimpleCommand.ProcessCommandRunnable() {
         public void processCommand(ICommandSender sender, String[] args) {
             openGui = new GuiInvButtonEditor();
         }
     });
 
-    SimpleCommand enchantColourCommand = new SimpleCommand("neuec", new SimpleCommand.ProcessCommandRunnable() {
+    final SimpleCommand enchantColourCommand = new SimpleCommand("neuec", new SimpleCommand.ProcessCommandRunnable() {
         public void processCommand(ICommandSender sender, String[] args) {
             openGui = new GuiEnchantColour();
         }
     });
 
-    SimpleCommand resetRepoCommand = new SimpleCommand("neuresetrepo", new SimpleCommand.ProcessCommandRunnable() {
+    final SimpleCommand resetRepoCommand = new SimpleCommand("neuresetrepo", new SimpleCommand.ProcessCommandRunnable() {
         public void processCommand(ICommandSender sender, String[] args) {
             manager.resetRepo();
         }
     });
 
-    SimpleCommand dungeonWinTest = new SimpleCommand("neudungeonwintest", new SimpleCommand.ProcessCommandRunnable() {
+    final SimpleCommand dungeonWinTest = new SimpleCommand("neudungeonwintest", new SimpleCommand.ProcessCommandRunnable() {
         public void processCommand(ICommandSender sender, String[] args) {
             if(args.length > 0) {
                 DungeonWin.TEAM_SCORE = new ResourceLocation("notenoughupdates:dungeon_win/"+args[0].toLowerCase()+".png");
@@ -254,7 +251,7 @@ public class NotEnoughUpdates {
         }
     });
 
-    SimpleCommand reloadRepoCommand = new SimpleCommand("neureloadrepo", new SimpleCommand.ProcessCommandRunnable() {
+    final SimpleCommand reloadRepoCommand = new SimpleCommand("neureloadrepo", new SimpleCommand.ProcessCommandRunnable() {
         public void processCommand(ICommandSender sender, String[] args) {
             File items = new File(manager.repoLocation, "items");
             if(items.exists()) {
@@ -288,7 +285,7 @@ public class NotEnoughUpdates {
         petRarityToColourMap.put("LEGENDARY", EnumChatFormatting.GOLD.toString());
     }
     ScheduledExecutorService peekCommandExecutorService = null;
-    SimpleCommand peekCommand = new SimpleCommand("peek", new SimpleCommand.ProcessCommandRunnable() {
+    final SimpleCommand peekCommand = new SimpleCommand("peek", new SimpleCommand.ProcessCommandRunnable() {
         public void processCommand(ICommandSender sender, String[] args) {
             String name;
             if(args.length == 0) {
@@ -497,7 +494,7 @@ public class NotEnoughUpdates {
     });
 
 
-    SimpleCommand pcStatsCommand = new SimpleCommand("neustats", new SimpleCommand.ProcessCommandRunnable() {
+    final SimpleCommand pcStatsCommand = new SimpleCommand("neustats", new SimpleCommand.ProcessCommandRunnable() {
         public void processCommand(ICommandSender sender, String[] args) {
             Minecraft mc = Minecraft.getMinecraft();
             StringBuilder builder = new StringBuilder();
@@ -509,12 +506,11 @@ public class NotEnoughUpdates {
                     builder.append("[").append(modContainer.getName()).append("]")
                             .append("[").append(modContainer.getSource().getName()).append("]\n");
                 }
-                builder.append("```");
             } else {
                 long memorySize = -1;
                 try {
                     memorySize = ((com.sun.management.OperatingSystemMXBean) ManagementFactory.getOperatingSystemMXBean()).getTotalPhysicalMemorySize();
-                } catch(Exception e){}
+                } catch(Exception ignored){}
                 long maxMemory = Runtime.getRuntime().maxMemory();
                 long totalMemory = Runtime.getRuntime().totalMemory();
                 long freeMemory = Runtime.getRuntime().freeMemory();
@@ -556,11 +552,9 @@ public class NotEnoughUpdates {
                         builder.append("[").append(modContainer.getName()).append("]")
                                 .append("[").append(modContainer.getSource().getName()).append("]\n");
                     }
-                    builder.append("```");
-                } else {
-                    builder.append("```");
                 }
             }
+            builder.append("```");
             try {
                 StringSelection clipboard = new StringSelection(builder.toString());
                 Toolkit.getDefaultToolkit().getSystemClipboard().setContents(clipboard, clipboard);
@@ -573,7 +567,7 @@ public class NotEnoughUpdates {
 
     public static ProfileViewer profileViewer;
 
-    SimpleCommand.ProcessCommandRunnable viewProfileRunnable = new SimpleCommand.ProcessCommandRunnable() {
+    final SimpleCommand.ProcessCommandRunnable viewProfileRunnable = new SimpleCommand.ProcessCommandRunnable() {
         public void processCommand(ICommandSender sender, String[] args) {
             if(Loader.isModLoaded("optifine") &&
                     new File(Minecraft.getMinecraft().mcDataDir, "optionsof.txt").exists()) {
@@ -622,7 +616,7 @@ public class NotEnoughUpdates {
     };
 
 
-    SimpleCommand joinDungeonCommand = new SimpleCommand("join", new SimpleCommand.ProcessCommandRunnable() {
+    final SimpleCommand joinDungeonCommand = new SimpleCommand("join", new SimpleCommand.ProcessCommandRunnable() {
         @Override
         public void processCommand(ICommandSender sender, String[] args) {
             if (!hasSkyblockScoreboard()) {
@@ -643,7 +637,7 @@ public class NotEnoughUpdates {
         }
     });
 
-    SimpleCommand viewProfileCommand = new SimpleCommand("neuprofile", viewProfileRunnable, new SimpleCommand.TabCompleteRunnable() {
+    final SimpleCommand viewProfileCommand = new SimpleCommand("neuprofile", viewProfileRunnable, new SimpleCommand.TabCompleteRunnable() {
         @Override
         public List<String> tabComplete(ICommandSender sender, String[] args, BlockPos pos) {
             if(args.length != 1) return null;
@@ -660,7 +654,7 @@ public class NotEnoughUpdates {
         }
     });
 
-    SimpleCommand viewProfileShortCommand = new SimpleCommand("pv", new SimpleCommand.ProcessCommandRunnable() {
+    final SimpleCommand viewProfileShortCommand = new SimpleCommand("pv", new SimpleCommand.ProcessCommandRunnable() {
         @Override
         public void processCommand(ICommandSender sender, String[] args) {
             if(!isOnSkyblock()) {
@@ -686,7 +680,7 @@ public class NotEnoughUpdates {
         }
     });
 
-    SimpleCommand dhCommand = new SimpleCommand("dh", new SimpleCommand.ProcessCommandRunnable() {
+    final SimpleCommand dhCommand = new SimpleCommand("dh", new SimpleCommand.ProcessCommandRunnable() {
         @Override
         public void processCommand(ICommandSender sender, String[] args) {
             Minecraft.getMinecraft().thePlayer.sendChatMessage("/warp dungeon_hub");
@@ -700,7 +694,7 @@ public class NotEnoughUpdates {
             "\u00a7dFrom \u00a7c[ADMIN] Minikloon\u00a77: If you use that command again, I'll have to ban you", "",
             "Ok, this is actually the last message, use the command again and you'll crash I promise"};
     private int devFailIndex = 0;
-    SimpleCommand devTestCommand = new SimpleCommand("neudevtest", new SimpleCommand.ProcessCommandRunnable() {
+    final SimpleCommand devTestCommand = new SimpleCommand("neudevtest", new SimpleCommand.ProcessCommandRunnable() {
         @Override
         public void processCommand(ICommandSender sender, String[] args) {
             if(!Minecraft.getMinecraft().thePlayer.getName().equalsIgnoreCase("Moulberry")) {
@@ -748,7 +742,7 @@ public class NotEnoughUpdates {
     });
 
     public boolean packDevEnabled = false;
-    SimpleCommand packDevCommand = new SimpleCommand("neupackdev", new SimpleCommand.ProcessCommandRunnable() {
+    final SimpleCommand packDevCommand = new SimpleCommand("neupackdev", new SimpleCommand.ProcessCommandRunnable() {
         @Override
         public void processCommand(ICommandSender sender, String[] args) {
             if(args.length == 1 && args[0].equalsIgnoreCase("getnpc")) {
@@ -782,7 +776,7 @@ public class NotEnoughUpdates {
         }
     });
 
-    SimpleCommand dnCommand = new SimpleCommand("dn", new SimpleCommand.ProcessCommandRunnable() {
+    final SimpleCommand dnCommand = new SimpleCommand("dn", new SimpleCommand.ProcessCommandRunnable() {
         @Override
         public void processCommand(ICommandSender sender, String[] args) {
             Minecraft.getMinecraft().thePlayer.sendChatMessage("/warp dungeon_hub");
@@ -790,7 +784,7 @@ public class NotEnoughUpdates {
         }
     });
 
-    SimpleCommand viewCataCommand = new SimpleCommand("cata", new SimpleCommand.ProcessCommandRunnable() {
+    final SimpleCommand viewCataCommand = new SimpleCommand("cata", new SimpleCommand.ProcessCommandRunnable() {
         @Override
         public void processCommand(ICommandSender sender, String[] args) {
             GuiProfileViewer.currentPage = GuiProfileViewer.ProfileViewerPage.DUNG;
@@ -813,7 +807,7 @@ public class NotEnoughUpdates {
         }
     });
 
-    SimpleCommand linksCommand = new SimpleCommand("neulinks", new SimpleCommand.ProcessCommandRunnable() {
+    final SimpleCommand linksCommand = new SimpleCommand("neulinks", new SimpleCommand.ProcessCommandRunnable() {
         public void processCommand(ICommandSender sender, String[] args) {
             File repo = manager.repoLocation;
             if(repo.exists()) {
@@ -830,20 +824,20 @@ public class NotEnoughUpdates {
         }
     });
 
-    SimpleCommand overlayPlacementsCommand = new SimpleCommand("neuoverlay", new SimpleCommand.ProcessCommandRunnable() {
+    final SimpleCommand overlayPlacementsCommand = new SimpleCommand("neuoverlay", new SimpleCommand.ProcessCommandRunnable() {
         public void processCommand(ICommandSender sender, String[] args) {
             openGui = new NEUOverlayPlacements();
         }
     });
 
-    SimpleCommand tutorialCommand = new SimpleCommand("neututorial", new SimpleCommand.ProcessCommandRunnable() {
+    final SimpleCommand tutorialCommand = new SimpleCommand("neututorial", new SimpleCommand.ProcessCommandRunnable() {
         public void processCommand(ICommandSender sender, String[] args) {
             openGui = new HelpGUI();
         }
     });
 
     public Color[][] colourMap = null;
-    SimpleCommand neumapCommand = new SimpleCommand("neumap", new SimpleCommand.ProcessCommandRunnable() {
+    final SimpleCommand neumapCommand = new SimpleCommand("neumap", new SimpleCommand.ProcessCommandRunnable() {
         public void processCommand(ICommandSender sender, String[] args) {
             if(colourMap == null) {
                 try(BufferedReader reader = new BufferedReader(new InputStreamReader(Minecraft.getMinecraft().getResourceManager().getResource(
@@ -942,7 +936,7 @@ public class NotEnoughUpdates {
         }
     });
 
-    SimpleCommand customizeCommand = new SimpleCommand("neucustomize", new SimpleCommand.ProcessCommandRunnable() {
+    final SimpleCommand customizeCommand = new SimpleCommand("neucustomize", new SimpleCommand.ProcessCommandRunnable() {
         public void processCommand(ICommandSender sender, String[] args) {
             ItemStack held = Minecraft.getMinecraft().thePlayer.getHeldItem();
 
@@ -962,7 +956,7 @@ public class NotEnoughUpdates {
         }
     });
 
-    SimpleCommand.ProcessCommandRunnable settingsRunnable = new SimpleCommand.ProcessCommandRunnable() {
+    final SimpleCommand.ProcessCommandRunnable settingsRunnable = new SimpleCommand.ProcessCommandRunnable() {
         public void processCommand(ICommandSender sender, String[] args) {
             if(args.length > 0) {
                 openGui = new GuiScreenElementWrapper(new NEUConfigEditor(config, StringUtils.join(args, " ")));
@@ -972,11 +966,11 @@ public class NotEnoughUpdates {
         }
     };
 
-    SimpleCommand settingsCommand = new SimpleCommand("neu", settingsRunnable);
-    SimpleCommand settingsCommand2 = new SimpleCommand("neusettings", settingsRunnable);
-    SimpleCommand settingsCommand3 = new SimpleCommand("neuconfig", settingsRunnable);
+    final SimpleCommand settingsCommand = new SimpleCommand("neu", settingsRunnable);
+    final SimpleCommand settingsCommand2 = new SimpleCommand("neusettings", settingsRunnable);
+    final SimpleCommand settingsCommand3 = new SimpleCommand("neuconfig", settingsRunnable);
 
-    SimpleCommand calendarCommand = new SimpleCommand("neucalendar", new SimpleCommand.ProcessCommandRunnable() {
+    final SimpleCommand calendarCommand = new SimpleCommand("neucalendar", new SimpleCommand.ProcessCommandRunnable() {
         public void processCommand(ICommandSender sender, String[] args) {
             Minecraft.getMinecraft().thePlayer.closeScreen();
             CalendarOverlay.setEnabled(true);
@@ -984,7 +978,7 @@ public class NotEnoughUpdates {
         }
     });
 
-    SimpleCommand neuAhCommand = new SimpleCommand("neuah", new SimpleCommand.ProcessCommandRunnable() {
+    final SimpleCommand neuAhCommand = new SimpleCommand("neuah", new SimpleCommand.ProcessCommandRunnable() {
         public void processCommand(ICommandSender sender, String[] args) {
             if(!hasSkyblockScoreboard()) {
                 Minecraft.getMinecraft().thePlayer.addChatMessage(new ChatComponentText(EnumChatFormatting.RED+

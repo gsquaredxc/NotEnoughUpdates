@@ -32,7 +32,6 @@ import net.minecraft.util.*;
 import net.minecraft.world.storage.MapData;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.event.world.WorldEvent;
-import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL14;
@@ -93,9 +92,9 @@ public class DungeonMap {
 
     private final Map<String, ResourceLocation> playerSkinMap = new HashMap<>();
     
-    private class RoomOffset {
-        int x;
-        int y;
+    private static class RoomOffset {
+        final int x;
+        final int y;
 
         public RoomOffset(int x, int y) {
             this.x = x;
@@ -103,19 +102,19 @@ public class DungeonMap {
         }
 
         public RoomOffset left() {
-            return new RoomOffset(x-1, y);
+            return new RoomOffset(x - 1, y);
         }
 
         public RoomOffset right() {
-            return new RoomOffset(x+1, y);
+            return new RoomOffset(x + 1, y);
         }
 
         public RoomOffset up() {
-            return new RoomOffset(x, y-1);
+            return new RoomOffset(x, y - 1);
         }
 
         public RoomOffset down() {
-            return new RoomOffset(x, y+1);
+            return new RoomOffset(x, y + 1);
         }
 
         public RoomOffset[] getNeighbors() {
@@ -140,9 +139,9 @@ public class DungeonMap {
         NONE, WALL, CORRIDOR, ROOM_DIVIDER
     }
 
-    private class RoomConnection {
-        RoomConnectionType type;
-        Color colour;
+    private static class RoomConnection {
+        final RoomConnectionType type;
+        final Color colour;
 
         public RoomConnection(RoomConnectionType type, Color colour) {
             this.type = type;
@@ -164,7 +163,7 @@ public class DungeonMap {
         }
     }
 
-    private class Room {
+    private static class Room {
         Color colour = new Color(0, 0, 0, 0);
         int tickColour = 0;
         boolean fillCorner = false;
@@ -732,7 +731,7 @@ public class DungeonMap {
                             mapShader.setProjectionMatrix(projectionMatrix);
                             mapShader.loadShader(0);
                             renderFromBuffer = mapFramebuffer2;
-                        } catch(Exception e) {
+                        } catch(Exception ignored) {
                         }
                     } GlStateManager.popMatrix();
                 }
@@ -959,16 +958,16 @@ public class DungeonMap {
 
             try {
                 entry.getValue().colour = colourMap[x][y];
-            } catch(Exception e) {}
+            } catch(Exception ignored) {}
         }
     }
 
     private class MapPosition {
-        public float roomOffsetX;
-        public float connOffsetX;
+        public final float roomOffsetX;
+        public final float connOffsetX;
 
-        public float roomOffsetY;
-        public float connOffsetY;
+        public final float roomOffsetY;
+        public final float connOffsetY;
 
         public float rotation;
 

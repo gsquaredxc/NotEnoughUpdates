@@ -7,37 +7,22 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.mojang.authlib.GameProfile;
-import com.mojang.authlib.minecraft.MinecraftProfileTexture;
-import io.github.moulberry.notenoughupdates.NotEnoughUpdates;
-import io.github.moulberry.notenoughupdates.util.TexLoc;
-import io.github.moulberry.notenoughupdates.util.Utils;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelHumanoidHead;
 import net.minecraft.client.model.ModelSkeletonHead;
-import net.minecraft.client.renderer.EntityRenderer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.WorldRenderer;
 import net.minecraft.client.renderer.block.model.*;
 import net.minecraft.client.renderer.texture.*;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraft.client.resources.DefaultPlayerSkin;
 import net.minecraft.client.resources.IResourceManager;
 import net.minecraft.client.resources.IResourceManagerReloadListener;
 import net.minecraft.client.resources.model.IBakedModel;
-import net.minecraft.client.resources.model.ModelBakery;
 import net.minecraft.client.resources.model.ModelRotation;
 import net.minecraft.client.resources.model.SimpleBakedModel;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.client.event.RenderGameOverlayEvent;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import org.lwjgl.input.Keyboard;
-import org.lwjgl.opengl.GL11;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -70,7 +55,7 @@ public class CustomSkulls implements IResourceManagerReloadListener {
 
     private final Gson gson = new GsonBuilder().create();
 
-    private class CustomSkull {
+    private static class CustomSkull {
         private ModelBlock model;
         private IBakedModel modelBaked;
 
@@ -121,19 +106,17 @@ public class CustomSkulls implements IResourceManagerReloadListener {
             }
 
             Minecraft.getMinecraft().getTextureManager().loadTexture(atlas, textureMap);
-        } catch(Exception e) {
+        } catch(Exception ignored) {
         }
     }
 
     private void loadSprites() {
         final Set<ResourceLocation> set = this.getAllTextureLocations();
         set.remove(TextureMap.LOCATION_MISSING_TEXTURE);
-        IIconCreator iiconcreator = new IIconCreator() {
-            public void registerSprites(TextureMap iconRegistry) {
-                for(ResourceLocation resourcelocation : set) {
-                    TextureAtlasSprite textureatlassprite = iconRegistry.registerSprite(resourcelocation);
-                    CustomSkulls.this.sprites.put(resourcelocation, textureatlassprite);
-                }
+        IIconCreator iiconcreator = iconRegistry -> {
+            for(ResourceLocation resourcelocation : set) {
+                TextureAtlasSprite textureatlassprite = iconRegistry.registerSprite(resourcelocation);
+                CustomSkulls.this.sprites.put(resourcelocation, textureatlassprite);
             }
         };
         this.textureMap.loadSprites(Minecraft.getMinecraft().getResourceManager(), iiconcreator);
@@ -212,9 +195,8 @@ public class CustomSkulls implements IResourceManagerReloadListener {
 
         for(int j = quads.size(); i < j; ++i) {
             BakedQuad bakedquad = quads.get(i);
-            int k = color;
 
-            net.minecraftforge.client.model.pipeline.LightUtil.renderQuadColor(renderer, bakedquad, k);
+            net.minecraftforge.client.model.pipeline.LightUtil.renderQuadColor(renderer, bakedquad, color);
         }
     }
 

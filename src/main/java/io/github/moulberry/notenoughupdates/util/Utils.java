@@ -5,21 +5,15 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
-import com.mojang.authlib.Agent;
-import com.mojang.authlib.yggdrasil.YggdrasilAuthenticationService;
-import com.mojang.authlib.yggdrasil.YggdrasilUserAuthentication;
 import io.github.moulberry.notenoughupdates.NotEnoughUpdates;
-import io.github.moulberry.notenoughupdates.util.TexLoc;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
-import net.minecraft.client.audio.SoundHandler;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.*;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.entity.RenderItem;
-import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.resources.model.IBakedModel;
@@ -31,23 +25,16 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.nbt.NBTTagString;
-import net.minecraft.potion.Potion;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.*;
 import net.minecraftforge.fml.common.Loader;
 import org.lwjgl.BufferUtils;
-import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL14;
-import org.lwjgl.util.glu.Project;
 
-import javax.swing.*;
 import java.awt.*;
 import java.io.File;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
-import java.net.Proxy;
 import java.nio.FloatBuffer;
 import java.nio.file.Files;
 import java.util.*;
@@ -66,9 +53,7 @@ public class Utils {
     private static final FloatBuffer modelviewMatrixOld = BufferUtils.createFloatBuffer(16);
 
     public static <T> ArrayList<T> createList(T... values) {
-        ArrayList<T> list = new ArrayList<>();
-        for(T value : values)list.add(value);
-        return list;
+        return new ArrayList<>(Arrays.asList(values));
     }
 
     public static void resetGuiScale() {
@@ -333,7 +318,7 @@ public class Utils {
         for(String methodName : methodNames) {
             try {
                 return clazz.getDeclaredMethod(methodName, params);
-            } catch(Exception e) {}
+            } catch(Exception ignored) {}
         }
         return null;
     }
@@ -344,13 +329,13 @@ public class Utils {
             try {
                 field = clazz.getDeclaredField(fieldName);
                 break;
-            } catch(Exception e) {}
+            } catch(Exception ignored) {}
         }
         if(field != null) {
             field.setAccessible(true);
             try {
                 return field.get(o);
-            } catch(IllegalAccessException e) {
+            } catch(IllegalAccessException ignored) {
             }
         }
         return null;
@@ -710,11 +695,11 @@ public class Utils {
         String excess;
         String trimmed = trimToWidth(str, len);
 
-        String colourCodes = "";
+        StringBuilder colourCodes = new StringBuilder();
         Pattern pattern = Pattern.compile("\\u00A7.");
         Matcher matcher = pattern.matcher(trimmed);
         while(matcher.find()) {
-            colourCodes += matcher.group();
+            colourCodes.append(matcher.group());
         }
 
         boolean firstLine = true;
@@ -854,7 +839,7 @@ public class Utils {
         return prim.getAsString();
     }
 
-    public static Splitter PATH_SPLITTER = Splitter.on(".").omitEmptyStrings().limit(2);
+    public static final Splitter PATH_SPLITTER = Splitter.on(".").omitEmptyStrings().limit(2);
     public static JsonElement getElement(JsonElement element, String path) {
         List<String> path_split = PATH_SPLITTER.splitToList(path);
         if(element instanceof JsonObject) {
@@ -977,7 +962,7 @@ public class Utils {
             if (needsWrap)
             {
                 int wrappedTooltipWidth = 0;
-                List<String> wrappedTextLines = new ArrayList<String>();
+                List<String> wrappedTextLines = new ArrayList<>();
                 for (int i = 0; i < textLines.size(); i++)
                 {
                     String textLine = textLines.get(i);

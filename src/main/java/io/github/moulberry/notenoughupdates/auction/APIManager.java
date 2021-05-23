@@ -26,7 +26,6 @@ import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 
 public class APIManager {
@@ -35,7 +34,7 @@ public class APIManager {
     public final CustomAH customAH;
 
     private final TreeMap<String, Auction> auctionMap = new TreeMap<>();
-    public HashMap<String, HashSet<String>> internalnameToAucIdMap = new HashMap<>();
+    public final HashMap<String, HashSet<String>> internalnameToAucIdMap = new HashMap<>();
     private final HashSet<String> playerBids = new HashSet<>();
     private final HashSet<String> playerBidsNotified = new HashSet<>();
     private final HashSet<String> playerBidsFinishedNotified = new HashSet<>();
@@ -49,7 +48,7 @@ public class APIManager {
     private JsonObject auctionPricesJson = null;
     private final HashMap<String, CraftInfo> craftCost = new HashMap<>();
 
-    public TreeMap<String, HashMap<Integer, HashSet<String>>> extrasToAucIdMap = new TreeMap<>();
+    public final TreeMap<String, HashMap<Integer, HashSet<String>>> extrasToAucIdMap = new TreeMap<>();
 
     private long lastAuctionUpdate = 0;
     private long lastShortAuctionUpdate = 0;
@@ -87,15 +86,15 @@ public class APIManager {
     }
 
     public class Auction {
-        public String auctioneerUuid;
+        public final String auctioneerUuid;
         public long end;
-        public int starting_bid;
+        public final int starting_bid;
         public int highest_bid_amount;
         public int bid_count;
-        public boolean bin;
-        public String category;
-        public String rarity;
-        public int dungeonTier;
+        public final boolean bin;
+        public final String category;
+        public final String rarity;
+        public final int dungeonTier;
         public String item_tag_str;
         public NBTTagCompound item_tag = null;
         private ItemStack stack;
@@ -215,17 +214,15 @@ public class APIManager {
     private String niceAucId(String aucId) {
         if(aucId.length()!=32) return aucId;
 
-        StringBuilder niceAucId = new StringBuilder();
-        niceAucId.append(aucId, 0, 8);
-        niceAucId.append("-");
-        niceAucId.append(aucId, 8, 12);
-        niceAucId.append("-");
-        niceAucId.append(aucId, 12, 16);
-        niceAucId.append("-");
-        niceAucId.append(aucId, 16, 20);
-        niceAucId.append("-");
-        niceAucId.append(aucId, 20, 32);
-        return niceAucId.toString();
+        return aucId.substring(0, 8) +
+                "-" +
+                aucId.substring(8, 12) +
+                "-" +
+                aucId.substring(12, 16) +
+                "-" +
+                aucId.substring(16, 20) +
+                "-" +
+                aucId.substring(20, 32);
     }
 
     public Set<String> getLowestBinKeySet() {
@@ -390,9 +387,7 @@ public class APIManager {
             }
         };
 
-        manager.hypixelApi.getMyApiGZIPAsync("auctionLast.json.gz", process, () -> {
-            System.out.println("Error downloading auction from Moulberry's jank API. :(");
-        });
+        manager.hypixelApi.getMyApiGZIPAsync("auctionLast.json.gz", process, () -> System.out.println("Error downloading auction from Moulberry's jank API. :("));
 
         manager.hypixelApi.getMyApiGZIPAsync("auction.json.gz", jsonObject -> {
                 if(jsonObject.get("success").getAsBoolean()) {
@@ -404,9 +399,7 @@ public class APIManager {
 
                     process.accept(jsonObject);
                 }
-            }, () -> {
-            System.out.println("Error downloading auction from Moulberry's jank API. :(");
-        });
+            }, () -> System.out.println("Error downloading auction from Moulberry's jank API. :("));
 
     }
 
@@ -426,10 +419,10 @@ public class APIManager {
                 }
             }
             taggedAuctions = aucs.size();
-        } catch(Exception e) {}
+        } catch(Exception ignored) {}
     }
 
-    String[] rarityArr = new String[] {
+    final String[] rarityArr = new String[] {
        "COMMON", "UNCOMMON", "RARE", "EPIC", "LEGENDARY", "MYTHIC", "SPECIAL", "VERY SPECIAL",
     };
 
@@ -462,7 +455,7 @@ public class APIManager {
             "XII","XIII","XIV","XV","XVI","XVII","XIX","XX"};
 
 
-    String[] categoryItemType = new String[]{"sword","fishingrod","pickaxe","axe",
+    final String[] categoryItemType = new String[]{"sword","fishingrod","pickaxe","axe",
             "shovel","petitem","travelscroll","reforgestone","bow"};
     String playerUUID = null;
     private void processAuction(JsonObject auction) {
@@ -622,9 +615,7 @@ public class APIManager {
                     } else {
                         pagesToDownload.addLast(page);
                     }
-                }, () -> {
-                    pagesToDownload.addLast(page);
-                }
+                }, () -> pagesToDownload.addLast(page)
         );
     }
 
@@ -672,9 +663,7 @@ public class APIManager {
             auctionPricesJson = jsonObject;
             lastAuctionAvgUpdate = System.currentTimeMillis();
         }, () -> {});
-        manager.hypixelApi.getMyApiGZIPAsync("auction_averages_lbin/1day.json.gz", (jsonObject) -> {
-            auctionPricesAvgLowestBinJson = jsonObject;
-        }, () -> {});
+        manager.hypixelApi.getMyApiGZIPAsync("auction_averages_lbin/1day.json.gz", (jsonObject) -> auctionPricesAvgLowestBinJson = jsonObject, () -> {});
     }
 
     public Set<String> getItemAuctionInfoKeySet() {
@@ -739,7 +728,7 @@ public class APIManager {
         return Item.itemRegistry.getObject(new ResourceLocation(vanillaName)) != null;
     }
 
-    public class CraftInfo {
+    public static class CraftInfo {
         public boolean fromRecipe = false;
         public boolean vanillaItem = false;
         public float craftCost = -1;
@@ -765,8 +754,7 @@ public class APIManager {
             JsonObject bazaarInfo = getBazaarInfo(internalname);
 
             if(bazaarInfo != null && bazaarInfo.get("curr_buy") != null) {
-                float bazaarInstantBuyPrice = bazaarInfo.get("curr_buy").getAsFloat();
-                ci.craftCost = bazaarInstantBuyPrice;
+                ci.craftCost = bazaarInfo.get("curr_buy").getAsFloat();
             }
             //Don't use auction prices for vanilla items cuz people like to transfer money, messing up the cost of vanilla items.
             if(lowestBin > 0 && !ci.vanillaItem) {
@@ -896,10 +884,10 @@ public class APIManager {
         }
 
         if(idLevel.startsWith("LE")) {
-            int idLevelI = Integer.valueOf(idLevel.substring(2));
+            int idLevelI = Integer.parseInt(idLevel.substring(2));
             return level <= idLevelI;
         } else if(idLevel.startsWith("GE")) {
-            int idLevelI = Integer.valueOf(idLevel.substring(2));
+            int idLevelI = Integer.parseInt(idLevel.substring(2));
             return level >= idLevelI;
         }
 

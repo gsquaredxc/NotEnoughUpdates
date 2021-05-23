@@ -6,7 +6,6 @@ import io.github.moulberry.notenoughupdates.util.SpecialColour;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.renderer.vertex.VertexFormat;
 import net.minecraft.client.renderer.vertex.VertexFormatElement;
@@ -104,8 +103,8 @@ public class CrystalOverlay {
         ReverseWorldRenderer overlayVBO = null;
         Set<BlockPos> circleOffsets = null;
         int updates = 0;
-        int rgb;
-        int radius;
+        final int rgb;
+        final int radius;
     }
 
     private static double posLastUpdateX;
@@ -124,7 +123,7 @@ public class CrystalOverlay {
 
     public static long lastMiningUpdate = 0;
 
-    public static HashMap<CrystalType, BlockPos> crystals = new HashMap<>();
+    public static final HashMap<CrystalType, BlockPos> crystals = new HashMap<>();
 
     private static final ExecutorService es = Executors.newSingleThreadExecutor();
 

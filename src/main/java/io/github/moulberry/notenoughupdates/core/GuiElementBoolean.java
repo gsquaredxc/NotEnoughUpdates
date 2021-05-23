@@ -20,7 +20,7 @@ public class GuiElementBoolean extends GuiElement {
 
     private boolean previewValue;
     private int animation = 0;
-    private long lastMillis = 0;
+    private long lastMillis;
 
     private static final int xSize = 48;
     private static final int ySize = 14;

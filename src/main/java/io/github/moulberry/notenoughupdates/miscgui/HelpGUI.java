@@ -1,6 +1,5 @@
 package io.github.moulberry.notenoughupdates.miscgui;
 
-import io.github.moulberry.notenoughupdates.util.TexLoc;
 import io.github.moulberry.notenoughupdates.util.Utils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
@@ -16,11 +15,6 @@ import java.util.List;
 import java.util.Map;
 
 public class HelpGUI extends GuiScreen {
-
-    private int guiLeft = 0;
-    private int guiTop = 0;
-    private int sizeX = 0;
-    private int sizeY = 0;
 
     private int page = 0;
     private final ResourceLocation screenshotBorder = new ResourceLocation("notenoughupdates:ss_border.jpg");
@@ -58,10 +52,10 @@ public class HelpGUI extends GuiScreen {
         ScaledResolution scaledResolution = new ScaledResolution(Minecraft.getMinecraft());
         scaleFactor = scaledResolution.getScaleFactor();
 
-        sizeX = width/2+40/scaleFactor;
-        sizeY = height/2+40/scaleFactor;
-        guiLeft = width/4-20/scaleFactor;
-        guiTop = height/4-20/scaleFactor;
+        int sizeX = width / 2 + 40 / scaleFactor;
+        int sizeY = height / 2 + 40 / scaleFactor;
+        int guiLeft = width / 4 - 20 / scaleFactor;
+        int guiTop = height / 4 - 20 / scaleFactor;
 
         Minecraft.getMinecraft().getTextureManager().bindTexture(screenshotBorder);
         Utils.drawTexturedRect(guiLeft, guiTop, sizeX, sizeY);
@@ -69,19 +63,19 @@ public class HelpGUI extends GuiScreen {
         page = Math.max(0, Math.min(17, page));
 
         Minecraft.getMinecraft().getTextureManager().bindTexture(screenshots[page]);
-        Utils.drawTexturedRect(guiLeft+20f/scaleFactor, guiTop+20f/scaleFactor, sizeX-40f/scaleFactor, sizeY-40f/scaleFactor);
+        Utils.drawTexturedRect(guiLeft +20f/scaleFactor, guiTop +20f/scaleFactor, sizeX -40f/scaleFactor, sizeY -40f/scaleFactor);
 
         Utils.drawStringCentered(EnumChatFormatting.GOLD+"NEU Tutorial - Page "+(page+1)+"/18 - Use arrow keys", Minecraft.getMinecraft().fontRendererObj,
-                width/2, guiTop+8, true, 0);
+                width/2, guiTop +8, true, 0);
         if(scaleFactor != 2) Utils.drawStringCentered(EnumChatFormatting.GOLD+"Use GUI Scale normal for better reading experience", Minecraft.getMinecraft().fontRendererObj,
-                width/2, guiTop+18, true, 0);
+                width/2, guiTop +18, true, 0);
 
         for(Map.Entry<Vector2f, List<String>> entry : texts[page].entrySet()) {
             Vector2f location = entry.getKey();
             List<String> text = entry.getValue();
 
-            float x = guiLeft+20f/scaleFactor+(sizeX-40f/scaleFactor)*location.x;
-            float y = guiTop+20f/scaleFactor+(sizeY-40f/scaleFactor)*location.y;
+            float x = guiLeft +20f/scaleFactor+(sizeX -40f/scaleFactor)*location.x;
+            float y = guiTop +20f/scaleFactor+(sizeY -40f/scaleFactor)*location.y;
 
             Utils.drawHoveringText(text, (int)x, (int)y+12, 100000, 100000, 200, Minecraft.getMinecraft().fontRendererObj);
         }

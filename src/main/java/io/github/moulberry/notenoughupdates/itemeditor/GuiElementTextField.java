@@ -25,7 +25,7 @@ public class GuiElementTextField extends GuiElement {
     private int searchBarXSize = 350;
     private static final int searchBarPadding = 2;
 
-    private int options = 0;
+    private int options;
 
     private boolean focus = false;
 

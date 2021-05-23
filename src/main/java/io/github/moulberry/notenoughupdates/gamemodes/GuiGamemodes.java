@@ -26,7 +26,6 @@ public class GuiGamemodes extends GuiScreen {
     private int guiLeft = 100;
     private int guiTop = 100;
     private final int xSize = 200;
-    private final int ySize = 232;
 
     public GuiGamemodes(boolean upgradeOverride) {
         this.currentProfile = NotEnoughUpdates.INSTANCE.manager.getCurrentProfile();
@@ -95,7 +94,7 @@ public class GuiGamemodes extends GuiScreen {
     }
 
     @Override
-    protected void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException {
+    protected void mouseClicked(int mouseX, int mouseY, int mouseButton) {
         if(mouseButton == 0) {
             SBGamemodes.HardcoreMode setHC = SBGamemodes.HardcoreMode.NORMAL;
             SBGamemodes.IronmanMode setIM = SBGamemodes.IronmanMode.NORMAL;
@@ -152,7 +151,8 @@ public class GuiGamemodes extends GuiScreen {
         super.drawDefaultBackground();
 
         guiLeft = (width-xSize)/2;
-        guiTop = (height-ySize)/2;
+        int ySize = 232;
+        guiTop = (height- ySize)/2;
 
         GlStateManager.color(1, 1, 1, 1);
         Minecraft.getMinecraft().getTextureManager().bindTexture(gamemodes);

@@ -124,8 +124,7 @@ public class NEUConfigEditor extends GuiElement {
         LinkedHashMap<String, ConfigProcessor.ProcessedOption> newMap = new LinkedHashMap<>(cat.options);
 
         if(searchedOptions != null) {
-            Set<ConfigProcessor.ProcessedOption> retain = new HashSet<>();
-            retain.addAll(searchedOptions);
+            Set<ConfigProcessor.ProcessedOption> retain = new HashSet<>(searchedOptions);
 
             if(searchedAccordions != null) {
                 Set<Integer> visibleAccordions = searchedAccordions.get(cat);

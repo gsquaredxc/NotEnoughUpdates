@@ -9,7 +9,6 @@ import java.nio.IntBuffer;
 import java.nio.ShortBuffer;
 import java.util.Arrays;
 import java.util.BitSet;
-import java.util.Comparator;
 
 import net.minecraft.client.renderer.GLAllocation;
 import net.minecraft.client.renderer.vertex.VertexFormat;
@@ -77,20 +76,16 @@ public class ReverseWorldRenderer {
         Integer[] ainteger = new Integer[i];
 
         for (int k = 0; k < ainteger.length; ++k) {
-            ainteger[k] = Integer.valueOf(k);
+            ainteger[k] = k;
         }
 
-        Arrays.sort(ainteger, new Comparator<Integer>() {
-            public int compare(Integer p_compare_1_, Integer p_compare_2_) {
-                return -Floats.compare(afloat[p_compare_2_.intValue()], afloat[p_compare_1_.intValue()]);
-            }
-        });
+        Arrays.sort(ainteger, (p_compare_1_, p_compare_2_) -> -Floats.compare(afloat[p_compare_2_], afloat[p_compare_1_]));
         BitSet bitset = new BitSet();
         int l = this.vertexFormat.getNextOffset();
         int[] aint = new int[l];
 
         for (int l1 = 0; (l1 = bitset.nextClearBit(l1)) < ainteger.length; ++l1) {
-            int i1 = ainteger[l1].intValue();
+            int i1 = ainteger[l1];
 
             if (i1 != l1) {
                 this.rawIntBuffer.limit(i1 * l + l);
@@ -98,7 +93,7 @@ public class ReverseWorldRenderer {
                 this.rawIntBuffer.get(aint);
                 int j1 = i1;
 
-                for (int k1 = ainteger[i1].intValue(); j1 != l1; k1 = ainteger[k1].intValue()) {
+                for (int k1 = ainteger[i1]; j1 != l1; k1 = ainteger[k1]) {
                     this.rawIntBuffer.limit(k1 * l + l);
                     this.rawIntBuffer.position(k1 * l);
                     IntBuffer intbuffer = this.rawIntBuffer.slice();
@@ -134,16 +129,16 @@ public class ReverseWorldRenderer {
     }
 
     private static float func_181665_a(FloatBuffer p_181665_0_, float p_181665_1_, float p_181665_2_, float p_181665_3_, int p_181665_4_, int p_181665_5_) {
-        float f = p_181665_0_.get(p_181665_5_ + p_181665_4_ * 0 + 0);
-        float f1 = p_181665_0_.get(p_181665_5_ + p_181665_4_ * 0 + 1);
-        float f2 = p_181665_0_.get(p_181665_5_ + p_181665_4_ * 0 + 2);
-        float f3 = p_181665_0_.get(p_181665_5_ + p_181665_4_ * 1 + 0);
-        float f4 = p_181665_0_.get(p_181665_5_ + p_181665_4_ * 1 + 1);
-        float f5 = p_181665_0_.get(p_181665_5_ + p_181665_4_ * 1 + 2);
-        float f6 = p_181665_0_.get(p_181665_5_ + p_181665_4_ * 2 + 0);
+        float f = p_181665_0_.get(p_181665_5_);
+        float f1 = p_181665_0_.get(p_181665_5_ + 0 + 1);
+        float f2 = p_181665_0_.get(p_181665_5_ + 0 + 2);
+        float f3 = p_181665_0_.get(p_181665_5_ + p_181665_4_);
+        float f4 = p_181665_0_.get(p_181665_5_ + p_181665_4_ + 1);
+        float f5 = p_181665_0_.get(p_181665_5_ + p_181665_4_ + 2);
+        float f6 = p_181665_0_.get(p_181665_5_ + p_181665_4_ * 2);
         float f7 = p_181665_0_.get(p_181665_5_ + p_181665_4_ * 2 + 1);
         float f8 = p_181665_0_.get(p_181665_5_ + p_181665_4_ * 2 + 2);
-        float f9 = p_181665_0_.get(p_181665_5_ + p_181665_4_ * 3 + 0);
+        float f9 = p_181665_0_.get(p_181665_5_ + p_181665_4_ * 3);
         float f10 = p_181665_0_.get(p_181665_5_ + p_181665_4_ * 3 + 1);
         float f11 = p_181665_0_.get(p_181665_5_ + p_181665_4_ * 3 + 2);
         float f12 = (f + f3 + f6 + f9) * 0.25F - p_181665_1_;
@@ -328,9 +323,7 @@ public class ReverseWorldRenderer {
     }
 
     public ReverseWorldRenderer color(int red, int green, int blue, int alpha) {
-        if (this.noColor) {
-            return this;
-        } else {
+        if (!this.noColor) {
             int i = this.vertexCount * this.vertexFormat.getNextOffset() + this.vertexFormat.getOffset(this.vertexFormatIndex);
 
             switch (this.vertexFormatElement.getType()) {
@@ -371,8 +364,8 @@ public class ReverseWorldRenderer {
             }
 
             this.nextVertexFormatIndex();
-            return this;
         }
+        return this;
     }
 
     public void addVertexData(int[] vertexData) {
@@ -528,7 +521,7 @@ public class ReverseWorldRenderer {
     }
 
     @SideOnly(Side.CLIENT)
-    public class State {
+    public static class State {
         private final int[] stateRawBuffer;
         private final VertexFormat stateVertexFormat;
 

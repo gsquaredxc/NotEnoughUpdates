@@ -5,12 +5,9 @@ import io.github.moulberry.notenoughupdates.util.SBInfo;
 import io.github.moulberry.notenoughupdates.util.SpecialColour;
 import io.github.moulberry.notenoughupdates.util.Utils;
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockCrops;
-import net.minecraft.block.BlockPackedIce;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.*;
@@ -380,7 +377,7 @@ public class CustomItemEffects {
                             }
                         }
                     }
-                } catch(Exception e) {
+                } catch(Exception ignored) {
                 }
             }
         }
@@ -566,7 +563,6 @@ public class CustomItemEffects {
                 }
             } else if(NotEnoughUpdates.INSTANCE.config.itemOverlays.enableWandOverlay) {
                 if(heldInternal.equals("BUILDERS_WAND")) {
-                    int maxBlocks = MAX_BUILDERS_BLOCKS;
                     if (event.target.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK) {
                         IBlockState hover = Minecraft.getMinecraft().theWorld.getBlockState(event.target.getBlockPos().offset(event.target.sideHit, 1));
                         if(hover.getBlock() == Blocks.air) {
@@ -595,7 +591,7 @@ public class CustomItemEffects {
                                 String special = (candidatesOld.size() <= itemCount) ? NotEnoughUpdates.INSTANCE.config.itemOverlays.wandOverlayColour :
                                         "0:255:255:0:0";
 
-                                if(candidatesOld.size() <= maxBlocks) {
+                                if(candidatesOld.size() <= MAX_BUILDERS_BLOCKS) {
                                     for(Set<BlockPos> candidatesSorted : candidatesOldSorted.values()) {
                                         for(BlockPos candidate : candidatesSorted) {
                                             match.getBlock().setBlockBoundsBasedOnState(Minecraft.getMinecraft().theWorld, candidate);

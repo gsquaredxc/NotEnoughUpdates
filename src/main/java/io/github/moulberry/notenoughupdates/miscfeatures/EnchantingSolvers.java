@@ -3,13 +3,10 @@ package io.github.moulberry.notenoughupdates.miscfeatures;
 import io.github.moulberry.notenoughupdates.NotEnoughUpdates;
 import io.github.moulberry.notenoughupdates.util.Utils;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.inventory.GuiChest;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
-import net.minecraft.inventory.Container;
 import net.minecraft.inventory.ContainerChest;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
@@ -356,10 +353,8 @@ public class EnchantingSolvers {
                                     2, mode, Minecraft.getMinecraft().thePlayer);
                             millisLastClick = currentTime;
                         }
-                        return true;
-                    } else {
-                        return true;
                     }
+                    return true;
                 } else if(currentSolver == SolverType.SUPERPAIRS) {
                     lastSlotClicked = slotId;
                 }

@@ -11,7 +11,6 @@ import io.github.moulberry.notenoughupdates.auction.CustomAHGui;
 import io.github.moulberry.notenoughupdates.core.BackgroundBlur;
 import io.github.moulberry.notenoughupdates.core.GuiScreenElementWrapper;
 import io.github.moulberry.notenoughupdates.core.util.MiscUtils;
-import io.github.moulberry.notenoughupdates.cosmetics.CapeManager;
 import io.github.moulberry.notenoughupdates.dungeons.DungeonBlocks;
 import io.github.moulberry.notenoughupdates.dungeons.DungeonWin;
 import io.github.moulberry.notenoughupdates.gamemodes.SBGamemodes;
@@ -258,7 +257,6 @@ public class NEUEventListener {
             }
 
             NotEnoughUpdates.INSTANCE.overlay.redrawItems();
-            CapeManager.onTickSlow();
 
             for(EntityPlayer player : Minecraft.getMinecraft().theWorld.playerEntities) {
                 NotEnoughUpdates.profileViewer.putNameUuid(player.getName(), player.getUniqueID().toString().replace("-", ""));
@@ -271,7 +269,6 @@ public class NEUEventListener {
             }
 
             neu.updateSkyblockScoreboard();
-            CapeManager.getInstance().tick();
 
             if(Minecraft.getMinecraft().currentScreen instanceof GuiChest) {
                 GuiChest eventGui = (GuiChest) Minecraft.getMinecraft().currentScreen;
@@ -1520,7 +1517,7 @@ public class NEUEventListener {
                         Minecraft.getMinecraft().thePlayer.addChatMessage(new ChatComponentText("Added: " + resInternalname));
                         neu.manager.writeJsonDefaultDir(json, resInternalname+".json");
                         neu.manager.loadItem(resInternalname);
-                    } catch(IOException e) {}
+                    } catch(IOException ignored) {}
                 }
             }
         }
@@ -1617,7 +1614,7 @@ public class NEUEventListener {
                         }
                     }
                 }
-            } catch(Exception e) {}
+            } catch(Exception ignored) {}
         }
 
         boolean gotToEnchants = false;

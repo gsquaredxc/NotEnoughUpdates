@@ -103,9 +103,8 @@ public class AccessoryBagOverlay {
 
             if(currentTab == TAB_OPTIMIZER) {
                 int x = guiLeft+xSize+3;
-                int y = guiTop;
 
-                if(mouseY > y+92 && mouseY < y+103) {
+                if(mouseY > guiTop +92 && mouseY < guiTop +103) {
                     if(mouseX > x+5 && mouseX < x+75) {
                         mainWeapon = (int)Math.floor((mouseX-x-5)/70f*9);
                         if(mainWeapon < 1) {
@@ -119,13 +118,13 @@ public class AccessoryBagOverlay {
                 if(mouseX > x+5 && mouseX < x+35 || mouseX > x+45 && mouseX < x+75) {
                     boolean set = mouseX > x+5 && mouseX < x+35;
 
-                    if(mouseY > y+32 && mouseY < y+43) {
+                    if(mouseY > guiTop +32 && mouseY < guiTop +43) {
                         forceCC = set;
-                    } else if(mouseY > y+52 && mouseY < y+63) {
+                    } else if(mouseY > guiTop +52 && mouseY < guiTop +63) {
                         forceAS = set;
-                    } else if(mouseY > y+72 && mouseY < y+83) {
+                    } else if(mouseY > guiTop +72 && mouseY < guiTop +83) {
                         useGodPot = set;
-                    } else if(mouseY > y+92 && mouseY < y+103) {
+                    } else if(mouseY > guiTop +92 && mouseY < guiTop +103) {
                         allowShaded = set;
                     }
                 }
@@ -686,7 +685,7 @@ public class AccessoryBagOverlay {
                         case TAB_MISSING:
                             renderMissingOverlay(guiLeft+xSize+3, guiTop); return;
                         case TAB_OPTIMIZER:
-                            renderOptimizerOverlay(guiLeft+xSize+3, guiTop); return;
+                            renderOptimizerOverlay(guiLeft+xSize+3, guiTop);
                     }
                 } catch(Exception e) {
                     e.printStackTrace();
@@ -741,15 +740,15 @@ public class AccessoryBagOverlay {
         }
     }*/
 
-    private static final Pattern HEALTH_PATTERN_BONUS = Pattern.compile("^Health: (?:\\+|-)[0-9]+ HP \\([a-zA-Z]+ ((?:\\+|-)[0-9]+)");
-    private static final Pattern DEFENCE_PATTERN_BONUS = Pattern.compile("^Defense: (?:\\+|-)[0-9]+ \\([a-zA-Z]+ ((?:\\+|-)[0-9]+)");
-    private static final Pattern STRENGTH_PATTERN_BONUS = Pattern.compile("^Strength: (?:\\+|-)[0-9]+ \\([a-zA-Z]+ ((?:\\+|-)[0-9]+)");
-    private static final Pattern SPEED_PATTERN_BONUS = Pattern.compile("^Speed: (?:\\+|-)[0-9]+ \\([a-zA-Z]+ ((?:\\+|-)[0-9]+)");
-    private static final Pattern CC_PATTERN_BONUS = Pattern.compile("^Crit Chance: (?:\\+|-)[0-9]+% \\([a-zA-Z]+ ((?:\\+|-)[0-9]+)");
-    private static final Pattern CD_PATTERN_BONUS = Pattern.compile("^Crit Damage: (?:\\+|-)[0-9]+% \\([a-zA-Z]+ ((?:\\+|-)[0-9]+)");
-    private static final Pattern ATKSPEED_PATTERN_BONUS = Pattern.compile("^Bonus Attack Speed: (?:\\+|-)[0-9]+% \\([a-zA-Z]+ ((?:\\+|-)[0-9]+)");
-    private static final Pattern INTELLIGENCE_PATTERN_BONUS = Pattern.compile("^Intelligence: (?:\\+|-)[0-9]+ \\([a-zA-Z]+ ((?:\\+|-)[0-9]+)");
-    private static final Pattern SCC_PATTERN_BONUS = Pattern.compile("^Sea Creature Chance: (?:\\+|-)[0-9]+ \\([a-zA-Z]+ ((?:\\+|-)[0-9]+)");
+    private static final Pattern HEALTH_PATTERN_BONUS = Pattern.compile("^Health: [+\\-][0-9]+ HP \\([a-zA-Z]+ ([+\\-][0-9]+)");
+    private static final Pattern DEFENCE_PATTERN_BONUS = Pattern.compile("^Defense: [+\\-][0-9]+ \\([a-zA-Z]+ ([+\\-][0-9]+)");
+    private static final Pattern STRENGTH_PATTERN_BONUS = Pattern.compile("^Strength: [+\\-][0-9]+ \\([a-zA-Z]+ ([+\\-][0-9]+)");
+    private static final Pattern SPEED_PATTERN_BONUS = Pattern.compile("^Speed: [+\\-][0-9]+ \\([a-zA-Z]+ ([+\\-][0-9]+)");
+    private static final Pattern CC_PATTERN_BONUS = Pattern.compile("^Crit Chance: [+\\-][0-9]+% \\([a-zA-Z]+ ([+\\-][0-9]+)");
+    private static final Pattern CD_PATTERN_BONUS = Pattern.compile("^Crit Damage: [+\\-][0-9]+% \\([a-zA-Z]+ ([+\\-][0-9]+)");
+    private static final Pattern ATKSPEED_PATTERN_BONUS = Pattern.compile("^Bonus Attack Speed: [+\\-][0-9]+% \\([a-zA-Z]+ ([+\\-][0-9]+)");
+    private static final Pattern INTELLIGENCE_PATTERN_BONUS = Pattern.compile("^Intelligence: [+\\-][0-9]+ \\([a-zA-Z]+ ([+\\-][0-9]+)");
+    private static final Pattern SCC_PATTERN_BONUS = Pattern.compile("^Sea Creature Chance: [+\\-][0-9]+ \\([a-zA-Z]+ ([+\\-][0-9]+)");
     private static final HashMap<String, Pattern> STAT_PATTERN_MAP_BONUS = new HashMap<>();
     static {
         STAT_PATTERN_MAP_BONUS.put("health", HEALTH_PATTERN_BONUS);
@@ -763,15 +762,15 @@ public class AccessoryBagOverlay {
         STAT_PATTERN_MAP_BONUS.put("sea_creature_chance", SCC_PATTERN_BONUS);
     }
 
-    private static final Pattern HEALTH_PATTERN = Pattern.compile("^Health: ((?:\\+|-)[0-9]+)");
-    private static final Pattern DEFENCE_PATTERN = Pattern.compile("^Defense: ((?:\\+|-)[0-9]+)");
-    private static final Pattern STRENGTH_PATTERN = Pattern.compile("^Strength: ((?:\\+|-)[0-9]+)");
-    private static final Pattern SPEED_PATTERN = Pattern.compile("^Speed: ((?:\\+|-)[0-9]+)");
-    private static final Pattern CC_PATTERN = Pattern.compile("^Crit Chance: ((?:\\+|-)[0-9]+)");
-    private static final Pattern CD_PATTERN = Pattern.compile("^Crit Damage: ((?:\\+|-)[0-9]+)");
-    private static final Pattern ATKSPEED_PATTERN = Pattern.compile("^Bonus Attack Speed: ((?:\\+|-)[0-9]+)");
-    private static final Pattern INTELLIGENCE_PATTERN = Pattern.compile("^Intelligence: ((?:\\+|-)[0-9]+)");
-    private static final Pattern SCC_PATTERN = Pattern.compile("^Sea Creature Chance: ((?:\\+|-)[0-9]+)");
+    private static final Pattern HEALTH_PATTERN = Pattern.compile("^Health: ([+\\-][0-9]+)");
+    private static final Pattern DEFENCE_PATTERN = Pattern.compile("^Defense: ([+\\-][0-9]+)");
+    private static final Pattern STRENGTH_PATTERN = Pattern.compile("^Strength: ([+\\-][0-9]+)");
+    private static final Pattern SPEED_PATTERN = Pattern.compile("^Speed: ([+\\-][0-9]+)");
+    private static final Pattern CC_PATTERN = Pattern.compile("^Crit Chance: ([+\\-][0-9]+)");
+    private static final Pattern CD_PATTERN = Pattern.compile("^Crit Damage: ([+\\-][0-9]+)");
+    private static final Pattern ATKSPEED_PATTERN = Pattern.compile("^Bonus Attack Speed: ([+\\-][0-9]+)");
+    private static final Pattern INTELLIGENCE_PATTERN = Pattern.compile("^Intelligence: ([+\\-][0-9]+)");
+    private static final Pattern SCC_PATTERN = Pattern.compile("^Sea Creature Chance: ([+\\-][0-9]+)");
     private static final HashMap<String, Pattern> STAT_PATTERN_MAP = new HashMap<>();
     static {
         STAT_PATTERN_MAP.put("health", HEALTH_PATTERN);
@@ -820,7 +819,7 @@ public class AccessoryBagOverlay {
         if(internalname.equals("NEW_YEAR_CAKE_BAG") && tag != null && tag.hasKey("ExtraAttributes", 10)) {
             NBTTagCompound ea = tag.getCompoundTag("ExtraAttributes");
 
-            byte[] bytes = null;
+            byte[] bytes;
             for (String key : ea.getKeySet()) {
                 if (key.endsWith("backpack_data") || key.equals("new_year_cake_bag_data")) {
                     bytes = ea.getByteArray(key);

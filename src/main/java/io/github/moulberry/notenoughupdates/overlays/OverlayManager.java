@@ -2,7 +2,6 @@ package io.github.moulberry.notenoughupdates.overlays;
 
 import com.google.common.collect.Lists;
 import io.github.moulberry.notenoughupdates.NotEnoughUpdates;
-import io.github.moulberry.notenoughupdates.core.config.Position;
 import io.github.moulberry.notenoughupdates.miscfeatures.PetInfoOverlay;
 
 import java.util.ArrayList;
@@ -12,10 +11,10 @@ public class OverlayManager {
 
     public static Class<? extends TextOverlay> dontRenderOverlay = null;
 
-    public static MiningOverlay miningOverlay;
-    public static FarmingOverlay farmingOverlay;
-    public static PetInfoOverlay petInfoOverlay;
-    public static TimersOverlay timersOverlay;
+    public static final MiningOverlay miningOverlay;
+    public static final FarmingOverlay farmingOverlay;
+    public static final PetInfoOverlay petInfoOverlay;
+    public static final TimersOverlay timersOverlay;
     public static final List<TextOverlay> textOverlays = new ArrayList<>();
 
     static {

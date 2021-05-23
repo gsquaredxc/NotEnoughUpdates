@@ -20,12 +20,12 @@ public class FlipperInfoPane extends InfoPane {
      * Not currently used in BETA-1.6
      */
 
-    protected String title;
-    protected String text;
+    protected final String title;
+    protected final String text;
 
-    GuiElementTextField minPrice = new GuiElementTextField("0", NUM_ONLY | NO_SPACE);
-    GuiElementTextField maxPrice = new GuiElementTextField("100000000", NUM_ONLY | NO_SPACE);
-    GuiElementTextField priceDiff = new GuiElementTextField("1000000", NUM_ONLY | NO_SPACE);
+    final GuiElementTextField minPrice = new GuiElementTextField("0", NUM_ONLY | NO_SPACE);
+    final GuiElementTextField maxPrice = new GuiElementTextField("100000000", NUM_ONLY | NO_SPACE);
+    final GuiElementTextField priceDiff = new GuiElementTextField("1000000", NUM_ONLY | NO_SPACE);
 
     public FlipperInfoPane(NEUOverlay overlay, NEUManager manager, String title, String text) {
         super(overlay, manager);
@@ -101,7 +101,7 @@ public class FlipperInfoPane extends InfoPane {
         for(String line : text.split("\n")) {
             yOff += Utils.renderStringTrimWidth(line, fr, false,leftSide+overlay.getBoxPadding() + 5,
                     startY+overlay.getBoxPadding() + 10 + yOff,
-                    width*1/3-overlay.getBoxPadding()*2-10, Color.WHITE.getRGB(), -1);
+                    width /3-overlay.getBoxPadding()*2-10, Color.WHITE.getRGB(), -1);
             yOff += 16;
         }
 

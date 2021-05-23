@@ -38,7 +38,7 @@ public class PlayerStats {
             EnumChatFormatting.RED+"\u2AFD Ferocity",EnumChatFormatting.RED+"\u2739 Ability Damage"};
 
     public static class Stats {
-        JsonObject statsJson = new JsonObject();
+        final JsonObject statsJson = new JsonObject();
 
         /*public float health;
         public float defence;
@@ -329,17 +329,17 @@ public class PlayerStats {
         return bonuses;
     }
 
-    private static final Pattern HEALTH_PATTERN = Pattern.compile("^Health: ((?:\\+|-)[0-9]+)");
-    private static final Pattern DEFENCE_PATTERN = Pattern.compile("^Defense: ((?:\\+|-)[0-9]+)");
-    private static final Pattern STRENGTH_PATTERN = Pattern.compile("^Strength: ((?:\\+|-)[0-9]+)");
-    private static final Pattern SPEED_PATTERN = Pattern.compile("^Speed: ((?:\\+|-)[0-9]+)");
-    private static final Pattern CC_PATTERN = Pattern.compile("^Crit Chance: ((?:\\+|-)[0-9]+)");
-    private static final Pattern CD_PATTERN = Pattern.compile("^Crit Damage: ((?:\\+|-)[0-9]+)");
-    private static final Pattern ATKSPEED_PATTERN = Pattern.compile("^Bonus Attack Speed: ((?:\\+|-)[0-9]+)");
-    private static final Pattern INTELLIGENCE_PATTERN = Pattern.compile("^Intelligence: ((?:\\+|-)[0-9]+)");
-    private static final Pattern SCC_PATTERN = Pattern.compile("^Sea Creature Chance: ((?:\\+|-)[0-9]+)");
-    private static final Pattern FEROCITY_PATTERN = Pattern.compile("^Ferocity: ((?:\\+|-)[0-9]+)");
-    private static final Pattern AD_PATTERN = Pattern.compile("^Ability Damage: ((?:\\+|-)[0-9]+)");
+    private static final Pattern HEALTH_PATTERN = Pattern.compile("^Health: ([+\\-][0-9]+)");
+    private static final Pattern DEFENCE_PATTERN = Pattern.compile("^Defense: ([+\\-][0-9]+)");
+    private static final Pattern STRENGTH_PATTERN = Pattern.compile("^Strength: ([+\\-][0-9]+)");
+    private static final Pattern SPEED_PATTERN = Pattern.compile("^Speed: ([+\\-][0-9]+)");
+    private static final Pattern CC_PATTERN = Pattern.compile("^Crit Chance: ([+\\-][0-9]+)");
+    private static final Pattern CD_PATTERN = Pattern.compile("^Crit Damage: ([+\\-][0-9]+)");
+    private static final Pattern ATKSPEED_PATTERN = Pattern.compile("^Bonus Attack Speed: ([+\\-][0-9]+)");
+    private static final Pattern INTELLIGENCE_PATTERN = Pattern.compile("^Intelligence: ([+\\-][0-9]+)");
+    private static final Pattern SCC_PATTERN = Pattern.compile("^Sea Creature Chance: ([+\\-][0-9]+)");
+    private static final Pattern FEROCITY_PATTERN = Pattern.compile("^Ferocity: ([+\\-][0-9]+)");
+    private static final Pattern AD_PATTERN = Pattern.compile("^Ability Damage: ([+\\-][0-9]+)");
     private static final HashMap<String, Pattern> STAT_PATTERN_MAP = new HashMap<>();
     static {
         STAT_PATTERN_MAP.put("health", HEALTH_PATTERN);

@@ -6,10 +6,8 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.AbstractClientPlayer;
-import net.minecraft.client.renderer.block.model.ModelBlock;
 import net.minecraft.client.resources.IResourceManager;
 import net.minecraft.client.resources.IResourceManagerReloadListener;
-import net.minecraft.client.resources.model.ModelRotation;
 import net.minecraft.util.ResourceLocation;
 
 import java.io.BufferedReader;
@@ -27,8 +25,8 @@ public class NPCRetexturing implements IResourceManagerReloadListener {
     private final Gson gson = new GsonBuilder().create();
 
     public static class Skin {
-        public ResourceLocation skinLocation;
-        public boolean skinny;
+        public final ResourceLocation skinLocation;
+        public final boolean skinny;
 
         public Skin(ResourceLocation skinLocation, boolean skinny) {
             this.skinLocation = skinLocation;

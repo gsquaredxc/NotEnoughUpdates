@@ -176,9 +176,8 @@ public class SBGamemodes {
                 .putLong(Minecraft.getMinecraft().thePlayer.getUniqueID().getLeastSignificantBits())
                 .putLong(Minecraft.getMinecraft().thePlayer.getUniqueID().getMostSignificantBits())
                 .array();
-        SecretKeySpec key = new SecretKeySpec(bytes, "AES");
 
-        return key;
+        return new SecretKeySpec(bytes, "AES");
     }
 
 
@@ -186,8 +185,7 @@ public class SBGamemodes {
         try {
             Cipher cipher = Cipher.getInstance("AES");
             cipher.init(Cipher.ENCRYPT_MODE, getKeyFromPlayerUUID());
-            String encrypt = Base64.getEncoder().encodeToString(cipher.doFinal(value.getBytes()));
-            return encrypt;
+            return Base64.getEncoder().encodeToString(cipher.doFinal(value.getBytes()));
         } catch (Exception e) {
             e.printStackTrace();
         }

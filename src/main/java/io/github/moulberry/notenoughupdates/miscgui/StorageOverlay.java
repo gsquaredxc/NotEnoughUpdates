@@ -1,14 +1,12 @@
 package io.github.moulberry.notenoughupdates.miscgui;
 
 import com.google.common.collect.Lists;
-import com.google.gson.stream.JsonWriter;
 import io.github.moulberry.notenoughupdates.NotEnoughUpdates;
 import io.github.moulberry.notenoughupdates.core.BackgroundBlur;
 import io.github.moulberry.notenoughupdates.core.GlScissorStack;
 import io.github.moulberry.notenoughupdates.core.GuiElement;
 import io.github.moulberry.notenoughupdates.core.GuiElementTextField;
 import io.github.moulberry.notenoughupdates.core.util.lerp.LerpingInteger;
-import io.github.moulberry.notenoughupdates.core.util.render.RenderUtils;
 import io.github.moulberry.notenoughupdates.miscfeatures.StorageManager;
 import io.github.moulberry.notenoughupdates.util.Utils;
 import net.minecraft.client.Minecraft;
@@ -17,9 +15,7 @@ import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.gui.inventory.GuiChest;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.init.Blocks;
-import net.minecraft.inventory.Container;
 import net.minecraft.inventory.ContainerChest;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.Item;
@@ -29,7 +25,6 @@ import net.minecraft.util.ResourceLocation;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GLSync;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import java.awt.*;
@@ -669,8 +664,8 @@ public class StorageOverlay extends GuiElement {
     }
 
     private static class IntPair {
-        int x;
-        int y;
+        final int x;
+        final int y;
 
         public IntPair(int x, int y) {
             this.x = x;
@@ -806,9 +801,8 @@ public class StorageOverlay extends GuiElement {
 
             int vIndex = 0;
 
-            switch(i) {
-                case 2:
-                    vIndex = NotEnoughUpdates.INSTANCE.config.storageGUI.displayStyle; break;
+            if (i == 2) {
+                vIndex = NotEnoughUpdates.INSTANCE.config.storageGUI.displayStyle;
                 /*case 3:
                     vIndex = */
             }
@@ -875,17 +869,16 @@ public class StorageOverlay extends GuiElement {
                 return false;
             } else if(Mouse.getEventButtonState() && Mouse.getEventButton() == 0) {
                 for(int i=0; i<9; i++) {
-                    int storageId = i;
                     int displayId = StorageManager.getInstance().getDisplayIdForStorageId(i);
 
-                    StorageManager.StoragePage page = StorageManager.getInstance().getPage(storageId, false);
+                    StorageManager.StoragePage page = StorageManager.getInstance().getPage(i, false);
                     if(page != null) {
                         int itemX = 10+(i%9)*18;
                         int itemY = storageViewSize+24+(i/9)*18;
 
                         if(mouseX >= guiLeft+itemX && mouseX < guiLeft+itemX+18 &&
                                 mouseY >= guiTop+itemY && mouseY < guiTop+itemY+18) {
-                            StorageManager.getInstance().sendToPage(storageId);
+                            StorageManager.getInstance().sendToPage(i);
                             scrollToStorage(displayId, true);
                             return true;
                         }

@@ -8,7 +8,7 @@ import org.lwjgl.input.Mouse;
 public abstract class ScrollableInfoPane extends InfoPane {
 
     private static final int SCROLL_AMOUNT = 50;
-    protected LerpingInteger scrollHeight = new LerpingInteger(0);
+    protected final LerpingInteger scrollHeight = new LerpingInteger(0);
 
     public ScrollableInfoPane(NEUOverlay overlay, NEUManager manager) {
         super(overlay, manager);

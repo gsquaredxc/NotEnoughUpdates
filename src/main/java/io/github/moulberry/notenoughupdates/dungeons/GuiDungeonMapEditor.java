@@ -39,8 +39,6 @@ public class GuiDungeonMapEditor extends GuiScreen {
     public static final ResourceLocation BUTTON = new ResourceLocation("notenoughupdates:button.png");
     private static final DungeonMap demoMap = new DungeonMap();
 
-    private int sizeX;
-    private int sizeY;
     private int guiLeft;
     private int guiTop;
 
@@ -242,16 +240,16 @@ public class GuiDungeonMapEditor extends GuiScreen {
             }
         }
 
-        this.sizeX = 431;
-        this.sizeY = 237;
-        this.guiLeft = (this.width - this.sizeX) / 2;
-        this.guiTop = (this.height-this.sizeY)/2;
+        int sizeX = 431;
+        int sizeY = 237;
+        this.guiLeft = (this.width - sizeX) / 2;
+        this.guiTop = (this.height- sizeY)/2;
 
         super.drawScreen(mouseX, mouseY, partialTicks);
         drawDefaultBackground();
 
         blurBackground();
-        renderBlurredBackground(width, height, guiLeft+2, guiTop+2, sizeX-4, sizeY-4);
+        renderBlurredBackground(width, height, guiLeft+2, guiTop+2, sizeX -4, sizeY -4);
 
         Minecraft.getMinecraft().getTextureManager().bindTexture(BACKGROUND);
         GlStateManager.color(1, 1, 1, 1);
@@ -667,7 +665,7 @@ public class GuiDungeonMapEditor extends GuiScreen {
                         Minecraft.getMinecraft().getFramebuffer(), blurOutputHorz);
                 blurShaderHorz.getShaderManager().getShaderUniform("BlurDir").set(1, 0);
                 blurShaderHorz.setProjectionMatrix(createProjectionMatrix(width, height));
-            } catch(Exception e) { }
+            } catch(Exception ignored) { }
         }
         if(blurShaderVert == null) {
             try {
@@ -675,7 +673,7 @@ public class GuiDungeonMapEditor extends GuiScreen {
                         blurOutputHorz, blurOutputVert);
                 blurShaderVert.getShaderManager().getShaderUniform("BlurDir").set(0, 1);
                 blurShaderVert.setProjectionMatrix(createProjectionMatrix(width, height));
-            } catch(Exception e) { }
+            } catch(Exception ignored) { }
         }
         if(blurShaderHorz != null && blurShaderVert != null) {
             if(15 != lastBgBlurFactor) {

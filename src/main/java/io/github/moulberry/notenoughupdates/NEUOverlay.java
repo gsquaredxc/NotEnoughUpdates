@@ -51,7 +51,6 @@ import org.lwjgl.util.vector.Vector2f;
 
 import java.awt.*;
 import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.List;
 import java.util.*;
 import java.util.concurrent.ExecutorService;
@@ -69,9 +68,6 @@ public class NEUOverlay extends Gui {
 
     private final NEUManager manager;
 
-    private final String mobRegex = ".*?((_MONSTER)|(_ANIMAL)|(_MINIBOSS)|(_BOSS)|(_SC))$";
-    private final String petRegex = ".*?;[0-4]$";
-
     private final ResourceLocation[] sortIcons = new ResourceLocation[] {
         sort_all, sort_mob, sort_pet, sort_tool, sort_armor, sort_accessory
     };
@@ -88,14 +84,12 @@ public class NEUOverlay extends Gui {
 
     //Various constants used for GUI structure
     private final int searchBarYOffset = 10;
-    private final int searchBarPadding = 2;
 
     private float oldWidthMult = 0;
 
     public static final int ITEM_PADDING = 4;
     public static final int ITEM_SIZE = 16;
 
-    private Color bg = new Color(90, 90, 140, 50);
     private Color fg = new Color(100,100,100, 255);
 
     private InfoPane activeInfoPane = null;
@@ -121,8 +115,6 @@ public class NEUOverlay extends Gui {
     public boolean searchMode = false;
     private long millisLastLeftClick = 0;
     private long millisLastMouseMove = 0;
-    private int lastMouseX = 0;
-    private int lastMouseY = 0;
 
     public static final int overlayColourDark = new Color(0, 0, 0, 120).getRGB();
     public static final int overlayColourLight = new Color(255, 255, 255, 120).getRGB();
@@ -153,7 +145,7 @@ public class NEUOverlay extends Gui {
 
     private List<String> textToDisplay = null;
 
-    public MBGuiGroupFloating guiGroup = null;
+    public MBGuiGroupFloating guiGroup;
 
     public NEUOverlay(NEUManager manager) {
         this.manager = manager;
@@ -665,9 +657,6 @@ public class NEUOverlay extends Gui {
         //    millisLastMouseMove = System.currentTimeMillis();
         //}
 
-        lastMouseX = mouseX;
-        lastMouseY = mouseY;
-
         if(Mouse.getEventButtonState()) {
             mouseDown = true;
         } else if(Mouse.getEventButton() != -1) {
@@ -827,7 +816,8 @@ public class NEUOverlay extends Gui {
     }
 
     public int getPaddingUnscaled() {
-        int paddingUnscaled = searchBarPadding/Utils.peekGuiScale().getScaleFactor();
+        int searchBarPadding = 2;
+        int paddingUnscaled = searchBarPadding /Utils.peekGuiScale().getScaleFactor();
         if(paddingUnscaled < 1) paddingUnscaled = 1;
 
         return paddingUnscaled;
@@ -1037,7 +1027,7 @@ public class NEUOverlay extends Gui {
         updateSearch();
     }
 
-    String[] rarityArr = new String[] {
+    final String[] rarityArr = new String[] {
         EnumChatFormatting.WHITE+EnumChatFormatting.BOLD.toString()+"COMMON",
         EnumChatFormatting.GREEN+EnumChatFormatting.BOLD.toString()+"UNCOMMON",
         EnumChatFormatting.BLUE+EnumChatFormatting.BOLD.toString()+"RARE",
@@ -1180,11 +1170,13 @@ public class NEUOverlay extends Gui {
             return false;
         }
 
+        String mobRegex = ".*?((_MONSTER)|(_ANIMAL)|(_MINIBOSS)|(_BOSS)|(_SC))$";
         if(getSortMode() == SORT_MODE_ALL) {
             return !internalname.matches(mobRegex);
         } else if(getSortMode() == SORT_MODE_MOB) {
             return internalname.matches(mobRegex);
         } else if(getSortMode() == SORT_MODE_PET) {
+            String petRegex = ".*?;[0-4]$";
             return internalname.matches(petRegex) && item.get("displayname").getAsString().contains("[");
         } else if(getSortMode() == SORT_MODE_TOOL) {
             return checkItemType(item.get("lore").getAsJsonArray(),
@@ -1239,14 +1231,13 @@ public class NEUOverlay extends Gui {
                 }
             }
             searchedItems.removeAll(removeChildItems);
-            out:
-            for(Map.Entry<String, List<String>> entry : searchedItemsSubgroup.entrySet()) {
-                if(searchedItems.contains(manager.getItemInformation().get(entry.getKey()))) {
+            for (Map.Entry<String, List<String>> entry : searchedItemsSubgroup.entrySet()) {
+                if (searchedItems.contains(manager.getItemInformation().get(entry.getKey()))) {
                     continue;
                 }
-                for(String itemname : entry.getValue()) {
+                for (String itemname : entry.getValue()) {
                     JsonObject item = manager.getItemInformation().get(itemname);
-                    if(item != null) searchedItems.add(item);
+                    if (item != null) searchedItems.add(item);
                 }
             }
             switch(textField.getText().toLowerCase().trim()) {
@@ -1331,7 +1322,7 @@ public class NEUOverlay extends Gui {
         return (int)(panePadding*2/Utils.peekGuiScale().getScaleFactor()+5);
     }
 
-    private abstract class ItemSlotConsumer {
+    private abstract static class ItemSlotConsumer {
         public abstract void consume(int x, int y, int id);
     }
 
@@ -1501,7 +1492,7 @@ public class NEUOverlay extends Gui {
     }
 
     public float yaw = 0;
-    public float pitch = 20;
+    public final float pitch = 20;
 
     /**
      * Renders an entity onto the GUI at a certain x and y position.
@@ -1667,7 +1658,7 @@ public class NEUOverlay extends Gui {
         yaw++;
         yaw %= 360;
 
-        bg = new Color(SpecialColour.specialToChromaRGB(NotEnoughUpdates.INSTANCE.config.itemlist.backgroundColour), true);
+        Color bg = new Color(SpecialColour.specialToChromaRGB(NotEnoughUpdates.INSTANCE.config.itemlist.backgroundColour), true);
         fg = new Color(SpecialColour.specialToChromaRGB(NotEnoughUpdates.INSTANCE.config.itemlist.foregroundColour));
         Color fgCustomOpacity = new Color(SpecialColour.specialToChromaRGB(NotEnoughUpdates.INSTANCE.config.itemlist.foregroundColour), true);
 
@@ -1939,7 +1930,6 @@ public class NEUOverlay extends Gui {
          */
 
         rightSide = (int)(width*getInfoPaneOffsetFactor());
-        leftSide = rightSide - paneWidth;
 
         if(activeInfoPane != null) {
             activeInfoPane.tick();
@@ -2069,7 +2059,7 @@ public class NEUOverlay extends Gui {
      * itemRenderOffset is a magic number that makes the z-level of the rendered items equal to the z-level of
      * the item glint overlay model, meaning that a depthFunc of GL_EQUAL can correctly render on to the item.
      */
-    float itemRenderOffset = 7.5001f;
+    final float itemRenderOffset = 7.5001f;
     private void renderItemsFromImage(int xOffset, int width, int height) {
         if(itemFramebuffers[0] != null && itemFramebuffers[1] != null) {
             itemFramebuffers[1].bindFramebufferTexture();

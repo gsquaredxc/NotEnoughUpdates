@@ -18,7 +18,6 @@ public class MixinItemStack {
     public void hasEffect(CallbackInfoReturnable<Boolean> cir) {
         if(Utils.getHasEffectOverride()) {
             cir.setReturnValue(false);
-            return;
         }
     }
 
@@ -58,7 +57,7 @@ public class MixinItemStack {
                     returnable.setReturnValue(prefix+customName);
                 }
             }
-        } catch(Exception e) { }
+        } catch(Exception ignored) { }
     }
 
 

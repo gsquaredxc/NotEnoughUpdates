@@ -11,7 +11,7 @@ public abstract class MBGuiGroup extends MBGuiElement {
 
     public int width;
     public int height;
-    protected HashMap<MBGuiElement, Vector2f> childrenPosition = new HashMap<>();
+    protected final HashMap<MBGuiElement, Vector2f> childrenPosition = new HashMap<>();
 
     public MBGuiGroup() {
     }
