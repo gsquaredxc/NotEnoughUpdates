@@ -6,4 +6,5 @@ import net.minecraft.item.Item;
 public interface IItem {
     JsonObject getJson();
     Item getItemType();
+    String getInternalName();
 }

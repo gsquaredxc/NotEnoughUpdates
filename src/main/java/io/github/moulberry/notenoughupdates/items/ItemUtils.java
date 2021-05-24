@@ -32,7 +32,7 @@ public class ItemUtils {
 
     public static ItemStack itemToStack(IItem item, boolean useCache, boolean useReplacements, boolean copyStack){
         if(item.getJson() == null) return new ItemStack(Items.painting, 1, 10);
-        String internalname = item.getJson().get("internalname").getAsString();
+        String internalname = item.getInternalName();
 
         final Map<String,ItemStack> itemCache = manager.itemstackCache;
         if(useCache) {

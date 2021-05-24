@@ -779,23 +779,23 @@ public class NEUManager {
         return str.replaceAll("(\u00a7.)|[^0-9a-zA-Z ]", "").toLowerCase().trim();
     }
 
-    public void showRecipe(JsonObject item) {
-        if(item.has("useneucraft") && item.get("useneucraft").getAsBoolean()) {
-            displayGuiItemRecipe(item.get("internalname").getAsString(), "");
-        } else if(item.has("clickcommand")) {
-            String clickcommand = item.get("clickcommand").getAsString();
+    public void showRecipe(IItem item) {
+        if(item.getJson().has("useneucraft") && item.getJson().get("useneucraft").getAsBoolean()) {
+            displayGuiItemRecipe(item.getInternalName(), "");
+        } else if(item.getJson().has("clickcommand")) {
+            String clickcommand = item.getJson().get("clickcommand").getAsString();
 
             if(clickcommand.equals("viewrecipe")) {
                 neu.sendChatMessage(
                         "/" + clickcommand + " " +
-                                item.get("internalname").getAsString().split(";")[0]);
-                viewItemAttemptID = item.get("internalname").getAsString();
+                                item.getInternalName().split(";")[0]);
+                viewItemAttemptID = item.getInternalName();
                 viewItemAttemptTime = System.currentTimeMillis();
             } else if(clickcommand.equals("viewpotion")) {
                 neu.sendChatMessage(
                         "/" + clickcommand + " " +
-                                item.get("internalname").getAsString().split(";")[0].toLowerCase());
-                viewItemAttemptID = item.get("internalname").getAsString();
+                                item.getInternalName().split(";")[0].toLowerCase());
+                viewItemAttemptID = item.getInternalName();
                 viewItemAttemptTime = System.currentTimeMillis();
             }
         }
@@ -1312,11 +1312,11 @@ public class NEUManager {
     }
 
     public ItemStack jsonToStack(JsonObject json) {
-        return jsonToStack(json, true);
+        return jsonToStack(json, true, true, true);
     }
 
     public ItemStack jsonToStack(JsonObject json, boolean useCache) {
-        return jsonToStack(json, useCache, true);
+        return jsonToStack(json, useCache, true, true);
     }
 
     public ItemStack jsonToStack(JsonObject json, boolean useCache, boolean useReplacements) {

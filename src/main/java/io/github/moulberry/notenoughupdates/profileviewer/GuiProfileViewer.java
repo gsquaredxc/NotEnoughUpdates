@@ -1169,10 +1169,10 @@ public class GuiProfileViewer extends GuiScreen {
                 pet.addProperty("currentLevelRequirement", currentLevelRequirement);
                 pet.addProperty("maxXP", maxXP);
 
-                JsonObject petItem = NotEnoughUpdates.INSTANCE.manager.getItemInformation().get(petname+";"+tierNum).getJson();
+                IItem petItem = NotEnoughUpdates.INSTANCE.manager.getItemInformation().get(petname+";"+tierNum);
                 if(petItem == null) continue;
 
-                ItemStack stack = NotEnoughUpdates.INSTANCE.manager.jsonToStack(petItem, false, false);
+                ItemStack stack = ItemUtils.itemToStack(petItem, false, false);
                 HashMap<String, String> replacements = NotEnoughUpdates.INSTANCE.manager.getLoreReplacements(petname, tier, (int)Math.floor(level));
 
                 if(heldItem != null) {
@@ -1338,7 +1338,7 @@ public class GuiProfileViewer extends GuiScreen {
             String type = pet.get("type").getAsString();
 
             for(int i=0; i<4; i++) {
-                JsonObject item = NotEnoughUpdates.INSTANCE.manager.getItemInformation().get(type+";"+i).getJson();
+                IItem item = NotEnoughUpdates.INSTANCE.manager.getItemInformation().get(type+";"+i);
                 if(item != null) {
                     int x = guiLeft+280;
                     float y = guiTop+67+15*(float)Math.sin(((currentTime-startTime)/800f)%(2*Math.PI));
@@ -1353,7 +1353,7 @@ public class GuiProfileViewer extends GuiScreen {
 
                     Minecraft.getMinecraft().fontRendererObj.drawString(display, -halfDisplayLen-28, 0, 0, true);
 
-                    ItemStack stack = NotEnoughUpdates.INSTANCE.manager.jsonToStack(item);
+                    ItemStack stack = ItemUtils.itemToStack(item);
                     GlStateManager.enableDepth();
                     GlStateManager.translate(-55, 0, 0);
                     GlStateManager.scale(3.5f, 3.5f, 1);
@@ -1517,7 +1517,7 @@ public class GuiProfileViewer extends GuiScreen {
             for(int i=0; i<minions.size(); i++) {
                 String minion = minions.get(i);
                 if(minion != null) {
-                    JsonObject minionJson = NotEnoughUpdates.INSTANCE.manager.getItemInformation().get(minion+"_GENERATOR_1").getJson();
+                    IItem minionJson = NotEnoughUpdates.INSTANCE.manager.getItemInformation().get(minion+"_GENERATOR_1");
                     if(minionJson != null) {
                         int xIndex = i%COLLS_XCOUNT;
                         int yIndex = i/COLLS_XCOUNT;
@@ -1551,12 +1551,11 @@ public class GuiProfileViewer extends GuiScreen {
                         Utils.drawTexturedRect(guiLeft+x, guiTop+y+20*(1-completedness), 20, 20*(completedness),
                                 0, 20/256f, 20*(1-completedness)/256f, 20/256f, GL11.GL_NEAREST);
 
-                        Utils.drawItemStack(NotEnoughUpdates.INSTANCE.manager.jsonToStack(minionJson), guiLeft+(int)x+2, guiTop+(int)y+2);
+                        Utils.drawItemStack(ItemUtils.itemToStack(minionJson), guiLeft+(int)x+2, guiTop+(int)y+2);
 
                         if(mouseX > guiLeft+(int)x+2 && mouseX < guiLeft+(int)x+18) {
                             if(mouseY > guiTop+(int)y+2 && mouseY < guiTop+(int)y+18) {
-                                tooltipToDisplay = NotEnoughUpdates.INSTANCE.manager.jsonToStack(minionJson)
-                                        .getTooltip(Minecraft.getMinecraft().thePlayer, false);
+                                tooltipToDisplay = ItemUtils.itemToStack(minionJson).getTooltip(Minecraft.getMinecraft().thePlayer, false);
                             }
                         }
 

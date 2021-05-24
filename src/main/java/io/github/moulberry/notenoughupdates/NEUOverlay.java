@@ -600,16 +600,17 @@ public class NEUOverlay extends Gui {
     /**
      * Calls #displayInformationPane with a HTMLInfoPane created from item.info and item.infoType.
      */
-    public void showInfo(JsonObject item) {
-        if(item.has("info") && item.has("infoType")) {
-            JsonArray lore = item.get("info").getAsJsonArray();
+    public void showInfo(IItem item) {
+        JsonObject json = item.getJson();
+        if(json.has("info") && json.has("infoType")) {
+            JsonArray lore = json.get("info").getAsJsonArray();
             String[] loreA = new String[lore.size()];
             for (int i = 0; i < lore.size(); i++) loreA[i] = lore.get(i).getAsString();
             String loreS = StringUtils.join(loreA, "\n");
 
-            String internalname = item.get("internalname").getAsString();
-            String name = item.get("displayname").getAsString();
-            switch(item.get("infoType").getAsString()) {
+            String internalname = item.getInternalName();
+            String name = json.get("displayname").getAsString();
+            switch(json.get("infoType").getAsString()) {
                 case "WIKI_URL":
                     displayInformationPane(HTMLInfoPane.createFromWikiUrl(this, manager, name, loreS));
                     return;
@@ -678,11 +679,11 @@ public class NEUOverlay extends Gui {
                         IItem item = selectedItemGroup.get(i);
                         if (item != null) {
                             if(Mouse.getEventButton() == 0) {
-                                manager.showRecipe(item.getJson());
+                                manager.showRecipe(item);
                             } else if(Mouse.getEventButton() == 1) {
-                                showInfo(item.getJson());
+                                showInfo(item);
                             } else if(Mouse.getEventButton() == manager.keybindItemSelect.getKeyCode()+100) {
-                                textField.setText("id:"+item.getJson().get("internalname").getAsString());
+                                textField.setText("id:"+item.getInternalName());
                                 updateSearch();
                                 searchMode = true;
                             }
@@ -711,11 +712,11 @@ public class NEUOverlay extends Gui {
                             IItem item = getSearchedItemPage(id);
                             if (item != null) {
                                 if(Mouse.getEventButton() == 0) {
-                                    manager.showRecipe(item.getJson());
+                                    manager.showRecipe(item);
                                 } else if(Mouse.getEventButton() == 1) {
-                                    showInfo(item.getJson());
+                                    showInfo(item);
                                 } else if(Mouse.getEventButton() == manager.keybindItemSelect.getKeyCode()+100) {
-                                    textField.setText("id:"+item.getJson().get("internalname").getAsString());
+                                    textField.setText("id:"+item.getInternalName());
                                     updateSearch();
                                     searchMode = true;
                                 }
@@ -959,7 +960,7 @@ public class NEUOverlay extends Gui {
                         if (mouseY > selectedItemGroupY + 17 && mouseY < selectedItemGroupY + 35) {
                             for (int i = 0; i < selectedItemGroup.size(); i++) {
                                 if (mouseX >= selectedX - 1 + 18 * i && mouseX <= selectedX + 17 + 18 * i) {
-                                    internalname.set(selectedItemGroup.get(i).getJson().get("internalname").getAsString());
+                                    internalname.set(selectedItemGroup.get(i).getInternalName());
                                 }
                             }
                         }
@@ -969,7 +970,7 @@ public class NEUOverlay extends Gui {
                                 if (mouseX >= x - 1 && mouseX <= x + ITEM_SIZE + 1) {
                                     if (mouseY >= y - 1 && mouseY <= y + ITEM_SIZE + 1) {
                                         IItem json = getSearchedItemPage(id);
-                                        if (json.getJson() != null) internalname.set(json.getJson().get("internalname").getAsString());
+                                        if (json.getJson() != null) internalname.set(json.getInternalName());
                                     }
                                 }
                             }
@@ -987,13 +988,13 @@ public class NEUOverlay extends Gui {
                             return true;
                         }
                     }
-                    JsonObject item = manager.getItemInformation().get(internalname.get()).getJson();
+                    IItem item = manager.getItemInformation().get(internalname.get());
                     if(item != null) {
                         if(keyPressed == manager.keybindViewUsages.getKeyCode()) {
                             manager.displayGuiItemUsages(internalname.get());
                             return true;
                         } else if(keyPressed == manager.keybindFavourite.getKeyCode()) {
-                            toggleFavourite(item.get("internalname").getAsString());
+                            toggleFavourite(item.getInternalName());
                             return true;
                         } else if(keyPressed == manager.keybindViewRecipe.getKeyCode()) {
                             manager.showRecipe(item);
@@ -1001,11 +1002,11 @@ public class NEUOverlay extends Gui {
                         } else if(keyPressed == manager.keybindGive.getKeyCode()) {
                             if(Minecraft.getMinecraft().thePlayer.capabilities.isCreativeMode) {
                                 Minecraft.getMinecraft().thePlayer.inventory.addItemStackToInventory(
-                                        manager.jsonToStack(item));
+                                        ItemUtils.itemToStack(item));
                             }
                         } else if(NotEnoughUpdates.INSTANCE.config.hidden.enableItemEditing && Keyboard.getEventCharacter() == 'k') {
                             Minecraft.getMinecraft().displayGuiScreen(new NEUItemEditor(manager,
-                                    internalname.get(), item));
+                                    internalname.get(), item.getJson()));
                             return true;
                         } else if(keyPressed == manager.keybindItemSelect.getKeyCode()) {
                             textField.setText("id:"+internalname.get());
@@ -1085,10 +1086,10 @@ public class NEUOverlay extends Gui {
         return (o1, o2) -> {
             //1 (mult) if o1 should appear after o2
             //-1 (-mult) if o2 should appear after o1
-            if(getFavourites().contains(o1.getJson().get("internalname").getAsString()) && !getFavourites().contains(o2.getJson().get("internalname").getAsString())) {
+            if(getFavourites().contains(o1.getInternalName()) && !getFavourites().contains(o2.getInternalName())) {
                 return -1;
             }
-            if(!getFavourites().contains(o1.getJson().get("internalname").getAsString()) && getFavourites().contains(o2.getJson().get("internalname").getAsString())) {
+            if(!getFavourites().contains(o1.getInternalName()) && getFavourites().contains(o2.getInternalName())) {
                 return 1;
             }
 
@@ -1100,11 +1101,11 @@ public class NEUOverlay extends Gui {
                 if(rarity1 < rarity2) return mult;
                 if(rarity1 > rarity2) return -mult;
             } else if(getCompareMode() == COMPARE_MODE_VALUE) {
-                float cost1 = manager.auctionManager.getLowestBin(o1.getJson().get("internalname").getAsString());
-                float cost2 = manager.auctionManager.getLowestBin(o2.getJson().get("internalname").getAsString());
+                float cost1 = manager.auctionManager.getLowestBin(o1.getInternalName());
+                float cost2 = manager.auctionManager.getLowestBin(o2.getInternalName());
 
-                float craftCost1 = manager.auctionManager.getCraftCost(o1.getJson().get("internalname").getAsString()).craftCost;
-                float craftCost2 = manager.auctionManager.getCraftCost(o2.getJson().get("internalname").getAsString()).craftCost;
+                float craftCost1 = manager.auctionManager.getCraftCost(o1.getInternalName()).craftCost;
+                float craftCost2 = manager.auctionManager.getCraftCost(o2.getInternalName()).craftCost;
 
                 float diff = (cost1 - craftCost1) - (cost2 - craftCost2);
 
@@ -1114,12 +1115,12 @@ public class NEUOverlay extends Gui {
                 if(cost1 > cost2) return -mult;*/
             }
 
-            String i1 = o1.getJson().get("internalname").getAsString();
+            String i1 = o1.getInternalName();
             String[] split1 = i1.split("_");
             String last1 = split1[split1.length-1];
             String start1 = i1.substring(0, i1.length()-last1.length());
 
-            String i2 = o2.getJson().get("internalname").getAsString();
+            String i2 = o2.getInternalName();
             String[] split2 = i2.split("_");
             String last2 = split2[split2.length-1];
             String start2 = i2.substring(0, i2.length()-last2.length());
@@ -1140,7 +1141,7 @@ public class NEUOverlay extends Gui {
             if(nameComp != 0) {
                 return nameComp;
             }
-            return mult*o1.getJson().get("internalname").getAsString().compareTo(o2.getJson().get("internalname").getAsString());
+            return mult*o1.getInternalName().compareTo(o2.getInternalName());
         };
     }
 
@@ -1725,7 +1726,7 @@ public class NEUOverlay extends Gui {
         }
 
         //Atomic reference used so that below lambda doesn't complain about non-effectively-final variable
-        AtomicReference<JsonObject> tooltipToDisplay = new AtomicReference<>(null);
+        AtomicReference<IItem> tooltipToDisplay = new AtomicReference<>(null);
         if(itemPaneOffsetFactor.getValue() < 1) {
             if(NotEnoughUpdates.INSTANCE.config.itemlist.bgBlurFactor > 0.5) {
                 BackgroundBlur.renderBlurredBackground(NotEnoughUpdates.INSTANCE.config.itemlist.bgBlurFactor,
@@ -1837,7 +1838,7 @@ public class NEUOverlay extends Gui {
                         }
                         if (mouseX > x - 1 && mouseX < x + ITEM_SIZE + 1) {
                             if (mouseY > y - 1 && mouseY < y + ITEM_SIZE + 1) {
-                                String internalname = json.getJson().get("internalname").getAsString();
+                                String internalname = json.getInternalName();
                                 if(searchedItemsSubgroup.containsKey(internalname)) {
                                     if(selectedItemMillis == -1) selectedItemMillis = System.currentTimeMillis();
                                     if(System.currentTimeMillis() - selectedItemMillis > 200 &&
@@ -1854,7 +1855,7 @@ public class NEUOverlay extends Gui {
                                         selectedItemGroupY = y;
                                     }
                                 } else {
-                                    tooltipToDisplay.set(json.getJson());
+                                    tooltipToDisplay.set(json);
                                 }
                             }
                         }
@@ -1903,13 +1904,13 @@ public class NEUOverlay extends Gui {
                 if(mouseY > selectedItemGroupY+17 && mouseY < selectedItemGroupY+35) {
                     for(int i=0; i<selectedItemGroup.size(); i++) {
                         if(mouseX >= selectedX-1+18*i && mouseX <= selectedX+17+18*i) {
-                            tooltipToDisplay.set(selectedItemGroup.get(i).getJson());
+                            tooltipToDisplay.set(selectedItemGroup.get(i));
                         }
                     }
                 }
                 for(int i=0; i<selectedItemGroup.size(); i++) {
-                    JsonObject item = selectedItemGroup.get(i).getJson();
-                    Utils.drawItemStack(manager.jsonToStack(item), selectedX+18*i, selectedItemGroupY+18);
+                    IItem item = selectedItemGroup.get(i);
+                    Utils.drawItemStack(ItemUtils.itemToStack(item), selectedX+18*i, selectedItemGroupY+18);
                 }
 
                 GL11.glTranslatef(0, 0, -20);
@@ -1945,22 +1946,22 @@ public class NEUOverlay extends Gui {
         }
 
         //Render tooltip
-        JsonObject json = tooltipToDisplay.get();
-        if(json != null) {
-            ItemStack stack = manager.jsonToStack(json);
+        IItem item = tooltipToDisplay.get();
+        if(item != null) {
+            ItemStack stack = ItemUtils.itemToStack(item);
             List<String> text = stack.getTooltip(Minecraft.getMinecraft().thePlayer, false);
 
-            String internalname = json.get("internalname").getAsString();
+            String internalname = item.getInternalName();
             if(!NotEnoughUpdates.INSTANCE.config.tooltipTweaks.showPriceInfoInvItem) {
                 ItemPriceInformation.addToTooltip(text, internalname, stack);
             }
 
             boolean hasClick = false;
             boolean hasInfo = false;
-            if(json.has("clickcommand") && !json.get("clickcommand").getAsString().isEmpty()) {
+            if(item.getJson().has("clickcommand") && !item.getJson().get("clickcommand").getAsString().isEmpty()) {
                 hasClick = true;
             }
-            if(json.has("info") && json.get("info").getAsJsonArray().size() > 0) {
+            if(item.getJson().has("info") && item.getJson().get("info").getAsJsonArray().size() > 0) {
                 hasInfo = true;
             }
 
@@ -2222,7 +2223,8 @@ public class NEUOverlay extends Gui {
     private void renderItems(int xStart, boolean items, boolean entities, boolean glint) {
         iterateItemSlots(new ItemSlotConsumer() {
             public void consume(int x, int y, int id) {
-                JsonObject json = getSearchedItemPage(id).getJson();
+                IItem item = getSearchedItemPage(id);
+                JsonObject json = item.getJson();
                 if (json == null) {
                     return;
                 }
@@ -2258,7 +2260,7 @@ public class NEUOverlay extends Gui {
                     renderEntity(x + ITEM_SIZE / 2, y + ITEM_SIZE, scale, name, entities);
                 } else {
                     if(!items) return;
-                    ItemStack stack = manager.jsonToStack(json, true, true, false);
+                    ItemStack stack = ItemUtils.itemToStack(item, true, true, false);
                     if(stack != null) {
                         if(glint) {
                             Utils.drawItemStack(stack, x, y);
@@ -2269,7 +2271,7 @@ public class NEUOverlay extends Gui {
                 }
 
                 GlStateManager.translate(0, 0, 50);
-                if(searchedItemsSubgroup.containsKey(json.get("internalname").getAsString())) {
+                if(searchedItemsSubgroup.containsKey(item.getInternalName())) {
                     Minecraft.getMinecraft().getTextureManager().bindTexture(item_haschild);
                     GlStateManager.color(1, 1, 1, 1);
                     Utils.drawTexturedRect(x-1, y-1, ITEM_SIZE+2, ITEM_SIZE+2, GL11.GL_NEAREST);

@@ -3,10 +3,13 @@ package io.github.moulberry.notenoughupdates.auction;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.sun.org.apache.regexp.internal.RE;
 import io.github.moulberry.notenoughupdates.NEUManager;
 import io.github.moulberry.notenoughupdates.NotEnoughUpdates;
 import io.github.moulberry.notenoughupdates.items.IItem;
+import io.github.moulberry.notenoughupdates.items.ItemFactory;
 import io.github.moulberry.notenoughupdates.items.ItemUtils;
+import io.github.moulberry.notenoughupdates.items.Rarity;
 import io.github.moulberry.notenoughupdates.util.Constants;
 import io.github.moulberry.notenoughupdates.util.Utils;
 import net.minecraft.client.Minecraft;
@@ -94,8 +97,8 @@ public class APIManager {
         public int highest_bid_amount;
         public int bid_count;
         public final boolean bin;
-        public final String category;
-        public final String rarity;
+        public final AuctionCategory category;
+        public final Rarity rarity;
         public final int dungeonTier;
         public String item_tag_str;
         public NBTTagCompound item_tag = null;
@@ -104,7 +107,7 @@ public class APIManager {
         public int enchLevel = 0; //0 = clean, 1 = ench, 2 = ench/hpb
 
         public Auction(String auctioneerUuid, long end, int starting_bid, int highest_bid_amount, int bid_count,
-                       boolean bin, String category, String rarity, int dungeonTier, String item_tag_str) {
+                       boolean bin, AuctionCategory category, Rarity rarity, int dungeonTier, String item_tag_str) {
             this.auctioneerUuid = auctioneerUuid;
             this.end = end;
             this.starting_bid = starting_bid;
@@ -130,10 +133,10 @@ public class APIManager {
             if(stack != null) {
                 return stack;
             } else {
-                JsonObject item = manager.getJsonFromNBT(item_tag);
-                ItemStack stack = manager.jsonToStack(item, false);
+                IItem item = ItemFactory.generateItem(manager.getJsonFromNBT(item_tag));
+                ItemStack stack = ItemUtils.itemToStack(item, false);
 
-                IItem itemDefault = manager.getItemInformation().get(item.get("internalname").getAsString());
+                IItem itemDefault = manager.getItemInformation().get(item.getInternalName());
 
                 if(stack != null && itemDefault != null) {
                     ItemStack stackDefault = ItemUtils.itemToStack(itemDefault, true);
@@ -457,8 +460,8 @@ public class APIManager {
             "XII","XIII","XIV","XV","XVI","XVII","XIX","XX"};
 
 
-    final String[] categoryItemType = new String[]{"sword","fishingrod","pickaxe","axe",
-            "shovel","petitem","travelscroll","reforgestone","bow"};
+    final static AuctionCategory[] categoryItemType = new AuctionCategory[]{AuctionCategory.SWORD,AuctionCategory.FISHING_ROD, AuctionCategory.PICKAXE,
+            AuctionCategory.AXE, AuctionCategory.SHOVEL,AuctionCategory.PET_ITEM, AuctionCategory.TRAVEL_SCROLL, AuctionCategory.REFORGE_STONE,AuctionCategory.BOW};
     String playerUUID = null;
     private void processAuction(JsonObject auction) {
         if(playerUUID == null) playerUUID = Minecraft.getMinecraft().thePlayer.getUniqueID().toString().replaceAll("-","");
@@ -478,7 +481,7 @@ public class APIManager {
         String item_name = auction.get("item_name").getAsString();
         String item_lore = Utils.fixBrokenAPIColour(auction.get("item_lore").getAsString());
         String item_bytes = auction.get("item_bytes").getAsString();
-        String rarity = auction.get("tier").getAsString();
+        Rarity rarity = Rarity.getRarityFromString(auction.get("tier").getAsString());
         JsonArray bids = auction.get("bids").getAsJsonArray();
 
         try {
@@ -551,18 +554,18 @@ public class APIManager {
             }
 
             //Categories
-            String category = sbCategory;
+            AuctionCategory category = AuctionCategory.stringToCategory(sbCategory);
             int itemType = checkItemType(item_lore, true,"SWORD", "FISHING ROD", "PICKAXE",
                     "AXE", "SHOVEL", "PET ITEM", "TRAVEL SCROLL", "REFORGE STONE", "BOW");
             if(itemType >= 0 && itemType < categoryItemType.length) {
                 category = categoryItemType[itemType];
             }
-            if(category.equals("consumables") && extras.contains("enchanted book")) category = "ebook";
-            if(category.equals("consumables") && extras.endsWith("potion")) category = "potion";
-            if(category.equals("misc") && extras.contains("rune")) category = "rune";
-            if(category.equals("misc") && item_lore.split("\n")[0].endsWith("Furniture")) category = "furniture";
+            if(sbCategory.equals("consumables") && extras.contains("enchanted book")) category = AuctionCategory.EBOOK;
+            if(sbCategory.equals("consumables") && extras.endsWith("potion")) category = AuctionCategory.POTION;
+            if(sbCategory.equals("misc") && extras.contains("rune")) category = AuctionCategory.RUNE;
+            if(sbCategory.equals("misc") && item_lore.split("\n")[0].endsWith("Furniture")) category = AuctionCategory.FURNITURE;
             if(item_lore.split("\n")[0].endsWith("Pet") ||
-                    item_lore.split("\n")[0].endsWith("Mount")) category = "pet";
+                    item_lore.split("\n")[0].endsWith("Mount")) category = AuctionCategory.PET;
 
             Auction auction1 = new Auction(auctioneerUuid, end, starting_bid, highest_bid_amount,
                     bid_count, bin, category, rarity, dungeonTier, item_bytes);

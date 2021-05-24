@@ -92,38 +92,38 @@ public class CustomAH extends Gui {
     public int guiLeft = -1;
     public int guiTop = -1;
 
-    private final Category CATEGORY_SWORD = new Category("sword", "Swords", "diamond_sword");
-    private final Category CATEGORY_ARMOR = new Category("armor", "Armor", "diamond_chestplate");
-    private final Category CATEGORY_BOWS = new Category("bow", "Bows", "bow");
-    private final Category CATEGORY_ACCESSORIES = new Category("accessories", "Accessories", "diamond");
+    private static final Category CATEGORY_SWORD = new Category(AuctionCategory.SWORD, "Swords", "diamond_sword");
+    private static final Category CATEGORY_ARMOR = new Category(AuctionCategory.ARMOR, "Armor", "diamond_chestplate");
+    private static final Category CATEGORY_BOWS = new Category(AuctionCategory.BOW, "Bows", "bow");
+    private static final Category CATEGORY_ACCESSORIES = new Category(AuctionCategory.ACCESSORIES, "Accessories", "diamond");
 
-    private final Category CATEGORY_FISHING_ROD = new Category("fishingrod", "Fishing Rods", "fishing_rod");
-    private final Category CATEGORY_PICKAXE = new Category("pickaxe", "Pickaxes", "iron_pickaxe");
-    private final Category CATEGORY_AXE = new Category("axe", "Axes", "iron_axe");
-    private final Category CATEGORY_SHOVEL = new Category("shovel", "Shovels", "iron_shovel");
+    private static final Category CATEGORY_FISHING_ROD = new Category(AuctionCategory.FISHING_ROD, "Fishing Rods", "fishing_rod");
+    private static final Category CATEGORY_PICKAXE = new Category(AuctionCategory.PICKAXE, "Pickaxes", "iron_pickaxe");
+    private static final Category CATEGORY_AXE = new Category(AuctionCategory.AXE, "Axes", "iron_axe");
+    private static final Category CATEGORY_SHOVEL = new Category(AuctionCategory.SHOVEL, "Shovels", "iron_shovel");
 
-    private final Category CATEGORY_PET_ITEM = new Category("petitem", "Pet Items", "lead");
+    private static final Category CATEGORY_PET_ITEM = new Category(AuctionCategory.PET_ITEM, "Pet Items", "lead");
 
-    private final Category CATEGORY_EBOOKS = new Category("ebook", "Enchanted Books", "enchanted_book");
-    private final Category CATEGORY_POTIONS = new Category("potion", "Potions", "potion");
-    private final Category CATEGORY_TRAVEL_SCROLLS = new Category("travelscroll", "Travel Scrolls", "map");
+    private static final Category CATEGORY_EBOOKS = new Category(AuctionCategory.EBOOK, "Enchanted Books", "enchanted_book");
+    private static final Category CATEGORY_POTIONS = new Category(AuctionCategory.POTION, "Potions", "potion");
+    private static final Category CATEGORY_TRAVEL_SCROLLS = new Category(AuctionCategory.TRAVEL_SCROLL, "Travel Scrolls", "map");
 
-    private final Category CATEGORY_REFORGE_STONES = new Category("reforgestone", "Reforge Stones", "anvil");
-    private final Category CATEGORY_RUNES = new Category("rune", "Runes", "magma_cream");
-    private final Category CATEGORY_FURNITURE = new Category("furniture", "Furniture", "armor_stand");
+    private static final Category CATEGORY_REFORGE_STONES = new Category(AuctionCategory.REFORGE_STONE, "Reforge Stones", "anvil");
+    private static final Category CATEGORY_RUNES = new Category(AuctionCategory.RUNE, "Runes", "magma_cream");
+    private static final Category CATEGORY_FURNITURE = new Category(AuctionCategory.FURNITURE, "Furniture", "armor_stand");
 
-    private final Category CATEGORY_COMBAT = new Category("weapon", "Combat", "golden_sword", CATEGORY_SWORD,
+    private static final Category CATEGORY_COMBAT = new Category(AuctionCategory.WEAPON, "Combat", "golden_sword", CATEGORY_SWORD,
             CATEGORY_BOWS, CATEGORY_ARMOR, CATEGORY_ACCESSORIES);
-    private final Category CATEGORY_TOOL = new Category("", "Tools", "diamond_pickaxe", CATEGORY_FISHING_ROD, CATEGORY_PICKAXE,
+    private static final Category CATEGORY_TOOL = new Category(AuctionCategory.TOOL, "Tools", "diamond_pickaxe", CATEGORY_FISHING_ROD, CATEGORY_PICKAXE,
             CATEGORY_AXE, CATEGORY_SHOVEL);
-    private final Category CATEGORY_PET = new Category("pet", "Pets", "bone", CATEGORY_PET_ITEM);
-    private final Category CATEGORY_CONSUMABLES = new Category("consumables", "Consumables", "apple", CATEGORY_EBOOKS, CATEGORY_POTIONS,
+    private static final Category CATEGORY_PET = new Category(AuctionCategory.PET, "Pets", "bone", CATEGORY_PET_ITEM);
+    private static final Category CATEGORY_CONSUMABLES = new Category(AuctionCategory.CONSUMABLES, "Consumables", "apple", CATEGORY_EBOOKS, CATEGORY_POTIONS,
             CATEGORY_TRAVEL_SCROLLS);
-    private final Category CATEGORY_BLOCKS = new Category("blocks", "Blocks", "cobblestone");
-    private final Category CATEGORY_MISC = new Category("misc", "Misc", "stick", CATEGORY_REFORGE_STONES, CATEGORY_RUNES,
+    private static final Category CATEGORY_BLOCKS = new Category(AuctionCategory.BLOCKS, "Blocks", "cobblestone");
+    private static final Category CATEGORY_MISC = new Category(AuctionCategory.MISC, "Misc", "stick", CATEGORY_REFORGE_STONES, CATEGORY_RUNES,
             CATEGORY_FURNITURE);
 
-    private final Category[] mainCategories = new Category[]{CATEGORY_COMBAT, CATEGORY_TOOL, CATEGORY_PET,
+    private static final Category[] mainCategories = new Category[]{CATEGORY_COMBAT, CATEGORY_TOOL, CATEGORY_PET,
             CATEGORY_CONSUMABLES, CATEGORY_BLOCKS, CATEGORY_MISC};
 
     private static final int SORT_MODE_HIGH = 0;
@@ -216,20 +216,20 @@ public class CustomAH extends Gui {
     }
 
     public static class Category {
-        public final String categoryMatch;
+        public final AuctionCategory categoryMatch;
         public final Category[] subcategories;
         public final String displayName;
         public final ItemStack displayItem;
 
-        public Category(String categoryMatch, String displayName, String displayItem, Category... subcategories) {
+        public Category(AuctionCategory categoryMatch, String displayName, String displayItem, Category... subcategories) {
             this.categoryMatch = categoryMatch;
             this.subcategories = subcategories;
             this.displayName = displayName;
             this.displayItem = new ItemStack(Item.getByNameOrId(displayItem));
         }
 
-        public String[] getTotalCategories() {
-            String[] categories = new String[1+subcategories.length];
+        public AuctionCategory[] getTotalCategories() {
+            AuctionCategory[] categories = new AuctionCategory[1+subcategories.length];
             categories[0] = categoryMatch;
 
             for(int i=0; i<subcategories.length; i++) {
@@ -1090,14 +1090,14 @@ public class CustomAH extends Gui {
         boolean match = true;
         if(currentCategory != null) {
             match = false;
-            String[] categories = currentCategory.getTotalCategories();
-            for(String category : categories) {
-                match |= category.equalsIgnoreCase(auc.category);
+            AuctionCategory[] categories = currentCategory.getTotalCategories();
+            for(AuctionCategory category : categories) {
+                match |= category == auc.category;
             }
         }
 
         if(rarityFilter >= 0 && rarityFilter < rarities.length) {
-            match &= rarities[rarityFilter].equals(auc.rarity);
+            match &= rarities[rarityFilter].equals(auc.rarity.string);
         }
 
         if(binFilter == BIN_FILTER_BIN) {
