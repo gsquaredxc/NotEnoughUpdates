@@ -482,7 +482,7 @@ public class PlayerStats {
                 pet.addProperty("currentLevelRequirement", currentLevelRequirement);
                 pet.addProperty("maxXP", maxXP);
 
-                JsonObject petItem = NotEnoughUpdates.INSTANCE.manager.getItemInformation().get(petname+";"+tierNum);
+                JsonObject petItem = NotEnoughUpdates.INSTANCE.manager.getItemInformation().get(petname+";"+tierNum).getJson();
                 if(petItem == null) return new Stats();
 
                 Stats stats = new Stats();

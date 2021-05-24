@@ -6,6 +6,8 @@ import io.github.moulberry.notenoughupdates.NEUEventListener;
 import io.github.moulberry.notenoughupdates.NotEnoughUpdates;
 import io.github.moulberry.notenoughupdates.core.config.Position;
 import io.github.moulberry.notenoughupdates.core.util.lerp.LerpUtils;
+import io.github.moulberry.notenoughupdates.items.IItem;
+import io.github.moulberry.notenoughupdates.items.ItemUtils;
 import io.github.moulberry.notenoughupdates.options.NEUConfig;
 import io.github.moulberry.notenoughupdates.overlays.TextOverlay;
 import io.github.moulberry.notenoughupdates.overlays.TextOverlayStyle;
@@ -372,9 +374,9 @@ public class PetInfoOverlay extends TextOverlay {
 
         String petItemStr = EnumChatFormatting.AQUA+ "Held Item: " + EnumChatFormatting.RED + "None";
         if(currentPet.petItem != null) {
-            JsonObject json = NotEnoughUpdates.INSTANCE.manager.getItemInformation().get(currentPet.petItem);
+            IItem json = NotEnoughUpdates.INSTANCE.manager.getItemInformation().get(currentPet.petItem);
             if(json != null) {
-                String name = NotEnoughUpdates.INSTANCE.manager.jsonToStack(json).getDisplayName();
+                String name = ItemUtils.itemToStack(json).getDisplayName();
                 petItemStr = EnumChatFormatting.AQUA + "Held Item: " + name;
             }
         }
@@ -585,13 +587,13 @@ public class PetInfoOverlay extends TextOverlay {
                 if(itemMap == null) {
                     itemMap = new HashMap<>();
 
-                    for(Map.Entry<String, JsonObject> entry : NotEnoughUpdates.INSTANCE.manager.getItemInformation().entrySet()) {
+                    for(Map.Entry<String, IItem> entry : NotEnoughUpdates.INSTANCE.manager.getItemInformation().entrySet()) {
                         boolean petItem = false;
 
                         if(entry.getKey().startsWith("PET_ITEM_")) {
                             petItem = true;
                         } else {
-                            ItemStack stack = NotEnoughUpdates.INSTANCE.manager.jsonToStack(entry.getValue());
+                            ItemStack stack = ItemUtils.itemToStack(entry.getValue());
                             if(stack.hasTagCompound()) {
                                 String[] itemLore = NotEnoughUpdates.INSTANCE.manager.getLoreFromNBT(stack.getTagCompound());
 
@@ -605,7 +607,7 @@ public class PetInfoOverlay extends TextOverlay {
                         }
 
                         if(petItem) {
-                            ItemStack stack = NotEnoughUpdates.INSTANCE.manager.jsonToStack(entry.getValue());
+                            ItemStack stack = ItemUtils.itemToStack(entry.getValue());
                             itemMap.put(stack.getDisplayName(), entry.getKey());
                         }
                     }
@@ -772,13 +774,13 @@ public class PetInfoOverlay extends TextOverlay {
 
         if(!NotEnoughUpdates.INSTANCE.config.petOverlay.petOverlayIcon) return;
 
-        JsonObject petItem = NotEnoughUpdates.INSTANCE.manager.getItemInformation().get("ROCK;0");
+        IItem petItem = NotEnoughUpdates.INSTANCE.manager.getItemInformation().get("ROCK;0");
         if(petItem != null) {
             Vector2f position = getPosition(overlayWidth, overlayHeight);
             int x = (int)position.x;
             int y = (int)position.y;
 
-            ItemStack stack = NotEnoughUpdates.INSTANCE.manager.jsonToStack(petItem);
+            ItemStack stack = ItemUtils.itemToStack(petItem);
             GlStateManager.enableDepth();
             GlStateManager.pushMatrix();
             GlStateManager.translate(x-2, y-2, 0);
@@ -804,13 +806,13 @@ public class PetInfoOverlay extends TextOverlay {
 
         if(!NotEnoughUpdates.INSTANCE.config.petOverlay.petOverlayIcon) return;
 
-        JsonObject petItem = NotEnoughUpdates.INSTANCE.manager.getItemInformation().get(currentPet.petType + ";" + currentPet.rarity.petId);
+        IItem petItem = NotEnoughUpdates.INSTANCE.manager.getItemInformation().get(currentPet.petType + ";" + currentPet.rarity.petId);
         if(petItem != null) {
             Vector2f position = getPosition(overlayWidth, overlayHeight);
             int x = (int)position.x;
             int y = (int)position.y;
 
-            ItemStack stack = NotEnoughUpdates.INSTANCE.manager.jsonToStack(petItem);
+            ItemStack stack = ItemUtils.itemToStack(petItem);
             GlStateManager.enableDepth();
             GlStateManager.pushMatrix();
             GlStateManager.translate(x-2, y-2, 0);
@@ -821,13 +823,13 @@ public class PetInfoOverlay extends TextOverlay {
 
         Pet currentPet2 = getCurrentPet2();
         if(currentPet2 != null) {
-            JsonObject petItem2 = NotEnoughUpdates.INSTANCE.manager.getItemInformation().get(currentPet2.petType + ";" + currentPet2.rarity.petId);
+            IItem petItem2 = NotEnoughUpdates.INSTANCE.manager.getItemInformation().get(currentPet2.petType + ";" + currentPet2.rarity.petId);
             if(petItem2 != null) {
                 Vector2f position = getPosition(overlayWidth, overlayHeight);
                 int x = (int)position.x;
                 int y = (int)position.y + NotEnoughUpdates.INSTANCE.config.petOverlay.petOverlayText.size()*10+10;
 
-                ItemStack stack = NotEnoughUpdates.INSTANCE.manager.jsonToStack(petItem2);
+                ItemStack stack = ItemUtils.itemToStack(petItem2);
                 GlStateManager.enableDepth();
                 GlStateManager.pushMatrix();
                 GlStateManager.translate(x-2, y-2, 0);
@@ -1059,10 +1061,10 @@ public class PetInfoOverlay extends TextOverlay {
                 if(itemMap == null) {
                     itemMap = new HashMap<>();
 
-                    for(Map.Entry<String, JsonObject> entry : NotEnoughUpdates.INSTANCE.manager.getItemInformation().entrySet()) {
+                    for(Map.Entry<String, IItem> entry : NotEnoughUpdates.INSTANCE.manager.getItemInformation().entrySet()) {
                         if(entry.getKey().equals("ALL_SKILLS_SUPER_BOOST") ||
                                 XP_BOOST_PATTERN.matcher(entry.getKey()).matches()) {
-                            ItemStack stack = NotEnoughUpdates.INSTANCE.manager.jsonToStack(entry.getValue());
+                            ItemStack stack = ItemUtils.itemToStack(entry.getValue());
                             itemMap.put(stack.getDisplayName(), entry.getKey());
                         }
                     }

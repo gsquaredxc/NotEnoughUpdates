@@ -14,6 +14,8 @@ import io.github.moulberry.notenoughupdates.core.util.MiscUtils;
 import io.github.moulberry.notenoughupdates.dungeons.DungeonBlocks;
 import io.github.moulberry.notenoughupdates.dungeons.DungeonWin;
 import io.github.moulberry.notenoughupdates.gamemodes.SBGamemodes;
+import io.github.moulberry.notenoughupdates.items.IItem;
+import io.github.moulberry.notenoughupdates.items.ItemUtils;
 import io.github.moulberry.notenoughupdates.miscfeatures.*;
 import io.github.moulberry.notenoughupdates.miscgui.*;
 import io.github.moulberry.notenoughupdates.options.NEUConfig;
@@ -209,9 +211,9 @@ public class NEUEventListener {
         if(neu.hasSkyblockScoreboard()) {
             if(!preloadedItems) {
                 preloadedItems = true;
-                for(JsonObject json : neu.manager.getItemInformation().values()) {
+                for(IItem json : neu.manager.getItemInformation().values()) {
                     itemPreloader.submit(() -> {
-                        ItemStack stack = neu.manager.jsonToStack(json, true, true);
+                        ItemStack stack = ItemUtils.itemToStack(json, true, true);
                         if(stack.getItem() == Items.skull) toPreload.add(stack);
                     });
                 }
@@ -562,7 +564,7 @@ public class NEUEventListener {
                                         String col = backName.substring(split[0].length()+1,
                                                 backName.length()-split[split.length-1].length()-1);
 
-                                        JsonObject json = neu.manager.getItemInformation().get(resInternalname);
+                                        JsonObject json = neu.manager.getItemInformation().get(resInternalname).getJson();
                                         json.addProperty("crafttext", "Requires: " + col);
 
                                         Minecraft.getMinecraft().thePlayer.addChatMessage(new ChatComponentText("Added: " + resInternalname));

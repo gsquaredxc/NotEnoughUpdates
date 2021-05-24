@@ -4,6 +4,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import io.github.moulberry.notenoughupdates.NEUManager;
 import io.github.moulberry.notenoughupdates.NEUOverlay;
+import io.github.moulberry.notenoughupdates.items.ItemUtils;
 import io.github.moulberry.notenoughupdates.util.NEUResourceManager;
 import io.github.moulberry.notenoughupdates.util.Utils;
 import net.minecraft.client.Minecraft;
@@ -71,8 +72,8 @@ public class CollectionLogInfoPane extends ScrollableInfoPane {
         for(String internalname : manager.getItemInformation().keySet()) {
             String mobRegex = ".*?((_MONSTER)|(_ANIMAL)|(_MINIBOSS)|(_BOSS)|(_SC))$";
             if(!manager.auctionManager.isVanillaItem(internalname) && !internalname.matches(mobRegex)) {
-                JsonObject item = manager.getItemInformation().get(internalname);
-                JsonArray lore = manager.getItemInformation().get(internalname).get("lore").getAsJsonArray();
+                JsonObject item = manager.getItemInformation().get(internalname).getJson();
+                JsonArray lore = item.get("lore").getAsJsonArray();
                 String petRegex = ".*?;[0-4]$";
                 switch(filterMode) {
                     case FILTER_WEAPON:
@@ -318,7 +319,7 @@ public class CollectionLogInfoPane extends ScrollableInfoPane {
 
                     if(mouseX > leftI && mouseX < rightI) {
                         if(mouseY > topI && mouseY < bottomI) {
-                            tooltipToDisplay.set(manager.jsonToStack(manager.getItemInformation().get(internalname), true));
+                            tooltipToDisplay.set(ItemUtils.itemToStack(manager.getItemInformation().get(internalname), true));
                         }
                     }
 
@@ -379,7 +380,7 @@ public class CollectionLogInfoPane extends ScrollableInfoPane {
                 if(id < items.length) {
                     String internalname = items[id];
 
-                    ItemStack stack = manager.jsonToStack(manager.getItemInformation().get(internalname));
+                    ItemStack stack = ItemUtils.itemToStack(manager.getItemInformation().get(internalname));
                     Utils.drawItemStack(stack, x, y);
                 }
             }

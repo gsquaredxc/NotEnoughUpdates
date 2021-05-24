@@ -9,6 +9,8 @@ import com.google.gson.JsonPrimitive;
 import com.mojang.authlib.GameProfile;
 import io.github.moulberry.notenoughupdates.NotEnoughUpdates;
 import io.github.moulberry.notenoughupdates.cosmetics.ShaderManager;
+import io.github.moulberry.notenoughupdates.items.IItem;
+import io.github.moulberry.notenoughupdates.items.ItemUtils;
 import io.github.moulberry.notenoughupdates.util.SBAIntegration;
 import io.github.moulberry.notenoughupdates.itemeditor.GuiElementTextField;
 import io.github.moulberry.notenoughupdates.util.SBInfo;
@@ -1147,7 +1149,7 @@ public class GuiProfileViewer extends GuiScreen {
                 String petname = pet.get("type").getAsString();
                 String tier = pet.get("tier").getAsString();
                 String heldItem = Utils.getElementAsString(pet.get("heldItem"), null);
-                JsonObject heldItemJson = heldItem==null?null:NotEnoughUpdates.INSTANCE.manager.getItemInformation().get(heldItem);
+                JsonObject heldItemJson = heldItem==null?null:NotEnoughUpdates.INSTANCE.manager.getItemInformation().get(heldItem).getJson();
                 String tierNum = MINION_RARITY_TO_NUM.get(tier);
                 float exp = pet.get("exp").getAsFloat();
                 if(tierNum == null) continue;
@@ -1167,7 +1169,7 @@ public class GuiProfileViewer extends GuiScreen {
                 pet.addProperty("currentLevelRequirement", currentLevelRequirement);
                 pet.addProperty("maxXP", maxXP);
 
-                JsonObject petItem = NotEnoughUpdates.INSTANCE.manager.getItemInformation().get(petname+";"+tierNum);
+                JsonObject petItem = NotEnoughUpdates.INSTANCE.manager.getItemInformation().get(petname+";"+tierNum).getJson();
                 if(petItem == null) continue;
 
                 ItemStack stack = NotEnoughUpdates.INSTANCE.manager.jsonToStack(petItem, false, false);
@@ -1336,7 +1338,7 @@ public class GuiProfileViewer extends GuiScreen {
             String type = pet.get("type").getAsString();
 
             for(int i=0; i<4; i++) {
-                JsonObject item = NotEnoughUpdates.INSTANCE.manager.getItemInformation().get(type+";"+i);
+                JsonObject item = NotEnoughUpdates.INSTANCE.manager.getItemInformation().get(type+";"+i).getJson();
                 if(item != null) {
                     int x = guiLeft+280;
                     float y = guiTop+67+15*(float)Math.sin(((currentTime-startTime)/800f)%(2*Math.PI));
@@ -1515,7 +1517,7 @@ public class GuiProfileViewer extends GuiScreen {
             for(int i=0; i<minions.size(); i++) {
                 String minion = minions.get(i);
                 if(minion != null) {
-                    JsonObject minionJson = NotEnoughUpdates.INSTANCE.manager.getItemInformation().get(minion+"_GENERATOR_1");
+                    JsonObject minionJson = NotEnoughUpdates.INSTANCE.manager.getItemInformation().get(minion+"_GENERATOR_1").getJson();
                     if(minionJson != null) {
                         int xIndex = i%COLLS_XCOUNT;
                         int yIndex = i/COLLS_XCOUNT;
@@ -1919,12 +1921,12 @@ public class GuiProfileViewer extends GuiScreen {
             purpleCandyCount = countItemsInInventory("PURPLE_CANDY", inventoryInfo, "candy_inventory_contents");
         }
 
-        Utils.drawItemStackWithText(NotEnoughUpdates.INSTANCE.manager.jsonToStack(
+        Utils.drawItemStackWithText(ItemUtils.itemToStack(
                 NotEnoughUpdates.INSTANCE.manager.getItemInformation().get("ARROW")), guiLeft+173, guiTop+101,
                 ""+(arrowCount>999?shortNumberFormat(arrowCount, 0):arrowCount));
-        Utils.drawItemStackWithText(NotEnoughUpdates.INSTANCE.manager.jsonToStack(
+        Utils.drawItemStackWithText(ItemUtils.itemToStack(
                 NotEnoughUpdates.INSTANCE.manager.getItemInformation().get("GREEN_CANDY")), guiLeft+173, guiTop+119, ""+greenCandyCount);
-        Utils.drawItemStackWithText(NotEnoughUpdates.INSTANCE.manager.jsonToStack(
+        Utils.drawItemStackWithText(ItemUtils.itemToStack(
                 NotEnoughUpdates.INSTANCE.manager.getItemInformation().get("PURPLE_CANDY")), guiLeft+173, guiTop+137, ""+purpleCandyCount);
         if(mouseX > guiLeft+173 && mouseX < guiLeft+173+16) {
             if(mouseY > guiTop+101 && mouseY < guiTop+137+16) {
@@ -2518,7 +2520,7 @@ public class GuiProfileViewer extends GuiScreen {
                 }
             }
             if(entityPlayer.getUniqueID().toString().equals("ae6193ab-494a-4719-b6e7-d50392c8f012")) {
-                entityPlayer.inventory.armorInventory[3] = NotEnoughUpdates.INSTANCE.manager.jsonToStack(
+                entityPlayer.inventory.armorInventory[3] = ItemUtils.itemToStack(
                         NotEnoughUpdates.INSTANCE.manager.getItemInformation().get("SMALL_BACKPACK"));
             }
         }
@@ -2553,12 +2555,12 @@ public class GuiProfileViewer extends GuiScreen {
                 String type = activePet.get("type").getAsString();
 
                 for(int i=0; i<4; i++) {
-                    JsonObject item = NotEnoughUpdates.INSTANCE.manager.getItemInformation().get(type+";"+i);
+                    IItem item = NotEnoughUpdates.INSTANCE.manager.getItemInformation().get(type+";"+i);
                     if(item != null) {
                         int x = guiLeft+50;
                         float y = guiTop+82+15*(float)Math.sin(((currentTime-startTime)/800f)%(2*Math.PI));
                         GlStateManager.translate(x, y, 0);
-                        ItemStack stack = NotEnoughUpdates.INSTANCE.manager.jsonToStack(item, false);
+                        ItemStack stack = ItemUtils.itemToStack(item, false);
 
                         //Remove extra attributes so no CIT
                         NBTTagCompound stackTag = stack.getTagCompound()==null?new NBTTagCompound():stack.getTagCompound();

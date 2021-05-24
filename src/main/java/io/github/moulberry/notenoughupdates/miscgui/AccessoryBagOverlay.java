@@ -6,6 +6,8 @@ import com.google.gson.JsonObject;
 import io.github.moulberry.notenoughupdates.NEUEventListener;
 import io.github.moulberry.notenoughupdates.NotEnoughUpdates;
 import io.github.moulberry.notenoughupdates.core.util.StringUtils;
+import io.github.moulberry.notenoughupdates.items.IItem;
+import io.github.moulberry.notenoughupdates.items.ItemUtils;
 import io.github.moulberry.notenoughupdates.profileviewer.PlayerStats;
 import io.github.moulberry.notenoughupdates.util.Constants;
 import io.github.moulberry.notenoughupdates.util.Utils;
@@ -328,9 +330,9 @@ public class AccessoryBagOverlay {
             missing = new ArrayList<>();
 
             List<String> missingInternal = new ArrayList<>();
-            for(Map.Entry<String, JsonObject> entry : NotEnoughUpdates.INSTANCE.manager.getItemInformation().entrySet()) {
-                if(entry.getValue().has("lore")) {
-                    if(checkItemType(entry.getValue().get("lore").getAsJsonArray(), "ACCESSORY", "HATCCESSORY") >= 0) {
+            for(Map.Entry<String, IItem> entry : NotEnoughUpdates.INSTANCE.manager.getItemInformation().entrySet()) {
+                if(entry.getValue().getJson().has("lore")) {
+                    if(checkItemType(entry.getValue().getJson().get("lore").getAsJsonArray(), "ACCESSORY", "HATCCESSORY") >= 0) {
                         missingInternal.add(entry.getKey());
                     }
                 }
@@ -368,7 +370,7 @@ public class AccessoryBagOverlay {
                     }
                 }
 
-                ItemStack stack = NotEnoughUpdates.INSTANCE.manager.jsonToStack(NotEnoughUpdates.INSTANCE.manager.getItemInformation().get(internal), false);
+                ItemStack stack = ItemUtils.itemToStack(NotEnoughUpdates.INSTANCE.manager.getItemInformation().get(internal), false);
                 if(hasDup) {
                     stack.setStackDisplayName(stack.getDisplayName()+"*");
                 }

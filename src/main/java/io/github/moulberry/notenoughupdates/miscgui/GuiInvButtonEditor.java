@@ -7,6 +7,7 @@ import io.github.moulberry.notenoughupdates.NotEnoughUpdates;
 import io.github.moulberry.notenoughupdates.core.GlScissorStack;
 import io.github.moulberry.notenoughupdates.core.GuiElementTextField;
 import io.github.moulberry.notenoughupdates.core.util.lerp.LerpingInteger;
+import io.github.moulberry.notenoughupdates.items.ItemUtils;
 import io.github.moulberry.notenoughupdates.options.NEUConfig;
 import io.github.moulberry.notenoughupdates.util.Utils;
 import net.minecraft.client.Minecraft;
@@ -233,7 +234,7 @@ public class GuiInvButtonEditor extends GuiScreen {
             skullMap.put(link, render);
             return render;
         } else {
-            return NotEnoughUpdates.INSTANCE.manager.jsonToStack(NotEnoughUpdates.INSTANCE.manager.getItemInformation().get(icon));
+            return ItemUtils.itemToStack(NotEnoughUpdates.INSTANCE.manager.getItemInformation().get(icon));
         }
     }
 

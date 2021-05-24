@@ -2,6 +2,7 @@ package io.github.moulberry.notenoughupdates.overlays;
 
 import io.github.moulberry.notenoughupdates.NotEnoughUpdates;
 import io.github.moulberry.notenoughupdates.core.config.Position;
+import io.github.moulberry.notenoughupdates.items.ItemUtils;
 import io.github.moulberry.notenoughupdates.options.NEUConfig;
 import io.github.moulberry.notenoughupdates.util.SBInfo;
 import io.github.moulberry.notenoughupdates.util.Utils;
@@ -107,7 +108,7 @@ public class TimersOverlay extends TextOverlay {
         switch(beforeColon) {
             case "Cakes": icon = CAKES_ICON; break;
             case "Puzzler": icon = PUZZLER_ICON; break;
-            case "Godpot": icon = NotEnoughUpdates.INSTANCE.manager.jsonToStack(NotEnoughUpdates.INSTANCE.manager.getItemInformation().get("GOD_POTION")); break;
+            case "Godpot": icon = ItemUtils.itemToStack(NotEnoughUpdates.INSTANCE.manager.getItemInformation().get("GOD_POTION")); break;
             case "Fetchur": {
                 if(FETCHUR_ICONS == null) {
                     FETCHUR_ICONS = new ItemStack[] {
@@ -116,10 +117,10 @@ public class TimersOverlay extends TextOverlay {
                             new ItemStack(Items.compass, 1, 0),
                             new ItemStack(Items.prismarine_crystals, 20, 0),
                             new ItemStack(Items.fireworks, 1, 0),
-                            NotEnoughUpdates.INSTANCE.manager.jsonToStack(NotEnoughUpdates.INSTANCE.manager.getItemInformation().get("CHEAP_COFFEE")),
+                            ItemUtils.itemToStack(NotEnoughUpdates.INSTANCE.manager.getItemInformation().get("CHEAP_COFFEE")),
                             new ItemStack(Items.oak_door, 1, 0),
                             new ItemStack(Items.rabbit_foot, 3, 0),
-                            NotEnoughUpdates.INSTANCE.manager.jsonToStack(NotEnoughUpdates.INSTANCE.manager.getItemInformation().get("SUPERBOOM_TNT")),
+                            ItemUtils.itemToStack(NotEnoughUpdates.INSTANCE.manager.getItemInformation().get("SUPERBOOM_TNT")),
                             new ItemStack(Blocks.pumpkin, 1, 0),
                             new ItemStack(Items.flint_and_steel, 1, 0),
                             new ItemStack(Blocks.quartz_ore, 50, 0),

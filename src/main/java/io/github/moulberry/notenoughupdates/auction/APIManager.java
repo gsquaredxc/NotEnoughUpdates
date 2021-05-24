@@ -5,6 +5,8 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import io.github.moulberry.notenoughupdates.NEUManager;
 import io.github.moulberry.notenoughupdates.NotEnoughUpdates;
+import io.github.moulberry.notenoughupdates.items.IItem;
+import io.github.moulberry.notenoughupdates.items.ItemUtils;
 import io.github.moulberry.notenoughupdates.util.Constants;
 import io.github.moulberry.notenoughupdates.util.Utils;
 import net.minecraft.client.Minecraft;
@@ -131,10 +133,10 @@ public class APIManager {
                 JsonObject item = manager.getJsonFromNBT(item_tag);
                 ItemStack stack = manager.jsonToStack(item, false);
 
-                JsonObject itemDefault = manager.getItemInformation().get(item.get("internalname").getAsString());
+                IItem itemDefault = manager.getItemInformation().get(item.get("internalname").getAsString());
 
                 if(stack != null && itemDefault != null) {
-                    ItemStack stackDefault = manager.jsonToStack(itemDefault, true);
+                    ItemStack stackDefault = ItemUtils.itemToStack(itemDefault, true);
                     if(stack.isItemEqual(stackDefault)) {
                         //Item types are the same, compare lore
 
@@ -722,8 +724,8 @@ public class APIManager {
         //Removes trailing numbers and underscores, eg. LEAVES_2-3 -> LEAVES
         String vanillaName = internalname.split("-")[0];
         if(manager.getItemInformation().containsKey(vanillaName)) {
-            JsonObject json = manager.getItemInformation().get(vanillaName);
-            if(json != null && json.has("vanilla") && json.get("vanilla").getAsBoolean()) return true;
+            IItem item = manager.getItemInformation().get(vanillaName);
+            if(item.getJson() != null && item.getJson().has("vanilla") && item.getJson().get("vanilla").getAsBoolean()) return true;
         }
         return Item.itemRegistry.getObject(new ResourceLocation(vanillaName)) != null;
     }
@@ -773,7 +775,7 @@ public class APIManager {
                 return ci;
             }
 
-            JsonObject item = manager.getItemInformation().get(internalname);
+            JsonObject item = manager.getItemInformation().get(internalname).getJson();
             if(item != null && item.has("recipe")) {
                 float craftPrice = 0;
                 JsonObject recipe = item.get("recipe").getAsJsonObject();

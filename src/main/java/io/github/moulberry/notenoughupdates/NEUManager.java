@@ -3,6 +3,9 @@ package io.github.moulberry.notenoughupdates;
 import com.google.common.collect.Lists;
 import com.google.gson.*;
 import io.github.moulberry.notenoughupdates.auction.APIManager;
+import io.github.moulberry.notenoughupdates.items.IItem;
+import io.github.moulberry.notenoughupdates.items.ItemFactory;
+import io.github.moulberry.notenoughupdates.items.ItemUtils;
 import io.github.moulberry.notenoughupdates.miscgui.GuiItemRecipe;
 import io.github.moulberry.notenoughupdates.util.Constants;
 import io.github.moulberry.notenoughupdates.util.HypixelApi;
@@ -32,13 +35,15 @@ import java.util.concurrent.Executors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
+import static io.github.moulberry.notenoughupdates.items.ItemUtils.itemToStack;
+
 public class NEUManager {
 
     private final NotEnoughUpdates neu;
     public final Gson gson;
     public final APIManager auctionManager;
 
-    private final TreeMap<String, JsonObject> itemMap = new TreeMap<>();
+    private final TreeMap<String, IItem> itemMap = new TreeMap<>();
 
     private final TreeMap<String, HashMap<String, List<Integer>>> titleWordMap = new TreeMap<>();
     private final TreeMap<String, HashMap<String, List<Integer>>> loreWordMap = new TreeMap<>();
@@ -59,7 +64,7 @@ public class NEUManager {
     private final String currentProfileBackup = "";
     public final HypixelApi hypixelApi = new HypixelApi();
 
-    private final Map<String, ItemStack> itemstackCache = new HashMap<>();
+    public final Map<String, ItemStack> itemstackCache = new HashMap<>();
 
     private final ExecutorService repoLoaderES = Executors.newSingleThreadExecutor();
 
@@ -299,7 +304,7 @@ public class NEUManager {
             }
             json.addProperty("itemid", itemid);
 
-            itemMap.put(internalName, json);
+            itemMap.put(internalName, ItemFactory.generateItem(json));
 
             if(json.has("recipe")) {
                 synchronized(usagesMap) {
@@ -885,11 +890,11 @@ public class NEUManager {
         }
 
         for(String internalNameResult : usagesMap.get(internalName)) {
-            JsonObject item = getItemInformation().get(internalNameResult);
-            results.add(item);
+            IItem item = getItemInformation().get(internalNameResult);
+            results.add(item.getJson());
 
-            if(item != null && item.has("recipe")) {
-                JsonObject recipe = item.get("recipe").getAsJsonObject();
+            if(item != null && item.getJson().has("recipe")) {
+                JsonObject recipe = item.getJson().get("recipe").getAsJsonObject();
 
                 ItemStack[] craftMatrix = new ItemStack[9];
 
@@ -903,9 +908,9 @@ public class NEUManager {
                         count = Integer.parseInt(itemS.split(":")[1]);
                         itemS = itemS.split(":")[0];
                     }
-                    JsonObject craft = getItemInformation().get(itemS);
+                    IItem craft = getItemInformation().get(itemS);
                     if(craft != null) {
-                        ItemStack stack = jsonToStack(craft);
+                        ItemStack stack = itemToStack(craft);
                         stack.stackSize = count;
                         craftMatrix[i] = stack;
                     }
@@ -926,9 +931,9 @@ public class NEUManager {
      * Constructs a GuiItemRecipeOld from the recipe data of a given item.
      */
     public boolean displayGuiItemRecipe(String internalName, String text) {
-        JsonObject item = getItemInformation().get(internalName);
-        if(item != null && item.has("recipe")) {
-            JsonObject recipe = item.get("recipe").getAsJsonObject();
+        IItem item = getItemInformation().get(internalName);
+        if(item != null && item.getJson().has("recipe")) {
+            JsonObject recipe = item.getJson().get("recipe").getAsJsonObject();
 
             ItemStack[] craftMatrix = new ItemStack[9];
 
@@ -942,9 +947,9 @@ public class NEUManager {
                     count = Integer.parseInt(itemS.split(":")[1]);
                     itemS = itemS.split(":")[0];
                 }
-                JsonObject craft = getItemInformation().get(itemS);
+                IItem craft = getItemInformation().get(itemS);
                 if(craft != null) {
-                    ItemStack stack = jsonToStack(craft);
+                    ItemStack stack = itemToStack(craft);
                     stack.stackSize = count;
                     craftMatrix[i] = stack;
                 }
@@ -953,7 +958,7 @@ public class NEUManager {
             Minecraft.getMinecraft().thePlayer.sendQueue.addToSendQueue(new C0DPacketCloseWindow(
                     Minecraft.getMinecraft().thePlayer.openContainer.windowId));
             Minecraft.getMinecraft().displayGuiScreen(new GuiItemRecipe(text!=null?text:"Item Recipe",
-                    Lists.<ItemStack[]>newArrayList(craftMatrix), Lists.newArrayList(item), this));
+                    Lists.<ItemStack[]>newArrayList(craftMatrix), Lists.newArrayList(item.getJson()), this));
             return true;
         }
         return false;
@@ -1185,7 +1190,7 @@ public class NEUManager {
         writeJson(json, file);
     }
 
-    public TreeMap<String, JsonObject> getItemInformation() {
+    public TreeMap<String, IItem> getItemInformation() {
         return itemMap;
     }
 

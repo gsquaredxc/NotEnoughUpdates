@@ -5,6 +5,8 @@ import com.google.gson.JsonObject;
 import io.github.moulberry.notenoughupdates.NotEnoughUpdates;
 import io.github.moulberry.notenoughupdates.core.GuiElementTextField;
 import io.github.moulberry.notenoughupdates.core.GuiScreenElementWrapper;
+import io.github.moulberry.notenoughupdates.items.IItem;
+import io.github.moulberry.notenoughupdates.items.ItemUtils;
 import io.github.moulberry.notenoughupdates.options.NEUConfigEditor;
 import io.github.moulberry.notenoughupdates.util.Constants;
 import io.github.moulberry.notenoughupdates.util.SBInfo;
@@ -145,9 +147,9 @@ public class AuctionSearchOverlay {
         int num = 0;
         synchronized(autocompletedItems) {
             for(String str : autocompletedItems) {
-                JsonObject obj = NotEnoughUpdates.INSTANCE.manager.getItemInformation().get(str);
+                IItem obj = NotEnoughUpdates.INSTANCE.manager.getItemInformation().get(str);
                 if(obj != null) {
-                    ItemStack stack = NotEnoughUpdates.INSTANCE.manager.jsonToStack(obj);
+                    ItemStack stack = ItemUtils.itemToStack(obj);
                     //Gui.drawRect(width/2-96, height/4+30+num*22, width/2+96, height/4+30+num*22+20, 0xff505050);
 
                     Minecraft.getMinecraft().getTextureManager().bindTexture(SEARCH_OVERLAY_TEXTURE);
@@ -415,9 +417,9 @@ public class AuctionSearchOverlay {
                 int num = 0;
                 synchronized(autocompletedItems) {
                     for(String str : autocompletedItems) {
-                        JsonObject obj = NotEnoughUpdates.INSTANCE.manager.getItemInformation().get(str);
+                        IItem obj = NotEnoughUpdates.INSTANCE.manager.getItemInformation().get(str);
                         if(obj != null) {
-                            ItemStack stack = NotEnoughUpdates.INSTANCE.manager.jsonToStack(obj);
+                            ItemStack stack = ItemUtils.itemToStack(obj);
                             if(mouseX >= width/2-96 && mouseX <= width/2+96 && mouseY >= topY+30+num*22 && mouseY <= topY+30+num*22+20) {
                                 searchString = Utils.cleanColour(stack.getDisplayName().replaceAll("\\[.+]", "")).trim();
                                 if(searchString.contains("Enchanted Book") && str.contains(";")) {
