@@ -4,6 +4,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import io.github.moulberry.notenoughupdates.NEUManager;
 import io.github.moulberry.notenoughupdates.core.util.lerp.LerpingInteger;
+import io.github.moulberry.notenoughupdates.items.IItem;
 import io.github.moulberry.notenoughupdates.util.Utils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.*;
@@ -32,7 +33,7 @@ public class NEUItemEditor extends GuiScreen {
     private final List<GuiElement> options = new ArrayList<>();
     private final List<GuiElement> rightOptions = new ArrayList<>();
 
-    private final JsonObject item;
+    private final IItem item;
 
     private static final int PADDING = 10;
     private static final int SCROLL_AMOUNT = 20;
@@ -50,54 +51,52 @@ public class NEUItemEditor extends GuiScreen {
     private final Supplier<String> damage;
     private NBTTagCompound nbttag;
 
-    public NEUItemEditor(NEUManager manager, String internalname, JsonObject item) {
+    public NEUItemEditor(NEUManager manager, String internalname, IItem item) {
         this.manager = manager;
         this.item = item;
 
-        if(item.has("nbttag")) {
-            try {
-                nbttag = JsonToNBT.getTagFromJson(item.get("nbttag").getAsString());
-            } catch(NBTException ignored) {}
-        }
+        JsonObject json = item.getJson();
+
+        nbttag = item.getNBT();
 
         internalname = internalname == null ? "" : internalname;
         options.add(new GuiElementText("Internal Name: ", Color.WHITE.getRGB()));
         this.internalname = addTextFieldWithSupplier(internalname, NO_SPACE | FORCE_CAPS);
 
         options.add(new GuiElementText("Item ID: ", Color.WHITE.getRGB()));
-        String itemid = item.has("itemid") ? item.get("itemid").getAsString() : "";
+        String itemid = json.has("itemid") ? json.get("itemid").getAsString() : "";
         this.itemid = addTextFieldWithSupplier(itemid, NO_SPACE);
 
         options.add(new GuiElementText("Display name: ", Color.WHITE.getRGB()));
-        String displayname = item.has("displayname") ? item.get("displayname").getAsString() : "";
+        String displayname = item.getDisplayName();
         this.displayname = addTextFieldWithSupplier(displayname, COLOUR);
 
         options.add(new GuiElementText("Lore: ", Color.WHITE.getRGB()));
-        JsonArray lore = item.has("lore") ? item.get("lore").getAsJsonArray() : new JsonArray();
+        JsonArray lore = json.has("lore") ? json.get("lore").getAsJsonArray() : new JsonArray();
         String[] loreA = new String[lore.size()];
         for(int i=0; i<lore.size(); i++) loreA[i] = lore.get(i).getAsString();
         this.lore = addTextFieldWithSupplier(String.join("\n", loreA), COLOUR | MULTILINE);
 
         options.add(new GuiElementText("Craft text: ", Color.WHITE.getRGB()));
-        String crafttext = item.has("crafttext") ? item.get("crafttext").getAsString() : "";
+        String crafttext = json.has("crafttext") ? json.get("crafttext").getAsString() : "";
         this.crafttext = addTextFieldWithSupplier(crafttext, COLOUR);
 
         options.add(new GuiElementText("Info type: ", Color.WHITE.getRGB()));
-        String infoType = item.has("infoType") ? item.get("infoType").getAsString() : "";
+        String infoType = json.has("infoType") ? json.get("infoType").getAsString() : "";
         this.infoType = addTextFieldWithSupplier(infoType, NO_SPACE | FORCE_CAPS);
 
         options.add(new GuiElementText("Additional information: ", Color.WHITE.getRGB()));
-        JsonArray info = item.has("info") ? item.get("info").getAsJsonArray() : new JsonArray();
+        JsonArray info = json.has("info") ? json.get("info").getAsJsonArray() : new JsonArray();
         String[] infoA = new String[info.size()];
         for(int i=0; i<info.size(); i++) infoA[i] = info.get(i).getAsString();
         this.info = addTextFieldWithSupplier(String.join("\n", infoA), COLOUR | MULTILINE);
 
         options.add(new GuiElementText("Click-command (viewrecipe or viewpotion): ", Color.WHITE.getRGB()));
-        String clickcommand = item.has("clickcommand") ? item.get("clickcommand").getAsString() : "";
+        String clickcommand = json.has("clickcommand") ? json.get("clickcommand").getAsString() : "";
         this.clickcommand = addTextFieldWithSupplier(clickcommand, NO_SPACE);
 
         options.add(new GuiElementText("Damage: ", Color.WHITE.getRGB()));
-        String damage = item.has("damage") ? item.get("damage").getAsString() : "";
+        String damage = String.valueOf(item.getDamage());
         this.damage = addTextFieldWithSupplier(damage, NO_SPACE | NUM_ONLY);
 
         rightOptions.add(new GuiElementButton("Close (discards changes)", Color.LIGHT_GRAY.getRGB(), () -> Minecraft.getMinecraft().displayGuiScreen(null)));
@@ -152,7 +151,7 @@ public class NEUItemEditor extends GuiScreen {
         if(infoA.length == 0 || infoA[0].isEmpty()) {
             infoA = new String[0];
         }
-        return manager.writeItemJson(item, internalname.get(), itemid.get(), displayname.get(), lore.get().split("\n"),
+        return manager.writeItemJson(item.generateJson(), internalname.get(), itemid.get(), displayname.get(), lore.get().split("\n"),
                 crafttext.get(), infoType.get(), infoA, clickcommand.get(), damageI, nbttag);
     }
 

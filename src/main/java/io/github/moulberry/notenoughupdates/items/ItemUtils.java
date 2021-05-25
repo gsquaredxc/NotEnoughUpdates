@@ -7,23 +7,36 @@ import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.JsonToNBT;
-import net.minecraft.nbt.NBTException;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.ResourceLocation;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 
 public class ItemUtils {
     public final static NEUManager manager = NotEnoughUpdates.INSTANCE.manager;
 
+    public static final Method deepCopy;
+
+    static{
+        Method dc1;
+        try {
+            dc1 = JsonObject.class.getDeclaredMethod("deepCopy");
+            dc1.setAccessible(true);
+        } catch (NoSuchMethodException e) {
+            e.printStackTrace();
+            dc1 = null;
+        }
+        deepCopy = dc1;
+    }
+
     public static ItemStack itemToStack(IItem item) {
-        return itemToStack(item, true);
+        return itemToStack(item, true, true, true);
     }
 
     public static ItemStack itemToStack(IItem item, boolean useCache) {
-        return itemToStack(item, useCache, true);
+        return itemToStack(item, useCache, true, true);
     }
 
     public static ItemStack itemToStack(IItem item, boolean useCache, boolean useReplacements) {
@@ -53,24 +66,17 @@ public class ItemUtils {
         if(stack.getItem() == null) {
             stack = new ItemStack(Item.getItemFromBlock(Blocks.stone), 0, 255); //Purple broken texture item
         } else {
-            if(item.getJson().has("damage")) {
-                stack.setItemDamage(item.getJson().get("damage").getAsInt());
-            }
+            stack.setItemDamage(item.getDamage());
 
-            if(item.getJson().has("nbttag")) {
-                try {
-                    NBTTagCompound tag = JsonToNBT.getTagFromJson(item.getJson().get("nbttag").getAsString());
-                    stack.setTagCompound(tag);
-                } catch(NBTException ignored) {
-                }
-            }
+            NBTTagCompound tag = item.getNBT();
+            stack.setTagCompound(tag);
 
             HashMap<String, String> replacements = new HashMap<>();
 
             if(useReplacements) {
                 replacements = manager.getLoreReplacements(stack.getTagCompound(), -1);
 
-                String displayname = item.getJson().get("displayname").getAsString();
+                String displayname = item.getDisplayName();
                 for(Map.Entry<String, String> entry : replacements.entrySet()) {
                     displayname = displayname.replace("{"+entry.getKey()+"}", entry.getValue());
                 }
@@ -83,9 +89,9 @@ public class ItemUtils {
                     display = stack.getTagCompound().getCompoundTag("display");
                 }
                 display.setTag("Lore", manager.processLore(item.getJson().get("lore").getAsJsonArray(), replacements));
-                NBTTagCompound tag = stack.getTagCompound() != null ? stack.getTagCompound() : new NBTTagCompound();
+                NBTTagCompound tag2 = stack.getTagCompound() != null ? stack.getTagCompound() : new NBTTagCompound();
                 tag.setTag("display", display);
-                stack.setTagCompound(tag);
+                stack.setTagCompound(tag2);
             }
         }
 
@@ -95,5 +101,14 @@ public class ItemUtils {
         } else {
             return stack;
         }
+    }
+
+    public static JsonObject deepCopy(JsonObject object) {
+        try {
+            return (JsonObject) deepCopy.invoke(object);
+        } catch (IllegalAccessException | InvocationTargetException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }

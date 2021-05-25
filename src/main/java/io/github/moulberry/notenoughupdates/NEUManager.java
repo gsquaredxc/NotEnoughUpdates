@@ -883,7 +883,7 @@ public class NEUManager {
      */
     public boolean displayGuiItemUsages(String internalName) {
         List<ItemStack[]> craftMatrices = new ArrayList<>();
-        List<JsonObject> results =  new ArrayList<>();
+        List<IItem> results =  new ArrayList<>();
 
         if(!usagesMap.containsKey(internalName)) {
             return false;
@@ -891,7 +891,7 @@ public class NEUManager {
 
         for(String internalNameResult : usagesMap.get(internalName)) {
             IItem item = getItemInformation().get(internalNameResult);
-            results.add(item.getJson());
+            results.add(item);
 
             if(item != null && item.getJson().has("recipe")) {
                 JsonObject recipe = item.getJson().get("recipe").getAsJsonObject();
@@ -958,7 +958,7 @@ public class NEUManager {
             Minecraft.getMinecraft().thePlayer.sendQueue.addToSendQueue(new C0DPacketCloseWindow(
                     Minecraft.getMinecraft().thePlayer.openContainer.windowId));
             Minecraft.getMinecraft().displayGuiScreen(new GuiItemRecipe(text!=null?text:"Item Recipe",
-                    Lists.<ItemStack[]>newArrayList(craftMatrix), Lists.newArrayList(item.getJson()), this));
+                    Lists.<ItemStack[]>newArrayList(craftMatrix), Lists.newArrayList(item), this));
             return true;
         }
         return false;

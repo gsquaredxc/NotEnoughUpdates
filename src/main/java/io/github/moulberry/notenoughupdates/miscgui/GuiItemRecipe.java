@@ -1,8 +1,9 @@
 package io.github.moulberry.notenoughupdates.miscgui;
 
-import com.google.gson.JsonObject;
 import io.github.moulberry.notenoughupdates.NEUManager;
+import io.github.moulberry.notenoughupdates.items.ItemUtils;
 import io.github.moulberry.notenoughupdates.util.Utils;
+import io.github.moulberry.notenoughupdates.items.IItem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiScreen;
@@ -25,7 +26,7 @@ public class GuiItemRecipe extends GuiScreen {
     private static final ResourceLocation craftingTableGuiTextures = new ResourceLocation("textures/gui/container/crafting_table.png");
 
     private final List<ItemStack[]> craftMatrices;
-    private final List<JsonObject> results;
+    private final List<IItem> results;
     private int currentIndex = 0;
 
     private final String title;
@@ -36,7 +37,7 @@ public class GuiItemRecipe extends GuiScreen {
     public final int xSize = 176;
     public final int ySize = 166;
 
-    public GuiItemRecipe(String title, List<ItemStack[]> craftMatrices, List<JsonObject> results, NEUManager manager) {
+    public GuiItemRecipe(String title, List<ItemStack[]> craftMatrices, List<IItem> results, NEUManager manager) {
         this.craftMatrices = craftMatrices;
         this.results = results;
         this.manager = manager;
@@ -44,8 +45,8 @@ public class GuiItemRecipe extends GuiScreen {
     }
 
     private String getCraftText() {
-        if(results.get(currentIndex).has("crafttext")) {
-            return results.get(currentIndex).get("crafttext").getAsString();
+        if(results.get(currentIndex).getJson().has("crafttext")) {
+            return results.get(currentIndex).getJson().get("crafttext").getAsString();
         } else {
             return "";
         }
@@ -129,7 +130,7 @@ public class GuiItemRecipe extends GuiScreen {
 
     public ItemStack getStackForIndex(int index) {
         if(index == 0) {
-            return manager.jsonToStack(results.get(currentIndex));
+            return ItemUtils.itemToStack(results.get(currentIndex));
         } else if(index >= 1 && index <= 9) {
             return craftMatrices.get(currentIndex)[index-1];
         } else {

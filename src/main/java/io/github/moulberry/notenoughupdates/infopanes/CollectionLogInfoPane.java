@@ -4,6 +4,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import io.github.moulberry.notenoughupdates.NEUManager;
 import io.github.moulberry.notenoughupdates.NEUOverlay;
+import io.github.moulberry.notenoughupdates.items.IItem;
 import io.github.moulberry.notenoughupdates.items.ItemUtils;
 import io.github.moulberry.notenoughupdates.util.NEUResourceManager;
 import io.github.moulberry.notenoughupdates.util.Utils;
@@ -72,8 +73,9 @@ public class CollectionLogInfoPane extends ScrollableInfoPane {
         for(String internalname : manager.getItemInformation().keySet()) {
             String mobRegex = ".*?((_MONSTER)|(_ANIMAL)|(_MINIBOSS)|(_BOSS)|(_SC))$";
             if(!manager.auctionManager.isVanillaItem(internalname) && !internalname.matches(mobRegex)) {
-                JsonObject item = manager.getItemInformation().get(internalname).getJson();
-                JsonArray lore = item.get("lore").getAsJsonArray();
+                IItem item = manager.getItemInformation().get(internalname);
+                JsonObject json = item.getJson();
+                JsonArray lore = json.get("lore").getAsJsonArray();
                 String petRegex = ".*?;[0-4]$";
                 switch(filterMode) {
                     case FILTER_WEAPON:
@@ -86,19 +88,19 @@ public class CollectionLogInfoPane extends ScrollableInfoPane {
                         if(overlay.checkItemType(lore, "ACCESSORY") < 0) continue;
                         break;
                     case FILTER_PET:
-                        if(!internalname.matches(petRegex) || !item.get("displayname").getAsString().contains("[")) continue;
+                        if(!internalname.matches(petRegex) || !item.getDisplayName().contains("[")) continue;
                         break;
                     case FILTER_DUNGEON:
                         if(Utils.checkItemType(lore, true, "DUNGEON") < 0) continue;
                         break;
                     case FILTER_SLAYER_ZOMBIE:
-                        if(!item.has("slayer_req") || !item.get("slayer_req").getAsString().startsWith("ZOMBIE")) continue;
+                        if(!json.has("slayer_req") || !json.get("slayer_req").getAsString().startsWith("ZOMBIE")) continue;
                         break;
                     case FILTER_SLAYER_WOLF:
-                        if(!item.has("slayer_req") || !item.get("slayer_req").getAsString().startsWith("WOLF")) continue;
+                        if(!json.has("slayer_req") || !json.get("slayer_req").getAsString().startsWith("WOLF")) continue;
                         break;
                     case FILTER_SLAYER_SPIDER:
-                        if(!item.has("slayer_req") || !item.get("slayer_req").getAsString().startsWith("SPIDER")) continue;
+                        if(!json.has("slayer_req") || !json.get("slayer_req").getAsString().startsWith("SPIDER")) continue;
                         break;
                 }
                 items.add(internalname);

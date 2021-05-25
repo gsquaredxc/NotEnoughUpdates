@@ -10,6 +10,7 @@ import io.github.moulberry.notenoughupdates.core.util.lerp.LerpingInteger;
 import io.github.moulberry.notenoughupdates.infopanes.*;
 import io.github.moulberry.notenoughupdates.itemeditor.NEUItemEditor;
 import io.github.moulberry.notenoughupdates.items.IItem;
+import io.github.moulberry.notenoughupdates.items.ItemFactory;
 import io.github.moulberry.notenoughupdates.items.ItemUtils;
 import io.github.moulberry.notenoughupdates.mbgui.MBAnchorPoint;
 import io.github.moulberry.notenoughupdates.mbgui.MBGuiElement;
@@ -609,7 +610,7 @@ public class NEUOverlay extends Gui {
             String loreS = StringUtils.join(loreA, "\n");
 
             String internalname = item.getInternalName();
-            String name = json.get("displayname").getAsString();
+            String name = item.getDisplayName();
             switch(json.get("infoType").getAsString()) {
                 case "WIKI_URL":
                     displayInformationPane(HTMLInfoPane.createFromWikiUrl(this, manager, name, loreS));
@@ -970,7 +971,7 @@ public class NEUOverlay extends Gui {
                                 if (mouseX >= x - 1 && mouseX <= x + ITEM_SIZE + 1) {
                                     if (mouseY >= y - 1 && mouseY <= y + ITEM_SIZE + 1) {
                                         IItem json = getSearchedItemPage(id);
-                                        if (json.getJson() != null) internalname.set(json.getInternalName());
+                                        internalname.set(json.getInternalName());
                                     }
                                 }
                             }
@@ -984,7 +985,7 @@ public class NEUOverlay extends Gui {
                     if(itemstack.get() != null) {
                         if(NotEnoughUpdates.INSTANCE.config.hidden.enableItemEditing && Keyboard.getEventCharacter() == 'k') {
                             Minecraft.getMinecraft().displayGuiScreen(new NEUItemEditor(manager,
-                                    internalname.get(), manager.getJsonForItem(itemstack.get())));
+                                    internalname.get(), ItemFactory.generateItem(manager.getJsonForItem(itemstack.get()))));
                             return true;
                         }
                     }
@@ -1006,7 +1007,7 @@ public class NEUOverlay extends Gui {
                             }
                         } else if(NotEnoughUpdates.INSTANCE.config.hidden.enableItemEditing && Keyboard.getEventCharacter() == 'k') {
                             Minecraft.getMinecraft().displayGuiScreen(new NEUItemEditor(manager,
-                                    internalname.get(), item.getJson()));
+                                    internalname.get(), item));
                             return true;
                         } else if(keyPressed == manager.keybindItemSelect.getKeyCode()) {
                             textField.setText("id:"+internalname.get());
@@ -1136,8 +1137,8 @@ public class NEUOverlay extends Gui {
                 if(type1 > type2) return mult;
             }
 
-            int nameComp = mult*o1.getJson().get("displayname").getAsString().replaceAll("(?i)\\u00A7.", "")
-                     .compareTo(o2.getJson().get("displayname").getAsString().replaceAll("(?i)\\u00A7.", ""));
+            int nameComp = mult*o1.getDisplayName().replaceAll("(?i)\\u00A7.", "")
+                     .compareTo(o2.getDisplayName().replaceAll("(?i)\\u00A7.", ""));
             if(nameComp != 0) {
                 return nameComp;
             }
@@ -1181,7 +1182,7 @@ public class NEUOverlay extends Gui {
             return internalname.matches(mobRegex);
         } else if(getSortMode() == SORT_MODE_PET) {
             String petRegex = ".*?;[0-4]$";
-            return internalname.matches(petRegex) && item.get("displayname").getAsString().contains("[");
+            return internalname.matches(petRegex) && itemObject.getDisplayName().contains("[");
         } else if(getSortMode() == SORT_MODE_TOOL) {
             return checkItemType(item.get("lore").getAsJsonArray(),
                     "SWORD", "BOW", "AXE", "PICKAXE", "FISHING ROD", "WAND", "SHOVEL", "HOE") >= 0;
@@ -2193,7 +2194,7 @@ public class NEUOverlay extends Gui {
             }
 
             Minecraft.getMinecraft().getTextureManager().bindTexture(item_mask);
-            if (getFavourites().contains(json.getJson().get("internalname").getAsString())) {
+            if (getFavourites().contains(json.getInternalName())) {
                 if(NotEnoughUpdates.INSTANCE.config.itemlist.itemStyle == 0) {
                     GlStateManager.color(fgFavourite2.getRed() / 255f, fgFavourite2.getGreen() / 255f,
                             fgFavourite2.getBlue() / 255f, fgFavourite2.getAlpha() / 255f);
@@ -2231,7 +2232,7 @@ public class NEUOverlay extends Gui {
 
                 if (json.has("entityrender")) {
                     if(!entities) return;
-                    String name = json.get("displayname").getAsString();
+                    String name = item.getDisplayName();
                     String[] split = name.split(" \\(");
                     name = name.substring(0, name.length() - split[split.length - 1].length() - 2);
 

@@ -564,7 +564,7 @@ public class NEUEventListener {
                                         String col = backName.substring(split[0].length()+1,
                                                 backName.length()-split[split.length-1].length()-1);
 
-                                        JsonObject json = neu.manager.getItemInformation().get(resInternalname).getJson();
+                                        JsonObject json = neu.manager.getItemInformation().get(resInternalname).generateJson();
                                         json.addProperty("crafttext", "Requires: " + col);
 
                                         Minecraft.getMinecraft().thePlayer.addChatMessage(new ChatComponentText("Added: " + resInternalname));

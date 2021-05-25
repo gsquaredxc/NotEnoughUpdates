@@ -1148,8 +1148,8 @@ public class GuiProfileViewer extends GuiScreen {
             for(JsonObject pet : sortedPets) {
                 String petname = pet.get("type").getAsString();
                 String tier = pet.get("tier").getAsString();
-                String heldItem = Utils.getElementAsString(pet.get("heldItem"), null);
-                JsonObject heldItemJson = heldItem==null?null:NotEnoughUpdates.INSTANCE.manager.getItemInformation().get(heldItem).getJson();
+                String heldItemS = Utils.getElementAsString(pet.get("heldItem"), null);
+                IItem heldItem = heldItemS==null?null:NotEnoughUpdates.INSTANCE.manager.getItemInformation().get(heldItemS);
                 String tierNum = MINION_RARITY_TO_NUM.get(tier);
                 float exp = pet.get("exp").getAsFloat();
                 if(tierNum == null) continue;
@@ -1216,15 +1216,15 @@ public class GuiProfileViewer extends GuiScreen {
                             newLore.appendTag(new NBTTagString(line));
                         }
                         Integer secondLastBlank = blankLocations.get(blankLocations.size()-2);
-                        if(heldItemJson != null && secondLastBlank != null) {
+                        if(heldItem.getJson() != null && secondLastBlank != null) {
                             for(int j=0; j<newLore.tagCount(); j++) {
                                 String line = newLore.getStringTagAt(j);
 
                                 if(j == secondLastBlank) {
                                     newNewLore.appendTag(new NBTTagString(""));
-                                    newNewLore.appendTag(new NBTTagString(EnumChatFormatting.GOLD+"Held Item: "+heldItemJson.get("displayname").getAsString()));
+                                    newNewLore.appendTag(new NBTTagString(EnumChatFormatting.GOLD+"Held Item: "+heldItem.getDisplayName()));
                                     int blanks = 0;
-                                    JsonArray heldItemLore = heldItemJson.get("lore").getAsJsonArray();
+                                    JsonArray heldItemLore = heldItem.getJson().get("lore").getAsJsonArray();
                                     for(int k=0; k<heldItemLore.size(); k++) {
                                         String heldItemLine = heldItemLore.get(k).getAsString();
                                         if(heldItemLine.trim().isEmpty()) {
