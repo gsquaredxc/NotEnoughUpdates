@@ -2,6 +2,7 @@ package io.github.moulberry.notenoughupdates.mixins;
 
 import io.github.moulberry.notenoughupdates.miscgui.InventoryStorageSelector;
 import net.minecraft.client.renderer.ItemRenderer;
+import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.item.ItemStack;
 import org.spongepowered.asm.lib.Opcodes;
 import org.spongepowered.asm.mixin.Mixin;
@@ -12,18 +13,15 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 @Mixin(ItemRenderer.class)
 public abstract class MixinItemRenderer {
 
-    @Shadow private ItemStack itemToRender;
-
-    @Redirect(method="renderItemInFirstPerson", at=@At(
-            value = "FIELD",
-            target = "Lnet/minecraft/client/renderer/ItemRenderer;itemToRender:Lnet/minecraft/item/ItemStack;",
-            opcode = Opcodes.GETFIELD
+    @Redirect(method="updateEquippedItem", at=@At(
+            value = "INVOKE",
+            target = "Lnet/minecraft/entity/player/InventoryPlayer;getCurrentItem()Lnet/minecraft/item/ItemStack;"
     ))
-    public ItemStack modifyStackToRender(ItemRenderer renderer) {
+    public ItemStack modifyStackToRender(InventoryPlayer player) {
         if(InventoryStorageSelector.getInstance().isSlotSelected()) {
             return InventoryStorageSelector.getInstance().getHeldItemOverride();
         }
-        return itemToRender;
+        return player.getCurrentItem();
     }
 
 }

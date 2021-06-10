@@ -6,6 +6,7 @@ import io.github.moulberry.notenoughupdates.miscgui.StorageOverlay;
 import io.github.moulberry.notenoughupdates.util.SBInfo;
 import io.github.moulberry.notenoughupdates.util.Utils;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.gui.inventory.GuiChest;
 import net.minecraft.init.Blocks;
 import net.minecraft.inventory.ContainerChest;
@@ -146,6 +147,7 @@ public class StorageManager {
     public static class StoragePage {
         public final ItemStack[] items = new ItemStack[45];
         public ItemStack backpackDisplayStack;
+        public String customTitle;
         public int rows = -1;
 
         public transient boolean matchesSearch;
@@ -172,7 +174,7 @@ public class StorageManager {
 
     private String lastSearch = "";
 
-    private final boolean[] storagePresent = new boolean[27];
+    private boolean[] storagePresent = null;
 
     //TODO: Replace with /storage {id} when hypixel becomes not lazy
     public int desiredStoragePage = -1;
@@ -313,7 +315,9 @@ public class StorageManager {
                 System.currentTimeMillis() - storageOpenSwitchMillis < 1000) return;
         if(getCurrentPageId() == page) return;
 
-        if(getCurrentWindowId() != -1 && onStorageMenu) {
+        if(page == 0) {
+            NotEnoughUpdates.INSTANCE.sendChatMessage("/enderchest");
+        } else if(getCurrentWindowId() != -1 && onStorageMenu) {
             if(page < 9) {
                 sendMouseClick(getCurrentWindowId(), 9+page);
             } else {
@@ -323,13 +327,15 @@ public class StorageManager {
             storageOpenSwitchMillis = System.currentTimeMillis();
             desiredStoragePage = page;
 
-            NotEnoughUpdates.INSTANCE.sendChatMessage("/storage");
+            NotEnoughUpdates.INSTANCE.sendChatMessage("/storage " + (desiredStoragePage-8));
         }
     }
 
     private void sendMouseClick(int windowId, int slotIndex) {
-        Minecraft.getMinecraft().playerController.windowClick(windowId, slotIndex, 0, 0,
-                Minecraft.getMinecraft().thePlayer);
+        EntityPlayerSP playerIn = Minecraft.getMinecraft().thePlayer;
+        short short1 = playerIn.openContainer.getNextTransactionID(playerIn.inventory);
+        ItemStack itemstack = playerIn.openContainer.getSlot(slotIndex).getStack();
+        Minecraft.getMinecraft().getNetHandler().addToSendQueue(new C0EPacketClickWindow(windowId, slotIndex, 0, 0, itemstack, short1));
     }
 
     public int getDisplayIdForStorageId(int storageId) {
@@ -340,6 +346,19 @@ public class StorageManager {
             }
         }
         return -1;
+    }
+
+    public boolean onAnyClick() {
+        if(onStorageMenu && desiredStoragePage >= 0) {
+            if(desiredStoragePage < 9) {
+                sendMouseClick(getCurrentWindowId(), 9+desiredStoragePage);
+            } else {
+                sendMouseClick(getCurrentWindowId(), 27+desiredStoragePage-MAX_ENDER_CHEST_PAGES);
+            }
+            desiredStoragePage = -1;
+            return true;
+        }
+        return false;
     }
 
     public void openWindowPacket(S2DPacketOpenWindow packet) {
@@ -356,14 +375,6 @@ public class StorageManager {
 
         if(windowTitle.trim().equals("Storage")) {
             onStorageMenu = true;
-
-            if(desiredStoragePage >= 0 && System.currentTimeMillis() - storageOpenSwitchMillis < 1000) {
-                if(desiredStoragePage < 9) {
-                    sendMouseClick(getCurrentWindowId(), 9+desiredStoragePage);
-                } else {
-                    sendMouseClick(getCurrentWindowId(), 27+desiredStoragePage-MAX_ENDER_CHEST_PAGES);
-                }
-            }
         } else if(matcher.matches()) {
             int page = Integer.parseInt(matcher.group(1));
 
@@ -413,6 +424,10 @@ public class StorageManager {
                 setItemSlot(packet.func_149173_d()-9, packet.func_149174_e());
             }
         } else if(onStorageMenu) {
+            if(storagePresent == null) {
+                storagePresent = new boolean[27];
+            }
+
             int slot = packet.func_149173_d();
             ItemStack stack = packet.func_149174_e();
 
@@ -531,6 +546,8 @@ public class StorageManager {
     }
 
     public void searchDisplay(String searchStr) {
+        if(storagePresent == null) return;
+
         synchronized(storageConfig.displayToStorageIdMap) {
             storageConfig.displayToStorageIdMap.clear();
 

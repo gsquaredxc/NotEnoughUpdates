@@ -2,6 +2,7 @@ package io.github.moulberry.notenoughupdates.core;
 
 import io.github.moulberry.notenoughupdates.core.util.StringUtils;
 import io.github.moulberry.notenoughupdates.core.util.render.TextRenderUtils;
+import io.github.moulberry.notenoughupdates.util.Utils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiScreen;
@@ -15,6 +16,7 @@ import java.util.regex.Pattern;
 
 public class GuiElementTextField {
 
+    public static final int SCISSOR_TEXT = 0b10000000;
     public static final int DISABLE_BG = 0b1000000;
     public static final int SCALE_TEXT = 0b100000;
     public static final int NUM_ONLY = 0b10000;
@@ -72,6 +74,18 @@ public class GuiElementTextField {
         return textField.getText();
     }
 
+    public String getTextDisplay() {
+        String textNoColour = getText();
+        while(true) {
+            Matcher matcher = PATTERN_CONTROL_CODE.matcher(textNoColour);
+            if(!matcher.find()) break;
+            String code = matcher.group(1);
+            textNoColour = matcher.replaceFirst("\u00B6"+code);
+        }
+
+        return textNoColour;
+    }
+
     public void setPrependText(String text) {
         this.prependText = text;
     }
@@ -98,6 +112,9 @@ public class GuiElementTextField {
 
     public void setFocus(boolean focus) {
         this.focus = focus;
+        if(!focus) {
+            textField.setCursorPosition(textField.getCursorPosition());
+        }
     }
     public boolean getFocus() {
         return focus;
@@ -129,13 +146,7 @@ public class GuiElementTextField {
         return (options & SCALE_TEXT) != 0;
     }
 
-    private float getStringWidth(String str) {
-        if(isScaling()) {
-            return Minecraft.getMinecraft().fontRendererObj.getStringWidth(str)*getScaleFactor(str);
-        } else {
-            return Minecraft.getMinecraft().fontRendererObj.getStringWidth(str);
-        }
-    }
+    private static final Pattern PATTERN_CONTROL_CODE = Pattern.compile("(?i)\\u00A7([^\\u00B6]|$)(?!\\u00B6)");
 
     public int getCursorPos(int mouseX, int mouseY) {
         int xComp = mouseX - x;
@@ -147,12 +158,11 @@ public class GuiElementTextField {
 
         int lineNum = Math.round(((yComp - (searchBarYSize-8)/2))/extraSize);
 
-        Pattern patternControlCode = Pattern.compile("(?i)\\u00A7([^\\u00B6]|$)(?!\\u00B6)");
         String text = renderText;
         String textNoColour = renderText;
         if((options & COLOUR) != 0) {
             while(true) {
-                Matcher matcher = patternControlCode.matcher(text);
+                Matcher matcher = PATTERN_CONTROL_CODE.matcher(text);
                 if(!matcher.find() || matcher.groupCount() < 1) break;
                 String code = matcher.group(1);
                 if(code.isEmpty()) {
@@ -163,7 +173,7 @@ public class GuiElementTextField {
             }
         }
         while(true) {
-            Matcher matcher = patternControlCode.matcher(textNoColour);
+            Matcher matcher = PATTERN_CONTROL_CODE.matcher(textNoColour);
             if(!matcher.find() || matcher.groupCount() < 1) break;
             String code = matcher.group(1);
             textNoColour = matcher.replaceFirst("\u00B6"+code);
@@ -350,6 +360,10 @@ public class GuiElementTextField {
             if((options & FORCE_CAPS) != 0) typedChar = Character.toUpperCase(typedChar);
             if((options & NO_SPACE) != 0 && typedChar == ' ') return;
 
+            if(typedChar == '\u00B6') {
+                typedChar = '\u00A7';
+            }
+
             textField.setFocused(true);
             textField.textboxKeyTyped(typedChar, keyCode);
 
@@ -364,6 +378,19 @@ public class GuiElementTextField {
                                 after = textField.getText().substring(pos+2);
                             }
                             textField.setText(before + "\u00A7" + after);
+                            textField.setCursorPosition(pos+1);
+                        }
+                    }
+                } else if(typedChar == '*') {
+                    int pos = textField.getCursorPosition()-2;
+                    if(pos >= 0 && pos < textField.getText().length()) {
+                        if(textField.getText().charAt(pos) == '*') {
+                            String before = textField.getText().substring(0, pos);
+                            String after = "";
+                            if(pos+2 < textField.getText().length()) {
+                                after = textField.getText().substring(pos+2);
+                            }
+                            textField.setText(before + "\u272A" + after);
                             textField.setCursorPosition(pos+1);
                         }
                     }
@@ -414,13 +441,11 @@ public class GuiElementTextField {
         }
 
         //bar text
-        Pattern patternControlCode = Pattern.compile("(?i)\\u00A7([^\\u00B6\n]|$)(?!\\u00B6)");
-
         String text = renderText;
         String textNoColor = renderText;
         if((options & COLOUR) != 0) {
             while(true) {
-                Matcher matcher = patternControlCode.matcher(text);
+                Matcher matcher = PATTERN_CONTROL_CODE.matcher(text);
                 if(!matcher.find() || matcher.groupCount() < 1) break;
                 String code = matcher.group(1);
                 if(code.isEmpty()) {
@@ -431,7 +456,7 @@ public class GuiElementTextField {
             }
         }
         while(true) {
-            Matcher matcher = patternControlCode.matcher(textNoColor);
+            Matcher matcher = PATTERN_CONTROL_CODE.matcher(textNoColor);
             if(!matcher.find() || matcher.groupCount() < 1) break;
             String code = matcher.group(1);
             textNoColor = matcher.replaceFirst("\u00B6"+code);
@@ -449,12 +474,21 @@ public class GuiElementTextField {
                 float newLen = Minecraft.getMinecraft().fontRendererObj.getStringWidth(texts[yOffI])*scale;
                 xStartOffset = (int)((searchBarXSize-newLen)/2f);
 
-                TextRenderUtils.drawStringCenteredScaledMaxWidth(texts[yOffI], Minecraft.getMinecraft().fontRendererObj, x+searchBarXSize/2f,
+                TextRenderUtils.drawStringCenteredScaledMaxWidth(Utils.chromaStringByColourCode(texts[yOffI]), Minecraft.getMinecraft().fontRendererObj, x+searchBarXSize/2f,
                         y+searchBarYSize/2f+yOff, false,
                         searchBarXSize-2, customTextColour);
             } else {
-                Minecraft.getMinecraft().fontRendererObj.drawString(StringUtils.trimToWidth(texts[yOffI], searchBarXSize-10), x + 5,
-                        y+(searchBarYSize-8)/2+yOff, customTextColour);
+                if((options & SCISSOR_TEXT) != 0) {
+                    GlScissorStack.push(x+5, 0, x+searchBarXSize, scaledresolution.getScaledHeight(), scaledresolution);
+                    Minecraft.getMinecraft().fontRendererObj.drawString(Utils.chromaStringByColourCode(texts[yOffI]), x + 5,
+                            y+(searchBarYSize-8)/2+yOff, customTextColour);
+                    GlScissorStack.pop(scaledresolution);
+                } else {
+                    String toRender = Minecraft.getMinecraft().fontRendererObj.trimStringToWidth(Utils.chromaStringByColourCode(texts[yOffI]), searchBarXSize-10);
+                    Minecraft.getMinecraft().fontRendererObj.drawString(toRender, x + 5,
+                            y+(searchBarYSize-8)/2+yOff, customTextColour);
+                }
+
             }
         }
 
@@ -481,7 +515,6 @@ public class GuiElementTextField {
 
         String selectedText = textField.getSelectedText();
         if(!selectedText.isEmpty()) {
-            System.out.println("Start");
             int leftIndex = Math.min(textField.getCursorPosition()+prependText.length(), textField.getSelectionEnd()+prependText.length());
             int rightIndex = Math.max(textField.getCursorPosition()+prependText.length(), textField.getSelectionEnd()+prependText.length());
 
@@ -525,9 +558,6 @@ public class GuiElementTextField {
                     continue;
                 }
 
-                //String c2 = bold ? EnumChatFormatting.BOLD.toString() : "" + c;
-
-                System.out.println("Adding len for char:"+c+":"+Integer.toHexString(c));
                 int len = Minecraft.getMinecraft().fontRendererObj.getStringWidth(String.valueOf(c));
                 if(bold) len++;
                 if(i >= leftIndex && i < rightIndex) {

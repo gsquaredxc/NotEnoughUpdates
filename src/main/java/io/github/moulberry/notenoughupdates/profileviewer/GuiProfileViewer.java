@@ -9,19 +9,20 @@ import com.google.gson.JsonPrimitive;
 import com.mojang.authlib.GameProfile;
 import io.github.moulberry.notenoughupdates.NotEnoughUpdates;
 import io.github.moulberry.notenoughupdates.cosmetics.ShaderManager;
+import io.github.moulberry.notenoughupdates.itemeditor.GuiElementTextField;
 import io.github.moulberry.notenoughupdates.items.IItem;
 import io.github.moulberry.notenoughupdates.items.ItemUtils;
-import io.github.moulberry.notenoughupdates.util.SBAIntegration;
-import io.github.moulberry.notenoughupdates.itemeditor.GuiElementTextField;
-import io.github.moulberry.notenoughupdates.util.SBInfo;
 import io.github.moulberry.notenoughupdates.util.Constants;
+import io.github.moulberry.notenoughupdates.util.SBInfo;
 import io.github.moulberry.notenoughupdates.util.Utils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityOtherPlayerMP;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.ScaledResolution;
-import net.minecraft.client.renderer.*;
+import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.OpenGlHelper;
+import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.resources.DefaultPlayerSkin;
 import net.minecraft.client.shader.Framebuffer;
@@ -32,8 +33,13 @@ import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.*;
-import net.minecraft.util.*;
+import net.minecraft.nbt.NBTTagByteArray;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
+import net.minecraft.nbt.NBTTagString;
+import net.minecraft.util.EnumChatFormatting;
+import net.minecraft.util.Matrix4f;
+import net.minecraft.util.ResourceLocation;
 import org.apache.commons.lang3.text.WordUtils;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
@@ -44,8 +50,8 @@ import org.lwjgl.opengl.GL20;
 import java.awt.*;
 import java.io.IOException;
 import java.text.NumberFormat;
-import java.util.*;
 import java.util.List;
+import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -435,7 +441,6 @@ public class GuiProfileViewer extends GuiScreen {
     @Override
     protected void keyTyped(char typedChar, int keyCode) throws IOException {
         super.keyTyped(typedChar, keyCode);
-        SBAIntegration.keyTyped(keyCode);
         switch (currentPage) {
             case INVS:
                 keyTypedInvs(typedChar, keyCode);
@@ -1097,6 +1102,7 @@ public class GuiProfileViewer extends GuiScreen {
         MINION_RARITY_TO_NUM.put("RARE", "2");
         MINION_RARITY_TO_NUM.put("EPIC", "3");
         MINION_RARITY_TO_NUM.put("LEGENDARY", "4");
+        MINION_RARITY_TO_NUM.put("MYTHIC", "5");
     }
     private void drawPetsPage(int mouseX, int mouseY, float partialTicks) {
         JsonObject petsInfo = profile.getPetsInfo(profileId);
@@ -1131,11 +1137,13 @@ public class GuiProfileViewer extends GuiScreen {
             sortedPets.sort((pet1, pet2) -> {
                 String tier1 = pet1.get("tier").getAsString();
                 String tierNum1 = MINION_RARITY_TO_NUM.get(tier1);
+                if(tierNum1 == null) return 1;
                 int tierNum1I = Integer.parseInt(tierNum1);
                 float exp1 = pet1.get("exp").getAsFloat();
 
                 String tier2 = pet2.get("tier").getAsString();
                 String tierNum2 = MINION_RARITY_TO_NUM.get(tier2);
+                if(tierNum2 == null) return -1;
                 int tierNum2I = Integer.parseInt(tierNum2);
                 float exp2 = pet2.get("exp").getAsFloat();
 
@@ -2004,37 +2012,10 @@ public class GuiProfileViewer extends GuiScreen {
                 }
             }
         }
-        if(stackToRender == null && !SBAIntegration.isFreezeBackpack()) lastBackpack = null;
-        if(SBAIntegration.isFreezeBackpack()) {
-            if(lastBackpack != null) {
-                SBAIntegration.setActiveBackpack(lastBackpack, lastBackpackX, lastBackpackY);
-                GlStateManager.translate(0, 0, 100);
-                SBAIntegration.renderActiveBackpack(mouseX, mouseY, fontRendererObj);
-                GlStateManager.translate(0, 0, -100);
-            }
-        } else {
-            if(stackToRender != null) {
-                String internalname = NotEnoughUpdates.INSTANCE.manager.getInternalNameForItem(stackToRender);
-                boolean renderedBackpack;
-                if(internalname != null && (internalname.endsWith("BACKPACK") || internalname.equals("NEW_YEAR_CAKE_BAG"))) {
-                    lastBackpack = stackToRender;
-                    lastBackpackX = mouseX;
-                    lastBackpackY = mouseY;
-                    renderedBackpack = SBAIntegration.setActiveBackpack(lastBackpack, lastBackpackX, lastBackpackY);
-                    if(renderedBackpack) {
-                        GlStateManager.translate(0, 0, 100);
-                        renderedBackpack = SBAIntegration.renderActiveBackpack(mouseX, mouseY, fontRendererObj);
-                        GlStateManager.translate(0, 0, -100);
-                    }
-                } else {
-                    renderedBackpack = false;
-                }
-                if(!renderedBackpack) {
-                    lastBackpack = null;
-                    tooltipToDisplay = stackToRender.getTooltip(Minecraft.getMinecraft().thePlayer, false);
-                }
-            }
+        if(stackToRender != null) {
+            tooltipToDisplay = stackToRender.getTooltip(Minecraft.getMinecraft().thePlayer, false);
         }
+
     }
 
     private String niceUuid(String uuidStr) {
@@ -2121,7 +2102,12 @@ public class GuiProfileViewer extends GuiScreen {
 
 
         float fairySouls = Utils.getElementAsFloat(Utils.getElement(profileInfo, "fairy_souls_collected"), 0);
-        Utils.renderAlignedString(EnumChatFormatting.LIGHT_PURPLE+"Fairy Souls", EnumChatFormatting.WHITE.toString()+(int)fairySouls+"/220",
+
+        int fairySoulMax = 227;
+        if(Constants.FAIRYSOULS != null && Constants.FAIRYSOULS.has("Max Souls")) {
+            fairySoulMax = Constants.FAIRYSOULS.get("Max Souls").getAsInt();
+        }
+        Utils.renderAlignedString(EnumChatFormatting.LIGHT_PURPLE+"Fairy Souls", EnumChatFormatting.WHITE.toString()+(int)fairySouls+"/"+fairySoulMax,
                 guiLeft+xStart, guiTop+yStartBottom, 76);
         if(skillInfo != null) {
             float totalSkillLVL = 0;

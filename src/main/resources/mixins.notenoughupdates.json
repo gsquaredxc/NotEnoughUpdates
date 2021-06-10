@@ -6,8 +6,10 @@
     "MixinAbstractClientPlayer",
     "MixinContainer",
     "MixinEffectRenderer",
+    "MixinEntityPlayer",
     "MixinEntityPlayerSP",
     "MixinEntityRenderer",
+    "MixinFontRenderer",
     "MixinGuiChest",
     "MixinGuiContainer",
     "MixinGuiIngame",
@@ -21,6 +23,7 @@
     "MixinLayerArmorBase",
     "MixinLayerCustomHead",
     "MixinMinecraft",
+    "MixinLoadingScreenRenderer",
     "MixinMouseHelper",
     "MixinNetHandlerPlayClient",
     "MixinPlayerControllerMP",
@@ -34,6 +37,7 @@
     "MixinTileEntitySkullRenderer",
     "MixinTileEntitySpecialRenderer",
     "MixinVboRenderList",
-    "MixinWorld"
+    "MixinWorld",
+    "MixinWorldClient"
   ]
 }

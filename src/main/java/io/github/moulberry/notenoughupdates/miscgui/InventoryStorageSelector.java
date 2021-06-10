@@ -38,7 +38,6 @@ public class InventoryStorageSelector {
             return false;
         }
         if(Minecraft.getMinecraft().currentScreen != null) {
-            isOverridingSlot = false;
             return false;
         }
         if(Minecraft.getMinecraft().thePlayer == null) {
@@ -55,6 +54,9 @@ public class InventoryStorageSelector {
     @SubscribeEvent
     public void onMousePress(MouseEvent event) {
         if(!NotEnoughUpdates.INSTANCE.hasSkyblockScoreboard() || !NotEnoughUpdates.INSTANCE.config.storageGUI.showInvBackpack) {
+            return;
+        }
+        if(Minecraft.getMinecraft().currentScreen != null) {
             return;
         }
 
@@ -106,12 +108,18 @@ public class InventoryStorageSelector {
         if(Minecraft.getMinecraft().gameSettings.keyBindsHotbar[0].isKeyDown()) {
             isOverridingSlot = false;
         }
+        if(Minecraft.getMinecraft().currentScreen != null) {
+            return;
+        }
 
         if(!NotEnoughUpdates.INSTANCE.hasSkyblockScoreboard() || !NotEnoughUpdates.INSTANCE.config.storageGUI.showInvBackpack) {
             return;
         }
 
-        if(KeybindHelper.isKeyPressed(NotEnoughUpdates.INSTANCE.config.storageGUI.arrowLeftKey)) {
+        if(KeybindHelper.isKeyPressed(NotEnoughUpdates.INSTANCE.config.storageGUI.backpackHotkey)) {
+            Minecraft.getMinecraft().thePlayer.inventory.currentItem = 0;
+            isOverridingSlot = true;
+        } else if(KeybindHelper.isKeyPressed(NotEnoughUpdates.INSTANCE.config.storageGUI.arrowLeftKey)) {
             selectedIndex--;
 
             int max = StorageManager.getInstance().storageConfig.displayToStorageIdMap.size()-1;
@@ -153,6 +161,9 @@ public class InventoryStorageSelector {
 
     public int onScroll(int direction, int resultantSlot) {
         if(!NotEnoughUpdates.INSTANCE.hasSkyblockScoreboard() || !NotEnoughUpdates.INSTANCE.config.storageGUI.showInvBackpack) {
+            return resultantSlot;
+        }
+        if(Minecraft.getMinecraft().currentScreen != null) {
             return resultantSlot;
         }
 
@@ -216,6 +227,9 @@ public class InventoryStorageSelector {
 
     public void render(ScaledResolution scaledResolution, float partialTicks) {
         if(!NotEnoughUpdates.INSTANCE.hasSkyblockScoreboard() || !NotEnoughUpdates.INSTANCE.config.storageGUI.showInvBackpack) {
+            return;
+        }
+        if(Minecraft.getMinecraft().currentScreen != null) {
             return;
         }
 

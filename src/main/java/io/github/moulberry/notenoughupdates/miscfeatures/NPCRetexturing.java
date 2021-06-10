@@ -85,7 +85,6 @@ public class NPCRetexturing implements IResourceManagerReloadListener {
                 }
             }
         } catch(Exception e) {
-            e.printStackTrace();
         }
     }
 

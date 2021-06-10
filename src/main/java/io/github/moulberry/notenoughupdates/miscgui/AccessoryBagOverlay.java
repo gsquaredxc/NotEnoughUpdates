@@ -356,6 +356,7 @@ public class AccessoryBagOverlay {
 
             missingInternal.sort(getItemComparator());
 
+            Set<String> missingDisplayNames = new HashSet<>();
             for(String internal : missingInternal) {
                 boolean hasDup = false;
 
@@ -371,6 +372,9 @@ public class AccessoryBagOverlay {
                 }
 
                 ItemStack stack = ItemUtils.itemToStack(NotEnoughUpdates.INSTANCE.manager.getItemInformation().get(internal), false);
+
+                if(missingDisplayNames.contains(stack.getDisplayName())) continue;
+                missingDisplayNames.add(stack.getDisplayName());
                 if(hasDup) {
                     stack.setStackDisplayName(stack.getDisplayName()+"*");
                 }

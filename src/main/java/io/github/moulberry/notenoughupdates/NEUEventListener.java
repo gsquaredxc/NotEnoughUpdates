@@ -11,6 +11,7 @@ import io.github.moulberry.notenoughupdates.auction.CustomAHGui;
 import io.github.moulberry.notenoughupdates.core.BackgroundBlur;
 import io.github.moulberry.notenoughupdates.core.GuiScreenElementWrapper;
 import io.github.moulberry.notenoughupdates.core.util.MiscUtils;
+import io.github.moulberry.notenoughupdates.core.util.render.RenderUtils;
 import io.github.moulberry.notenoughupdates.dungeons.DungeonBlocks;
 import io.github.moulberry.notenoughupdates.dungeons.DungeonWin;
 import io.github.moulberry.notenoughupdates.gamemodes.SBGamemodes;
@@ -19,7 +20,10 @@ import io.github.moulberry.notenoughupdates.items.ItemUtils;
 import io.github.moulberry.notenoughupdates.miscfeatures.*;
 import io.github.moulberry.notenoughupdates.miscgui.*;
 import io.github.moulberry.notenoughupdates.options.NEUConfig;
-import io.github.moulberry.notenoughupdates.overlays.*;
+import io.github.moulberry.notenoughupdates.overlays.AuctionSearchOverlay;
+import io.github.moulberry.notenoughupdates.overlays.OverlayManager;
+import io.github.moulberry.notenoughupdates.overlays.RancherBootOverlay;
+import io.github.moulberry.notenoughupdates.overlays.TextOverlay;
 import io.github.moulberry.notenoughupdates.profileviewer.GuiProfileViewer;
 import io.github.moulberry.notenoughupdates.util.*;
 import net.minecraft.client.Minecraft;
@@ -31,7 +35,6 @@ import net.minecraft.client.gui.inventory.GuiChest;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.gui.inventory.GuiEditSign;
 import net.minecraft.client.gui.inventory.GuiInventory;
-import net.minecraft.client.network.NetworkPlayerInfo;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.event.ClickEvent;
@@ -47,10 +50,8 @@ import net.minecraft.nbt.NBTUtil;
 import net.minecraft.util.*;
 import net.minecraftforge.client.ClientCommandHandler;
 import net.minecraftforge.client.event.*;
-import net.minecraftforge.event.entity.player.EntityInteractEvent;
 import net.minecraftforge.event.entity.player.ItemTooltipEvent;
 import net.minecraftforge.event.world.WorldEvent;
-import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
@@ -140,8 +141,8 @@ public class NEUEventListener {
         NotEnoughUpdates.INSTANCE.saveConfig();
     }
 
-    private long notificationDisplayMillis = 0;
-    private List<String> notificationLines = null;
+    private static long notificationDisplayMillis = 0;
+    private static List<String> notificationLines = null;
 
     private static final Pattern BAD_ITEM_REGEX = Pattern.compile("x[0-9]{1,2}$");
 
@@ -160,6 +161,15 @@ public class NEUEventListener {
     private int inventoryLoadedTicks = 0;
     private String loadedInvName = "";
     public static boolean inventoryLoaded = false;
+
+    public static void displayNotification(List<String> lines, boolean showForever) {
+        if(showForever) {
+            notificationDisplayMillis = -420;
+        } else {
+            notificationDisplayMillis = System.currentTimeMillis();
+        }
+        notificationLines = lines;
+    }
 
     @SubscribeEvent
     public void onTick(TickEvent.ClientTickEvent event) {
@@ -211,7 +221,8 @@ public class NEUEventListener {
         if(neu.hasSkyblockScoreboard()) {
             if(!preloadedItems) {
                 preloadedItems = true;
-                for(IItem json : neu.manager.getItemInformation().values()) {
+                List<IItem> list = new ArrayList<>(neu.manager.getItemInformation().values());
+                for(IItem json : list) {
                     itemPreloader.submit(() -> {
                         ItemStack stack = ItemUtils.itemToStack(json, true, true);
                         if(stack.getItem() == Items.skull) toPreload.add(stack);
@@ -240,8 +251,18 @@ public class NEUEventListener {
         }
         DungeonWin.tick();
 
-        if(longUpdate) {
+        String containerName = null;
+        if(Minecraft.getMinecraft().currentScreen instanceof GuiChest) {
+            GuiChest eventGui = (GuiChest) Minecraft.getMinecraft().currentScreen;
+            ContainerChest cc = (ContainerChest) eventGui.inventorySlots;
+            containerName = cc.getLowerChestInventory().getDisplayName().getUnformattedText();
 
+            if(GuiCustomEnchant.getInstance().shouldOverride(containerName)) {
+                GuiCustomEnchant.getInstance().tick();
+            }
+        }
+
+        if(longUpdate) {
             CrystalOverlay.tick();
             DwarvenMinesTextures.tick();
             FairySouls.tick();
@@ -251,6 +272,7 @@ public class NEUEventListener {
             ItemCustomizeManager.tick();
             BackgroundBlur.markDirty();
             NPCRetexturing.getInstance().tick();
+            StorageOverlay.getInstance().markDirty();
 
             if(neu.hasSkyblockScoreboard()) {
                 for(TextOverlay overlay : OverlayManager.textOverlays) {
@@ -260,9 +282,6 @@ public class NEUEventListener {
 
             NotEnoughUpdates.INSTANCE.overlay.redrawItems();
 
-            for(EntityPlayer player : Minecraft.getMinecraft().theWorld.playerEntities) {
-                NotEnoughUpdates.profileViewer.putNameUuid(player.getName(), player.getUniqueID().toString().replace("-", ""));
-            }
             NotEnoughUpdates.profileViewer.putNameUuid(Minecraft.getMinecraft().thePlayer.getName(),
                     Minecraft.getMinecraft().thePlayer.getUniqueID().toString().replace("-", ""));
 
@@ -270,12 +289,12 @@ public class NEUEventListener {
                 DungeonBlocks.tick();
             }
 
-            neu.updateSkyblockScoreboard();
+            if(System.currentTimeMillis() - SBInfo.getInstance().joinedWorld > 500 &&
+                    System.currentTimeMillis() - SBInfo.getInstance().unloadedWorld > 500) {
+                neu.updateSkyblockScoreboard();
+            }
 
-            if(Minecraft.getMinecraft().currentScreen instanceof GuiChest) {
-                GuiChest eventGui = (GuiChest) Minecraft.getMinecraft().currentScreen;
-                ContainerChest cc = (ContainerChest) eventGui.inventorySlots;
-                String containerName = cc.getLowerChestInventory().getDisplayName().getUnformattedText();
+            if(containerName != null) {
                 if(!containerName.trim().startsWith("Accessory Bag")) {
                     AccessoryBagOverlay.resetCache();
                 }
@@ -285,9 +304,6 @@ public class NEUEventListener {
 
             if(neu.hasSkyblockScoreboard()) {
                 SBInfo.getInstance().tick();
-                if(Loader.isModLoaded("morus")) {
-                    MorusIntegration.getInstance().tick();
-                }
                 lastSkyblockScoreboard = currentTime;
                 if(!joinedSB) {
                     joinedSB = true;
@@ -300,15 +316,15 @@ public class NEUEventListener {
 
                     if(neu.config.notifications.doRamNotif) {
                         long maxMemoryMB = Runtime.getRuntime().maxMemory()/1024L/1024L;
-                        if(maxMemoryMB > 4100) {
+                        if(maxMemoryMB > 4100 || true) {
                             notificationDisplayMillis = System.currentTimeMillis();
                             notificationLines = new ArrayList<>();
-                            notificationLines.add(EnumChatFormatting.DARK_RED+"Too much memory allocated!");
+                            notificationLines.add(EnumChatFormatting.GRAY+"Too much memory allocated!");
                             notificationLines.add(String.format(EnumChatFormatting.DARK_GRAY+"NEU has detected %03dMB of memory allocated to Minecraft!", maxMemoryMB));
-                            notificationLines.add(EnumChatFormatting.DARK_GRAY+"It is recommended to allocated between 2-4GB of memory");
-                            notificationLines.add(EnumChatFormatting.DARK_GRAY+"More than 4GB MAY cause FPS issues, EVEN if you have 16GB+ available");
+                            notificationLines.add(EnumChatFormatting.GRAY+"It is recommended to allocated between 2-4GB of memory");
+                            notificationLines.add(EnumChatFormatting.GRAY+"More than 4GB MAY cause FPS issues, EVEN if you have 16GB+ available");
                             notificationLines.add("");
-                            notificationLines.add(EnumChatFormatting.DARK_GRAY+"For more information, visit #ram-info in discord.gg/moulberry");
+                            notificationLines.add(EnumChatFormatting.GRAY+"For more information, visit #ram-info in discord.gg/moulberry");
                         }
                     }
 
@@ -431,7 +447,6 @@ public class NEUEventListener {
 
     @SubscribeEvent
     public void onRenderGameOverlayPost(RenderGameOverlayEvent.Post event) {
-        long timeRemaining = 15000 - (System.currentTimeMillis() - notificationDisplayMillis);
         if(neu.hasSkyblockScoreboard() && event.type == RenderGameOverlayEvent.ElementType.ALL) {
             DungeonWin.render(event.partialTicks);
             for(TextOverlay overlay : OverlayManager.textOverlays) {
@@ -442,8 +457,14 @@ public class NEUEventListener {
             }
             OverlayManager.dontRenderOverlay = null;
         }
+
+        if(Keyboard.isKeyDown(Keyboard.KEY_X)) {
+            notificationDisplayMillis = 0;
+        }
+        long timeRemaining = 15000 - (System.currentTimeMillis() - notificationDisplayMillis);
+        boolean display = timeRemaining > 0 || notificationDisplayMillis == -420;
         if(event.type == RenderGameOverlayEvent.ElementType.ALL &&
-                timeRemaining > 0 && notificationLines != null && notificationLines.size() > 0) {
+                display && notificationLines != null && notificationLines.size() > 0) {
             int width = 0;
             int height = notificationLines.size()*10+10;
             
@@ -458,13 +479,20 @@ public class NEUEventListener {
 
             int midX = sr.getScaledWidth()/2;
             int topY = sr.getScaledHeight()*3/4-height/2;
-            Gui.drawRect(midX-width/2, sr.getScaledHeight()*3/4-height/2,
+            RenderUtils.drawFloatingRectDark(midX-width/2, sr.getScaledHeight()*3/4-height/2, width, height);
+            /*Gui.drawRect(midX-width/2, sr.getScaledHeight()*3/4-height/2,
                     midX+width/2, sr.getScaledHeight()*3/4+height/2, 0xFF3C3C3C);
             Gui.drawRect(midX-width/2+2, sr.getScaledHeight()*3/4-height/2+2,
-                    midX+width/2-2, sr.getScaledHeight()*3/4+height/2-2, 0xFFC8C8C8);
+                    midX+width/2-2, sr.getScaledHeight()*3/4+height/2-2, 0xFFC8C8C8);*/
 
-            Minecraft.getMinecraft().fontRendererObj.drawString((timeRemaining/1000)+"s", midX-width/2f+3,
-                    topY+3, 0xFF000000, false);
+            int xLen = Minecraft.getMinecraft().fontRendererObj.getStringWidth("[X] Close");
+            Minecraft.getMinecraft().fontRendererObj.drawString("[X] Close", midX+width/2f-3-xLen,
+                    topY+3, 0xFFFF5555, false);
+
+            if(notificationDisplayMillis > 0) {
+                Minecraft.getMinecraft().fontRendererObj.drawString((timeRemaining/1000)+"s", midX-width/2f+3,
+                        topY+3, 0xFFaaaaaa, false);
+            }
 
             Utils.drawStringCentered(notificationLines.get(0), Minecraft.getMinecraft().fontRendererObj,
                     midX, topY+4+5, false, -1);
@@ -633,7 +661,7 @@ public class NEUEventListener {
         }
     }
 
-    @SubscribeEvent
+    /*@SubscribeEvent
     public void onPlayerInteract(EntityInteractEvent event) {
         if(!event.isCanceled() && NotEnoughUpdates.INSTANCE.hasSkyblockScoreboard() &&
                 Minecraft.getMinecraft().thePlayer.isSneaking() &&
@@ -649,7 +677,7 @@ public class NEUEventListener {
                 }
             }
         }
-    }
+    }*/
 
     private IChatComponent processChatComponent(IChatComponent chatComponent) {
         IChatComponent newComponent;
@@ -701,7 +729,7 @@ public class NEUEventListener {
      * 2) When a /viewrecipe command fails (i.e. player does not have recipe unlocked, will open the custom recipe GUI)
      * 3) Replaces lobby join notifications when streamer mode is active
      */
-    @SubscribeEvent(priority = EventPriority.LOW)
+    @SubscribeEvent(priority = EventPriority.LOW, receiveCanceled = true)
     public void onGuiChat(ClientChatReceivedEvent e) {
         if(e.type == 2) {
             e.message = processChatComponent(e.message);
@@ -847,6 +875,12 @@ public class NEUEventListener {
             containerName = cc.getLowerChestInventory().getDisplayName().getUnformattedText();
         }
 
+        if(GuiCustomEnchant.getInstance().shouldOverride(containerName)) {
+            GuiCustomEnchant.getInstance().render(event.renderPartialTicks);
+            event.setCanceled(true);
+            return;
+        }
+
         boolean tradeWindowActive = TradeWindow.tradeWindowActive(containerName);
         boolean storageOverlayActive = StorageManager.getInstance().shouldRenderStorageOverlay(containerName);
         boolean customAhActive = event.gui instanceof CustomAHGui || neu.manager.auctionManager.customAH.isRenderOverAuctionView();
@@ -962,6 +996,10 @@ public class NEUEventListener {
             GuiChest eventGui = (GuiChest) guiScreen;
             ContainerChest cc = (ContainerChest) eventGui.inventorySlots;
             containerName = cc.getLowerChestInventory().getDisplayName().getUnformattedText();
+        }
+
+        if(GuiCustomEnchant.getInstance().shouldOverride(containerName)) {
+            return;
         }
 
         boolean tradeWindowActive = TradeWindow.tradeWindowActive(containerName);
@@ -1240,6 +1278,11 @@ public class NEUEventListener {
      */
     @SubscribeEvent(priority = EventPriority.LOW)
     public void onGuiScreenMouse(GuiScreenEvent.MouseInputEvent.Pre event) {
+        if(Mouse.getEventButtonState() && StorageManager.getInstance().onAnyClick()) {
+            event.setCanceled(true);
+            return;
+        }
+
         if(!event.isCanceled()) {
             Utils.scrollTooltip(Mouse.getEventDWheel());
         }
@@ -1254,7 +1297,6 @@ public class NEUEventListener {
             return;
         }
 
-
         final ScaledResolution scaledresolution = new ScaledResolution(Minecraft.getMinecraft());
         final int scaledWidth = scaledresolution.getScaledWidth();
         final int scaledHeight = scaledresolution.getScaledHeight();
@@ -1267,6 +1309,12 @@ public class NEUEventListener {
             GuiChest eventGui = (GuiChest) guiScreen;
             ContainerChest cc = (ContainerChest) eventGui.inventorySlots;
             containerName = cc.getLowerChestInventory().getDisplayName().getUnformattedText();
+        }
+
+        if(GuiCustomEnchant.getInstance().shouldOverride(containerName) &&
+                GuiCustomEnchant.getInstance().mouseInput(mouseX, mouseY)) {
+            event.setCanceled(true);
+            return;
         }
 
         boolean tradeWindowActive = TradeWindow.tradeWindowActive(containerName);
@@ -1374,14 +1422,21 @@ public class NEUEventListener {
             containerName = cc.getLowerChestInventory().getDisplayName().getUnformattedText();
         }
 
+        if(GuiCustomEnchant.getInstance().shouldOverride(containerName) &&
+                GuiCustomEnchant.getInstance().keyboardInput()) {
+            event.setCanceled(true);
+            return;
+        }
+
         boolean tradeWindowActive = TradeWindow.tradeWindowActive(containerName);
         boolean storageOverlayActive = StorageManager.getInstance().shouldRenderStorageOverlay(containerName);
         boolean customAhActive = event.gui instanceof CustomAHGui || neu.manager.auctionManager.customAH.isRenderOverAuctionView();
 
         if(storageOverlayActive) {
-            event.setCanceled(true);
-            StorageOverlay.getInstance().keyboardInput();
-            return;
+            if(StorageOverlay.getInstance().keyboardInput()) {
+                event.setCanceled(true);
+                return;
+            }
         }
 
         if(tradeWindowActive || customAhActive) {

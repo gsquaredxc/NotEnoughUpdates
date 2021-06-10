@@ -7,6 +7,7 @@ import io.github.moulberry.notenoughupdates.miscfeatures.EnchantingSolvers;
 import io.github.moulberry.notenoughupdates.NotEnoughUpdates;
 import io.github.moulberry.notenoughupdates.miscfeatures.PetInfoOverlay;
 import io.github.moulberry.notenoughupdates.miscfeatures.SlotLocking;
+import io.github.moulberry.notenoughupdates.miscgui.GuiCustomEnchant;
 import io.github.moulberry.notenoughupdates.miscgui.StorageOverlay;
 import io.github.moulberry.notenoughupdates.util.Utils;
 import net.minecraft.client.Minecraft;
@@ -29,6 +30,7 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 @Mixin(GuiContainer.class)
@@ -70,9 +72,15 @@ public abstract class MixinGuiContainer extends GuiScreen {
         }
     }
 
+    @Redirect(method="mouseReleased", at=@At(value = "INVOKE", target = "Ljava/util/Set;isEmpty()Z"))
+    public boolean mouseReleased_isEmpty(Set<?> set) {
+        return set.size() <= 1;
+    }
+
     @Inject(method="isMouseOverSlot", at=@At("HEAD"), cancellable = true)
     public void isMouseOverSlot(Slot slotIn, int mouseX, int mouseY, CallbackInfoReturnable<Boolean> cir) {
         StorageOverlay.getInstance().overrideIsMouseOverSlot(slotIn, mouseX, mouseY, cir);
+        GuiCustomEnchant.getInstance().overrideIsMouseOverSlot(slotIn, mouseX, mouseY, cir);
     }
 
     @Redirect(method="drawScreen", at=@At(value="INVOKE", target = "Lnet/minecraft/client/gui/inventory/GuiContainer;drawGradientRect(IIIIII)V"))
