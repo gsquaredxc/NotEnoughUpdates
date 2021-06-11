@@ -35,7 +35,7 @@ public class SimpleItem implements IItem {
         }
         tag = tag1;
         if (internalName == null || mcItemType == null || displayname == null || tag == null){
-            throw new NullPointerException();
+            throw new NullPointerException(json.toString());
         }
         jsonObject = json;
     }

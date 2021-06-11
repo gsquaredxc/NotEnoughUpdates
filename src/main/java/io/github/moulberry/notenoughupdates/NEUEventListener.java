@@ -2277,7 +2277,7 @@ public class NEUEventListener {
                 } else if(c == ',') {
                     newline = true;
                 } else if(c == '\"') {
-                    sb.append(EnumChatFormatting.RESET.toString() + EnumChatFormatting.GRAY);
+                    sb.append(EnumChatFormatting.RESET.toString()).append(EnumChatFormatting.GRAY);
                 }
 
                 sb.append(c);
