@@ -23,7 +23,7 @@ public enum AuctionCategory {
     CONSUMABLES("consumables"),
     MISC("misc");
 
-    public String toMatch;
+    public final String toMatch;
     
     AuctionCategory(String toMatch){
         this.toMatch = toMatch;

@@ -22,8 +22,13 @@ public class SimpleItem implements IItem {
         json.remove("itemid");
         internalName = json.get("internalname").getAsString();
         json.remove("internalname");
-        damage = json.get("damage").getAsInt();
-        json.remove("damage");
+        if (json.has("damage")) {
+            damage = json.get("damage").getAsInt();
+            json.remove("damage");
+        } else {
+            damage = 0;
+            System.err.println("Error, damage missing for: " + internalName);
+        }
         displayname = json.get("displayname").getAsString();
         json.remove("displayname");
         try {
@@ -34,7 +39,7 @@ public class SimpleItem implements IItem {
             tag1 = null;
         }
         tag = tag1;
-        if (internalName == null || mcItemType == null || displayname == null || tag == null){
+        if (internalName == null || mcItemType == null || displayname == null){
             throw new NullPointerException(json.toString());
         }
         jsonObject = json;

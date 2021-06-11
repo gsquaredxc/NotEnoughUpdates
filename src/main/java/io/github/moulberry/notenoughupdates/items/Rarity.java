@@ -37,7 +37,6 @@ public enum Rarity {
                 return VERY_SPECIAL;
             case "SUPREME":
                 return SUPREME;
-
         }
         return null;
     }
