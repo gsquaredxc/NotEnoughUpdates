@@ -2,6 +2,10 @@ package io.github.moulberry.notenoughupdates.items;
 
 import com.google.gson.JsonObject;
 
+
+/**
+ * Not currently used
+ */
 public class CountItem extends SimpleItem{
     final int count;
 

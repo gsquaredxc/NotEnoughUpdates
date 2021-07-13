@@ -72,7 +72,7 @@ public abstract class MixinGuiContainer extends GuiScreen {
         }
     }
 
-    @Redirect(method="mouseReleased", at=@At(value = "INVOKE", target = "Ljava/util/Set;isEmpty()Z"))
+    @Redirect(method="mouseReleased", at=@At(value = "INVOKE", target = "Ljava/util/Set;isEmpty()Z", remap = false))
     public boolean mouseReleased_isEmpty(Set<?> set) {
         return set.size() <= 1;
     }

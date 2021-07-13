@@ -84,4 +84,9 @@ public class SimpleItem implements IItem {
         output.addProperty("displayname", displayname);
         return output;
     }
+
+    @Override
+    public boolean getVanilla(){
+        return false;
+    }
 }

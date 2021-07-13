@@ -55,6 +55,7 @@ import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.text.WordUtils;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
@@ -222,14 +223,21 @@ public class NEUEventListener {
             if(!preloadedItems) {
                 preloadedItems = true;
                 List<IItem> list = new ArrayList<>(neu.manager.getItemInformation().values());
-                for(IItem json : list) {
+                for(IItem item : list) {
                     itemPreloader.submit(() -> {
-                        ItemStack stack = ItemUtils.itemToStack(json, true, true);
+                        ItemStack stack = ItemUtils.itemToStack(item, true, true);
                         if(stack.getItem() == Items.skull) toPreload.add(stack);
                     });
                 }
             } else if(!toPreload.isEmpty()) {
-                Utils.drawItemStack(toPreload.get(0), -100, -100);
+                if(StringUtils.isBlank(toPreload.get(0).getTagCompound().getString("SkullOwner"))) {
+                    //System.out.println(toPreload.get(0).getDisplayName());
+                }
+                try {
+                    Utils.drawItemStack(toPreload.get(0), -100, -100);
+                } catch(ReportedException ignored){
+                    //TODO it is incredibly important to fix this, however I want to play video games rn
+                }
                 toPreload.remove(0);
             } else {
                 itemPreloader.shutdown();

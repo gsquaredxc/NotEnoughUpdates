@@ -11,6 +11,7 @@ public interface IItem {
     int getDamage();
     String getDisplayName();
     NBTTagCompound getNBT();
+    boolean getVanilla();
 
     /**
      * Recalculated every time, not cached. Do not use repeatedly.
